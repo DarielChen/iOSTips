@@ -154,7 +154,7 @@ extension Sequence {
 ```
 map的实现无非就是创建一个空数组,通过for循环遍历将每个元素通过传入的函数处理后添加到空数组中,只不过swift的实现更加高效一点.
 
-关于其余高阶函数的实现,有兴趣的同学可以看下源码,:[Sequence.swift
+关于其余相关高阶函数的实现:[Sequence.swift
 ](https://github.com/apple/swift/blob/swift-4.2-branch/stdlib/public/core/Sequence.swift)
 
 #### 2. 关于数组中用到的其他的一些高阶函数
