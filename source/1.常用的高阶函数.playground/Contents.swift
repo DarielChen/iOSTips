@@ -65,7 +65,7 @@ let allStr = stringArr.reduce("") { $0 + $1 }
 
 let sum = intArr.reduce(0) { $0 + $1 }
 // 240
-
+let sum2 = intArr.reduce(0, +)
 
 
 let chainArr = [4, 3, 5, 8, 6, 2, 4, 7]
