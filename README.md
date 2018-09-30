@@ -2,7 +2,7 @@
 记录iOS开发中的一些知识点  
 
 [![Language: Swift 4.2](https://img.shields.io/badge/language-swift4.2-f48041.svg?style=flat)](https://developer.apple.com/swift)
-![Platform: iOS 11](https://img.shields.io/badge/platform-iOS-blue.svg?style=flat)
+![Platform: iOS 12](https://img.shields.io/badge/platform-iOS-blue.svg?style=flat)
 
 
 [1.常用的高阶函数 sorted、map、compactMap、filter、reduce](#1)  
@@ -278,7 +278,8 @@ struct EquatableValueSequence<T: Equatable> {
 
 
 <h2 id="4">4. Hashable、Equatable和Comparable协议</h2>  
-#### 1. Hashable
+
+#### 1. Hashable  
 实现Hashable协议的方法后我们可以根据`hashValue`方法来获取该对象的哈希值.
 
 ```swift
@@ -296,7 +297,6 @@ class Animal: Hashable {
         self.age = age
     }
 }
-
 
 let a1 = Animal(type: "Cat", age: 3)
 a1.hashValue
