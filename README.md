@@ -6,7 +6,8 @@
 
 
 [1.常用的高阶函数 sorted、map、compactMap、filter、reduce](#1)  
-[2.高阶函数扩展](#2)
+[2.高阶函数扩展](#2)  
+[3.优雅的判断多个值中是否包含某一个值](#3)
 
 <h2 id="1">1.常用的高阶函数 sorted、map、compactMap、filter、reduce</h2>  
 
@@ -221,8 +222,56 @@ let wordArr = line.split(whereSeparator: { $0 == " " })
 // ["BLANCHE:", "I", "don\'t", "want", "realism.", "I", "want", "magic!"]
 ```
 
+<h2 id="3">3.优雅的判断多个值中是否包含某一个值</h2>  
 
+我们最常用的方式
 
+```swift
+let string = "One"
+
+if string == "One" || string == "Two" || string == "Three" {
+    print("One")
+}
+```
+这种方式是可以,但可阅读性不够,那有啥好的方式呢?  
+#### 1. 我们可以利用`contains`:
+
+```swift
+if ["One", "Two", "Three"].contains(where: { $0 == "One"}) {
+	print("One")
+}
+```
+#### 2. 自己手动实现一个`any`  
+
+##### 使用:
+```swift
+
+if string == any(of: "One", "Two", "Three") {
+    print("One")
+}
+
+```
+
+##### 实现:
+
+```swift
+func any<T: Equatable>(of values: T...) -> EquatableValueSequence<T> {
+    return EquatableValueSequence(values: values)
+}
+
+struct EquatableValueSequence<T: Equatable> {
+    static func ==(lhs: EquatableValueSequence<T>, rhs: T) -> Bool {
+        return lhs.values.contains(rhs)
+    }
+    
+    static func ==(lhs: T, rhs: EquatableValueSequence<T>) -> Bool {
+        return rhs == lhs
+    }
+    
+    fileprivate let values: [T]
+}
+```
+这样做的前提是any中传入的值需要实现`Equatable`协议.
 
 
 
