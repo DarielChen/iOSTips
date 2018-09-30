@@ -7,7 +7,10 @@
 
 [1.常用的高阶函数 sorted、map、compactMap、filter、reduce](#1)  
 [2.高阶函数扩展](#2)  
-[3.优雅的判断多个值中是否包含某一个值](#3)
+[3.优雅的判断多个值中是否包含某一个值](#3)  
+[4.Hashable、Equatable和Comparable协议](#4)
+
+ 
 
 <h2 id="1">1.常用的高阶函数 sorted、map、compactMap、filter、reduce</h2>  
 
@@ -274,10 +277,96 @@ struct EquatableValueSequence<T: Equatable> {
 这样做的前提是any中传入的值需要实现`Equatable`协议.
 
 
+<h2 id="4">4. Hashable、Equatable和Comparable协议</h2>  
+#### 1. Hashable
+实现Hashable协议的方法后我们可以根据`hashValue`方法来获取该对象的哈希值.
+
+```swift
+class Animal: Hashable {
+    
+    var hashValue: Int {
+        return self.type.hashValue ^ self.age.hashValue
+    }
+    
+    let type: String
+    let age: Int
+    
+    init(type: String, age: Int) {
+        self.type = type
+        self.age = age
+    }
+}
 
 
+let a1 = Animal(type: "Cat", age: 3)
+a1.hashValue
+// 哈希值
+```
+#### 2. Equatable协议
+实现Equatable协议后,就可以用`==`符号来判断两个对象是否相等了.
+
+```swift
+class Animal: Equatable, Hashable {
+    
+    static func == (lhs: Animal, rhs: Animal) -> Bool {
+        if lhs.type == rhs.type && lhs.age == rhs.age{
+            return true
+        }else {
+            return false
+        }
+    }
+        
+    let type: String
+    let age: Int
+    
+    init(type: String, age: Int) {
+        self.type = type
+        self.age = age
+    }
+}
 
 
+let a1 = Animal(type: "Cat", age: 3)
+let a2 = Animal(type: "Cat", age: 4)
+
+a1 == a2
+// false
+```
+#### 3. Comparable协议
+基于Equatable基础上的Comparable类型,实现相关的方法后可以使用`<`、`<=`、`>=`、`>` 等符号进行比较.
+
+```swift
+class Animal: Comparable {
+    // 只根据年龄选项判断
+    static func < (lhs: Animal, rhs: Animal) -> Bool {
+        if lhs.age < rhs.age{
+            return true
+        }else {
+            return false
+        }
+    }
+    
+    let type: String
+    let age: Int
+    
+    init(type: String, age: Int) {
+        self.type = type
+        self.age = age
+    }
+}
+
+
+let a1 = Animal(type: "Cat", age: 3)
+let a2 = Animal(type: "Cat", age: 4)
+let a3 = Animal(type: "Cat", age: 1)
+let a4 = Animal(type: "Cat", age: 6)
+
+// 按照年龄从大到小排序
+let sortedAnimals = [a1, a2, a3, a4].sorted(by: <)
+```
+在日常开发中会涉及到大量对自定义对象的比较操作,所以`Comparable`协议的用途还是比较广泛的.
+
+`Comparable`协议除了应用在类上,还可以用在**结构体**和**枚举**上.
 
 
 
