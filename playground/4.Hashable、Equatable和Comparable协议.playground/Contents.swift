@@ -57,6 +57,7 @@ class Animal: Equatable, Hashable, Comparable {
     
     var hashValue: Int {
         return self.type.hashValue ^ self.age.hashValue
+
     }
     
     let type: String

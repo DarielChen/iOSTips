@@ -280,7 +280,8 @@ struct EquatableValueSequence<T: Equatable> {
 <h2 id="4">4. Hashable、Equatable和Comparable协议</h2>  
 
 #### 1. Hashable  
-实现Hashable协议的方法后我们可以根据`hashValue`方法来获取该对象的哈希值.
+实现Hashable协议的方法后我们可以根据`hashValue`方法来获取该对象的哈希值.  
+字典中的value的存储就是根据key的`hashValue`,所以所有字典中的key都要实现Hashable协议.
 
 ```swift
 class Animal: Hashable {
@@ -325,7 +326,6 @@ class Animal: Equatable, Hashable {
     }
 }
 
-
 let a1 = Animal(type: "Cat", age: 3)
 let a2 = Animal(type: "Cat", age: 4)
 
@@ -354,7 +354,6 @@ class Animal: Comparable {
         self.age = age
     }
 }
-
 
 let a1 = Animal(type: "Cat", age: 3)
 let a2 = Animal(type: "Cat", age: 4)
