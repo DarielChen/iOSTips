@@ -12,6 +12,8 @@
 		156787B6215DC79600AE6F31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 156787B4215DC79600AE6F31 /* Main.storyboard */; };
 		156787B8215DC79800AE6F31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 156787B7215DC79800AE6F31 /* Assets.xcassets */; };
 		156787BB215DC79800AE6F31 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 156787B9215DC79800AE6F31 /* LaunchScreen.storyboard */; };
+		15DE142A21639132008BD316 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142921639132008BD316 /* String+Extension.swift */; };
+		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
 		15E04D7421606D1C007D1AF9 /* DCTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E04D7321606D1C007D1AF9 /* DCTool.swift */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +25,8 @@
 		156787B7215DC79800AE6F31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		156787BA215DC79800AE6F31 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		156787BC215DC79800AE6F31 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		15DE142921639132008BD316 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		15E04D7321606D1C007D1AF9 /* DCTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCTool.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,6 +63,7 @@
 				15E04D7221606D01007D1AF9 /* DCTool */,
 				156787B0215DC79600AE6F31 /* AppDelegate.swift */,
 				156787B2215DC79600AE6F31 /* ViewController.swift */,
+				15E04D7321606D1C007D1AF9 /* DCTool.swift */,
 				156787B4215DC79600AE6F31 /* Main.storyboard */,
 				156787B7215DC79800AE6F31 /* Assets.xcassets */,
 				156787B9215DC79800AE6F31 /* LaunchScreen.storyboard */,
@@ -67,10 +72,19 @@
 			path = SwiftTipsDemo;
 			sourceTree = "<group>";
 		};
+		15DE142821639113008BD316 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				15DE142921639132008BD316 /* String+Extension.swift */,
+				15DE142B21639C6E008BD316 /* UIView+Extension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		15E04D7221606D01007D1AF9 /* DCTool */ = {
 			isa = PBXGroup;
 			children = (
-				15E04D7321606D1C007D1AF9 /* DCTool.swift */,
+				15DE142821639113008BD316 /* Extension */,
 			);
 			path = DCTool;
 			sourceTree = SOURCE_ROOT;
@@ -146,8 +160,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15DE142A21639132008BD316 /* String+Extension.swift in Sources */,
 				15E04D7421606D1C007D1AF9 /* DCTool.swift in Sources */,
 				156787B3215DC79600AE6F31 /* ViewController.swift in Sources */,
+				15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */,
 				156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

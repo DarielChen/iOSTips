@@ -5,14 +5,15 @@
 ![Platform: iOS 12](https://img.shields.io/badge/platform-iOS-blue.svg?style=flat)
 
 
-[1.常用的高阶函数 sorted、map、compactMap、filter、reduce](#1)  
+[1.常用的几个高阶函数](#1)  
 [2.高阶函数扩展](#2)  
 [3.优雅的判断多个值中是否包含某一个值](#3)  
-[4.Hashable、Equatable和Comparable协议](#4)
+[4.Hashable、Equatable和Comparable协议](#4)  
+[5.可变参数函数](#5)  
 
- 
 
-<h2 id="1">1.常用的高阶函数 sorted、map、compactMap、filter、reduce</h2>  
+
+<h2 id="1">1.常用的几个高阶函数</h2>  
 
 函数式编程在swift中有着广泛的应用,下面列出了几个常用的高阶函数.
 #### 1. sorted
@@ -367,8 +368,47 @@ let sortedAnimals = [a1, a2, a3, a4].sorted(by: <)
 
 `Comparable`协议除了应用在类上,还可以用在**结构体**和**枚举**上.
 
+ <h2 id="5">5.可变参数函数</h2>  
+在定义函数的时候,如果参数的个数不确定时,需要使用可变参数函数.举个例子,对数组的求和.
 
+```swift
+// 常用的姿势
+[2, 3, 4, 5, 6, 7, 8, 9].reduce(0) { $0 + $1 }
+// 44
 
+// 使用可变参数函数
+sum(values: 2, 3, 4, 5, 6, 7, 8, 9)
+// 44
 
+// 可变参数的类型是个数组
+func sum(values:Int...) -> Int {
+    var result = 0
+    values.forEach({ a in
+        result += a
+    })
+    return result
+}
 
+```
+
+应用: 
+
+```swift
+
+// 给UIView添加子控件
+let view = UIView()
+let label = UILabel()
+let button = UIButton()
+view.add(view, label, button)
+
+extension UIView {
+    /// 同时添加多个子控件
+    ///
+    /// - Parameter subviews: 单个或多个子控件
+    func add(_ subviews: UIView...) {
+        subviews.forEach(addSubview)
+    }
+}
+
+```
 
