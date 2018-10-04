@@ -413,7 +413,8 @@ extension UIView {
 ```
 
 <h2 id="6">6.where关键字</h2>  
-where的主要作用是用来做限定.
+where的主要作用是用来做限定.  
+
 #### 1. `for`循环的时候用来做条件判断
 
 ```swift
