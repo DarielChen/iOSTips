@@ -10,7 +10,7 @@
 [3.优雅的判断多个值中是否包含某一个值](#3)  
 [4.Hashable、Equatable和Comparable协议](#4)  
 [5.可变参数函数](#5)  
-
+[6.where关键字](#6)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -411,4 +411,78 @@ extension UIView {
 }
 
 ```
+
+<h2 id="6">6.where关键字</h2>  
+where的主要作用是用来做限定.
+#### 1. `for`循环的时候用来做条件判断
+
+```swift
+// 只遍历数组中的偶数
+let arr = [11, 12, 13, 14, 15, 16, 17, 18]
+for num in arr where num % 2 == 0 {
+    // 12 14 16 18
+}
+```
+
+#### 2. 在`try` `catch`的时候做条件判断
+
+```swift
+enum ExceptionError:Error{
+    case httpCode(Int)
+}
+
+func throwError() throws {
+    throw ExceptionError.httpCode(500)
+}
+
+do{
+    try throwError()
+// 通过where添加限定条件
+}catch ExceptionError.httpCode(let httpCode) where httpCode >= 500{
+    print("server error")
+}catch {
+    print("other error")
+}
+```
+#### 3. switch语句做限定条件
+
+```swift
+let student:(name:String, score:Int) = ("小明", 59)
+switch student {
+case let (_,score) where score < 60:
+    print("不及格")
+default:
+    print("及格")
+}
+```
+#### 4. 限定泛型需要遵守的协议
+
+```swift
+//第一种写法
+func genericFunctionA<S>(str:S) where S:ExpressibleByStringLiteral{
+    print(str)
+}
+//第二种写法
+func genericFunctionB<S:ExpressibleByStringLiteral>(str:S){
+    print(str)
+}
+```
+#### 5. 为指定的类添加对应的协议扩展
+
+```swift
+// 为Numeric在Sequence中添加一个求和扩展方法
+extension Sequence where Element: Numeric {
+    var sum: Element {
+        var result: Element = 0
+        for item  in self {
+            result += item
+        }
+        return result
+    }
+}
+
+print([1,2,3,4].sum) // 10
+```
+
+参考:[Swift where 关键字](https://www.jianshu.com/p/1546594b856b)
 
