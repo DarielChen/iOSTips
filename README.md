@@ -11,7 +11,8 @@
 [4.Hashable、Equatable和Comparable协议](#4)  
 [5.可变参数函数](#5)  
 [6.where关键字](#6)  
-
+[7.switch中判断枚举类型,尽量避免使用default](#7)  
+ 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -412,7 +413,8 @@ extension UIView {
 
 ```
 
-<h2 id="6">6.where关键字</h2>  
+<h2 id="6">6.where关键字</h2>   
+
 where的主要作用是用来做限定.  
 
 #### 1. `for`循环的时候用来做条件判断
@@ -444,7 +446,8 @@ do{
 }catch {
     print("other error")
 }
-```
+```  
+
 #### 3. switch语句做限定条件
 
 ```swift
@@ -455,7 +458,8 @@ case let (_,score) where score < 60:
 default:
     print("及格")
 }
-```
+```  
+
 #### 4. 限定泛型需要遵守的协议
 
 ```swift
@@ -485,5 +489,29 @@ extension Sequence where Element: Numeric {
 print([1,2,3,4].sum) // 10
 ```
 
-参考:[Swift where 关键字](https://www.jianshu.com/p/1546594b856b)
+参考: [Swift where 关键字](https://www.jianshu.com/p/1546594b856b)  
 
+
+<h2 id="7">7.switch中判断枚举类型,尽量避免使用default</h2> 
+
+通过`switch`语句来判断枚举类型,不使用`default`,如果后期添加新的枚举类型,而忘记在`switch`中处理,会报错,这样可以提高代码的健壮性.
+
+```swift
+enum State {        
+    case loggedIn
+    case loggedOut
+    case startUI
+}
+    
+func handle(_ state: State) {
+    switch state {
+    case .loggedIn:
+         showMainUI()
+    case .loggedOut:
+        showLoginUI()
+        
+        // Compiler error: Switch must be exhaustive
+    }
+}
+
+```
