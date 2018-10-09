@@ -12,7 +12,8 @@
 [5.可变参数函数](#5)  
 [6.where关键字](#6)  
 [7.switch中判断枚举类型,尽量避免使用default](#7)  
- 
+[8.iOS9之后全局动态修改StatusBar样式](#8)
+
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -515,3 +516,76 @@ func handle(_ state: State) {
 }
 
 ```
+
+
+ <h2 id="8">8.iOS9之后全局动态修改StatusBar样式</h2>  
+#### 1. 局部修改StatusBar样式
+最常用的方法是通过控制器来修改`StatusBar`样式
+
+```swift
+override var preferredStatusBarStyle: UIStatusBarStyle {
+    return .lightContent
+}
+```
+注意:如果当前控制器有导航控制器,需要在导航控制器中这样设置(如下代码),不然不起作用.
+
+```swift
+override var preferredStatusBarStyle: UIStatusBarStyle {
+    return topViewController?.preferredStatusBarStyle ?? .default
+}
+```
+这样做的好处是,可以针对不同的控制器设置不同的`StatusBar`样式,但有时往往会多此一举,略嫌麻烦,那如何全局统一处理呢?
+
+#### 2. iOS9之前全局修改StatusBar样式
+iOS9之前的做法比较简单,在`plist`文件中设置`View controller-based status bar appearance`为`NO`.  
+
+在需要设置的地方添加
+
+```swift
+UIApplication.shared.setStatusBarStyle(.default, animated: true)
+```
+这样全局设置`StatusBar`样式就可以了,但iOS9之后`setStatusBarStyle`方法被废弃了,苹果推荐使用`preferredStatusBarStyle`,也就是上面那种方法.
+#### 3. iOS9之后全局修改StatusBar样式
+我们可以用`UIAppearance`和导航栏的`barStyle`去全局设置`StatusBar`的样式.
+
+- `UIAppearance`属性可以做到全局修改样式.
+- 导航栏的`barStyle`决定了`NavigationBar`的外观,而`barStyle`属性改变会联动到`StatusBar`的样式.
+	1. 当`barStyle = .default`,表示导航栏的为默认样式,`StatusBar`的样式为了和导航栏区分,就会变成**黑色**.
+	2. 当`barStyle = .black`,表示导航栏的颜色为深黑色,`StatusBar`的样式为了和导航栏区分,就会变成**白色**.
+
+	这个有点绕,总之就是`StatusBar`的样式和导航栏的样式反着来.
+	
+具体实现:
+
+```swift
+@IBAction func segmentedControl(_ sender: UISegmentedControl) {
+        
+    switch sender.selectedSegmentIndex {
+    case 0:
+    	 // StatusBar为黑色,导航栏颜色为白色
+        UINavigationBar.appearance().barStyle = .default
+        UINavigationBar.appearance().barTintColor = UIColor.white
+    default:
+    	 // StatusBar为白色,导航栏颜色为深色
+        UINavigationBar.appearance().barStyle = .black
+        UINavigationBar.appearance().barTintColor = UIColor.darkNight
+    }
+    
+    // 刷新window下的子控件
+    UIApplication.shared.windows.forEach {
+        $0.reload()
+    }
+}
+
+public extension UIWindow {
+    /// 刷新所有的子控件
+    func reload() {
+        subviews.forEach { view in
+            view.removeFromSuperview()
+            addSubview(view)
+        }
+    }
+}
+```
+
+<img src="http://pcb5zz9k5.bkt.clouddn.com/changeStatusBarStyle2.gif" width=250>
