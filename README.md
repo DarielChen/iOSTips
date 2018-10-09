@@ -519,6 +519,7 @@ func handle(_ state: State) {
 
 
  <h2 id="8">8.iOS9之后全局动态修改StatusBar样式</h2>  
+ 
 #### 1. 局部修改StatusBar样式
 最常用的方法是通过控制器来修改`StatusBar`样式
 
@@ -578,7 +579,6 @@ UIApplication.shared.setStatusBarStyle(.default, animated: true)
 }
 
 public extension UIWindow {
-    /// 刷新所有的子控件
     func reload() {
         subviews.forEach { view in
             view.removeFromSuperview()
