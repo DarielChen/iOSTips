@@ -12,8 +12,8 @@
 [5.可变参数函数](#5)  
 [6.where关键字](#6)  
 [7.switch中判断枚举类型,尽量避免使用default](#7)  
-[8.iOS9之后全局动态修改StatusBar样式](#8)
-
+[8.iOS9之后全局动态修改StatusBar样式](#8)  
+[9.使用面向协议实现app的主题功能](#9)  
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -589,3 +589,132 @@ public extension UIWindow {
 ```
 
 <img src="http://pcb5zz9k5.bkt.clouddn.com/changeStatusBarStyle2.gif" width=250>
+
+
+<h2 id="9">9.使用面向协议实现app的主题功能</h2>
+
+#### 1. `UIAppearance`修改全局样式
+
+做为修改全局样式的`UIAppearance`用起来还是很方便的,比如要修改所有`UILabel`的文字颜色.
+
+```swift
+UILabel.appearance().textColor = labelColor
+```
+又或者我们只想修改某个`CustomView`层级下的子控件`UILabel`
+
+```swift
+UILabel.appearance(whenContainedInInstancesOf: [CustomView.self]).textColor = labelColor
+```
+
+#### 2. 主题协议,以及实现  
+
+定义好协议中需要实现的属性和方法
+
+```swift
+protocol Theme {
+    
+    // 自定义的颜色
+    var tint: UIColor { get }
+    // 定义导航栏的样式,为了联动状态栏(具体见第9小点)
+    var barStyle: UIBarStyle { get }
+    
+    var labelColor: UIColor { get }
+    var labelSelectedColor: UIColor { get }
+    
+    var backgroundColor: UIColor { get }
+    var separatorColor: UIColor { get }
+    var selectedColor: UIColor { get }
+    
+    // 设置主题样式
+    func apply(for application: UIApplication)
+    
+    // 对特定主题样式进行扩展
+    func extend()
+}
+```
+对协议添加`extension`,这样做的好处是,如果有多个结构体或类实现了协议,而每个结构体或类需要实现相同的方法,这些方法就可以统一放到`extension`中处理,大大提高了代码的复用率.  
+如果结构体或类有着相同的方法实现,那么结构体或类的实现会**覆盖**掉协议的`extension`中的实现.
+
+```swift
+extension Theme {
+    
+    func apply(for application: UIApplication) {
+        application.keyWindow?.tintColor = tint
+        
+        
+        UITabBar.appearance().with {
+            $0.barTintColor = tint
+            $0.tintColor = labelColor
+        }
+        
+        UITabBarItem.appearance().with {
+            $0.setTitleTextAttributes([.foregroundColor : labelColor], for: .normal)
+            $0.setTitleTextAttributes([.foregroundColor : labelSelectedColor], for: .selected)
+        }
+        
+
+        UINavigationBar.appearance().with {
+            $0.barStyle = barStyle
+            $0.tintColor = tint
+            $0.barTintColor = tint
+            $0.titleTextAttributes = [.foregroundColor : labelColor]
+        }
+        
+       UITextView.appearance().with {
+            $0.backgroundColor = selectedColor
+            $0.tintColor = tint
+            $0.textColor = labelColor
+        }
+        
+        extend()
+        
+        application.windows.forEach { $0.reload() }
+    }
+    
+    // ... 其余相关UIAppearance的设置
+    
+    
+    // 如果某些属性需要在某些主题下定制,可在遵守协议的类或结构体下重写
+    func extend() {
+        // 在主题中实现相关定制功能
+    }
+}
+
+```
+
+#### 3. 对主题某些样式的自定义
+Demo中白色主题的`UISegmentedControl`需要设置特定的颜色,我们可以在`LightTheme`的`extension`中重写`extend()`方法.
+
+```swift
+extension LightTheme {
+    
+    // 需要自定义的部分写在这边
+    func extend() {
+        UISegmentedControl.appearance().with {
+            $0.tintColor = UIColor.darkText
+            $0.setTitleTextAttributes([.foregroundColor : labelColor], for: .normal)
+            $0.setTitleTextAttributes([.foregroundColor : UIColor.white], for: .selected)
+        }
+        UISlider.appearance().tintColor = UIColor.darkText
+    }
+}
+
+```
+
+#### 4. 主题切换
+在设置完`UIAppearance`后需要对所有的控件进行刷新,这个操作放在`apply`方法中.具体实现
+
+```swift
+public extension UIWindow {
+    /// 刷新所有子控件
+    func reload() {
+        subviews.forEach { view in
+            view.removeFromSuperview()
+            addSubview(view)
+        }
+    }
+}
+```
+
+[示例Demo]()  
+[实现效果](http://pcb5zz9k5.bkt.clouddn.com/themeDemo.gif)
