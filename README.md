@@ -837,7 +837,7 @@ extension ProtocolB {
 class MyClass: ProtocolA, ProtocolB {}
 ```
 此时`ProtocolA`和`ProtocolB`都有一个默认的实现方法`method()`,由于编译器不知道继承过来的`method()`方法是哪个,就会报错.
-> 💎钻石问题,当某一个类或值类型的继承图谱中有多条路径时就会发生.
+> 💎钻石问题,当某一个类或值类型在继承图谱中有多条路径时就会发生.
 
 解决方法:  
 	1. 在目标值类型或类中重写那个发生冲突的方法`method()`.  
