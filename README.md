@@ -14,6 +14,10 @@
 [7.switch中判断枚举类型,尽量避免使用default](#7)  
 [8.iOS9之后全局动态修改StatusBar样式](#8)  
 [9.使用面向协议实现app的主题功能](#9)  
+[10.swift中多继承的实现](#10)  
+
+
+
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -718,3 +722,125 @@ public extension UIWindow {
 
 [示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/9.%E4%BD%BF%E7%94%A8%E9%9D%A2%E5%90%91%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0app%E7%9A%84%E4%B8%BB%E9%A2%98%E5%8A%9F%E8%83%BD)  
 [实现效果](http://pcb5zz9k5.bkt.clouddn.com/themeDemo.gif)
+
+
+<h2 id="10">10.swift中多继承的实现</h2>  
+
+#### 1. 实现过程
+swift本身并不支持多继承,但我们可以根据已有的API去实现. 
+ 
+swift中的类可以遵守多个协议,但是只可以继承一个类,而值类型(结构体和枚举)只能遵守单个或多个协议,不能做继承操作.  
+
+多继承的实现:**协议的方法可以在该协议的`extension`中实现**
+
+```swift
+protocol Behavior {
+    func run()
+}
+extension Behavior {
+    func run() {
+        print("Running...")
+    }
+}
+
+struct Dog: Behavior {}
+
+let myDog = Dog()
+myDog.run() // Running...
+```
+无论是结构体还是类还是枚举都可以遵守多个协议,所以多继承就这么做到了.
+
+#### 2. 通过多继承为`UIView`扩展方法
+
+```swift
+// MARK: - 闪烁功能
+protocol Blinkable {
+    func blink()
+}
+extension Blinkable where Self: UIView {
+    func blink() {
+        alpha = 1
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0.25,
+            options: [.repeat, .autoreverse],
+            animations: {
+                self.alpha = 0
+        })
+    }
+}
+
+// MARK: - 放大和缩小
+protocol Scalable {
+    func scale()
+}
+extension Scalable where Self: UIView {
+    func scale() {
+        transform = .identity
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0.25,
+            options: [.repeat, .autoreverse],
+            animations: {
+                self.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        })
+    }
+}
+
+// MARK: - 添加圆角
+protocol CornersRoundable {
+    func roundCorners()
+}
+extension CornersRoundable where Self: UIView {
+    func roundCorners() {
+        layer.cornerRadius = bounds.width * 0.1
+        layer.masksToBounds = true
+    }
+}
+
+extension UIView: Scalable, Blinkable, CornersRoundable {}
+
+ cyanView.blink()
+ cyanView.scale()
+ cyanView.roundCorners()
+```
+
+<img src="http://pcb5zz9k5.bkt.clouddn.com/blink_scale_corner.gif" width=250>
+
+
+#### 3. 多继承钻石问题(Diamond Problem),及解决办法
+请看下面代码
+
+```swift
+protocol ProtocolA {
+    func method()
+}
+
+extension ProtocolA {
+    func method() {
+        print("Method from ProtocolA")
+    }
+}
+
+protocol ProtocolB {
+    func method()
+}
+
+extension ProtocolB {
+    func method() {
+        print("Method from ProtocolB")
+    }
+}
+
+class MyClass: ProtocolA, ProtocolB {}
+```
+此时`ProtocolA`和`ProtocolB`都有一个默认的实现方法`method()`,由于编译器不知道继承过来的`method()`方法是哪个,就会报错.
+> 💎钻石问题,当某一个类或值类型的继承图谱中有多条路径时就会发生.
+
+解决方法:  
+	1. 在目标值类型或类中重写那个发生冲突的方法`method()`.  
+	2. 直接修改协议中重复的方法
+
+相对来时第二种方法会好一点,所以多继承要注意,尽量避免多继承的协议中的方法的重复.
