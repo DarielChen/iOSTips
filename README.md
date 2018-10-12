@@ -15,7 +15,7 @@
 [8.iOS9之后全局动态修改StatusBar样式](#8)  
 [9.使用面向协议实现app的主题功能](#9)  
 [10.swift中多继承的实现](#10)  
-[11.华丽的TableView刷新动效](#10)
+[11.华丽的TableView刷新动效](#11)
 
 
 
@@ -916,6 +916,8 @@ enum AnimationFactory {
 }
 ```
 将所有的动画设置封装在`Animation`的闭包中.  
+
+
 最后我们就可以在`tableView(_:,willDisplay:,forRowAt:)`这个方法中使用了
 
 ```swift
