@@ -932,8 +932,9 @@ animator.animate(cell: cell, at: indexPath, in: tableView)
 
 
 
-<h2 id="12">12.实现一个不基于Runtime的KVO</h2>  
-Swift并没有在语言层级上支持KVO,如果要使用必须导入`Foundation`框架, 被观察对象必须继承自NSObject,这种实现方式显然不够优雅.  
+<h2 id="12">12.实现一个不基于Runtime的KVO</h2> 
+ 
+Swift并没有在语言层级上支持KVO,如果要使用必须导入`Foundation`框架, 被观察对象必须继承自`NSObject`,这种实现方式显然不够优雅.  
 
 KVO本质上还是通过拿到属性的set方法去搞事情,基于这样的原理我们可以自己去实现.
 
