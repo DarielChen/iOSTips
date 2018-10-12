@@ -14,8 +14,9 @@
 		156787BB215DC79800AE6F31 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 156787B9215DC79800AE6F31 /* LaunchScreen.storyboard */; };
 		156B4FC7216CE9CF0096E543 /* UIWindow+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B4FC6216CE9CF0096E543 /* UIWindow+Extension.swift */; };
 		156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B4FC8216CEC140096E543 /* UIColor+Extension.swift */; };
+		158FCD85217093530067A406 /* DCTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD84217093530067A406 /* DCTool.swift */; };
+		158FCD87217093640067A406 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD86217093640067A406 /* Observable.swift */; };
 		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
-		15E04D7421606D1C007D1AF9 /* DCTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E04D7321606D1C007D1AF9 /* DCTool.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,8 +29,9 @@
 		156787BC215DC79800AE6F31 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		156B4FC6216CE9CF0096E543 /* UIWindow+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extension.swift"; sourceTree = "<group>"; };
 		156B4FC8216CEC140096E543 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		158FCD84217093530067A406 /* DCTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCTool.swift; sourceTree = "<group>"; };
+		158FCD86217093640067A406 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
-		15E04D7321606D1C007D1AF9 /* DCTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCTool.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,13 +67,21 @@
 				15E04D7221606D01007D1AF9 /* DCTool */,
 				156787B0215DC79600AE6F31 /* AppDelegate.swift */,
 				156787B2215DC79600AE6F31 /* ViewController.swift */,
-				15E04D7321606D1C007D1AF9 /* DCTool.swift */,
 				156787B4215DC79600AE6F31 /* Main.storyboard */,
 				156787B7215DC79800AE6F31 /* Assets.xcassets */,
 				156787B9215DC79800AE6F31 /* LaunchScreen.storyboard */,
 				156787BC215DC79800AE6F31 /* Info.plist */,
 			);
 			path = SwiftTipsDemo;
+			sourceTree = "<group>";
+		};
+		158FCD83217093530067A406 /* DCTool */ = {
+			isa = PBXGroup;
+			children = (
+				158FCD84217093530067A406 /* DCTool.swift */,
+				158FCD86217093640067A406 /* Observable.swift */,
+			);
+			path = DCTool;
 			sourceTree = "<group>";
 		};
 		15DE142821639113008BD316 /* Extension */ = {
@@ -87,6 +97,7 @@
 		15E04D7221606D01007D1AF9 /* DCTool */ = {
 			isa = PBXGroup;
 			children = (
+				158FCD83217093530067A406 /* DCTool */,
 				15DE142821639113008BD316 /* Extension */,
 			);
 			path = DCTool;
@@ -163,9 +174,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				158FCD85217093530067A406 /* DCTool.swift in Sources */,
 				156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */,
-				15E04D7421606D1C007D1AF9 /* DCTool.swift in Sources */,
 				156787B3215DC79600AE6F31 /* ViewController.swift in Sources */,
+				158FCD87217093640067A406 /* Observable.swift in Sources */,
 				15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */,
 				156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */,
 				156B4FC7216CE9CF0096E543 /* UIWindow+Extension.swift in Sources */,

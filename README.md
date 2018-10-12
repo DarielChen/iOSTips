@@ -15,8 +15,8 @@
 [8.iOS9之后全局动态修改StatusBar样式](#8)  
 [9.使用面向协议实现app的主题功能](#9)  
 [10.swift中多继承的实现](#10)  
-[11.华丽的TableView刷新动效](#11)
-
+[11.华丽的TableView刷新动效](#11)  
+[12.实现一个不基于Runtime的KVO](#12)
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -932,6 +932,137 @@ animator.animate(cell: cell, at: indexPath, in: tableView)
 
 
 
+<h2 id="12">12.实现一个不基于Runtime的KVO</h2>  
+Swift并没有在语言层级上支持KVO,如果要使用必须导入`Foundation`框架, 被观察对象必须继承自NSObject,这种实现方式显然不够优雅.  
 
+KVO本质上还是通过拿到属性的set方法去搞事情,基于这样的原理我们可以自己去实现.
 
+#### 1. 实现
+话不多说,直接贴代码,新建一个`Observable`文件
+
+```swift
+public class Observable<Type> {
+    
+    // MARK: - Callback
+    fileprivate class Callback {
+        fileprivate weak var observer: AnyObject?
+        fileprivate let options: [ObservableOptions]
+        fileprivate let closure: (Type, ObservableOptions) -> Void
+        
+        fileprivate init(
+            observer: AnyObject,
+            options: [ObservableOptions],
+            closure: @escaping (Type, ObservableOptions) -> Void) {
+            
+            self.observer = observer
+            self.options = options
+            self.closure = closure
+        }
+    }
+    
+    // MARK: - Properties
+    public var value: Type {
+        didSet {
+            removeNilObserverCallbacks()
+            notifyCallbacks(value: oldValue, option: .old)
+            notifyCallbacks(value: value, option: .new)
+        }
+    }
+    
+    private func removeNilObserverCallbacks() {
+        callbacks = callbacks.filter { $0.observer != nil }
+    }
+    
+    private func notifyCallbacks(value: Type, option: ObservableOptions) {
+        let callbacksToNotify = callbacks.filter { $0.options.contains(option) }
+        callbacksToNotify.forEach { $0.closure(value, option) }
+    }
+    
+    // MARK: - Object Lifecycle
+    public init(_ value: Type) {
+        self.value = value
+    }
+    
+    // MARK: - Managing Observers
+    private var callbacks: [Callback] = []
+    
+    
+    /// 添加观察者
+    ///
+    /// - Parameters:
+    ///   - observer: 观察者
+    ///   - removeIfExists: 如果观察者存在需要移除
+    ///   - options: 被观察者
+    ///   - closure: 回调
+    public func addObserver(
+        _ observer: AnyObject,
+        removeIfExists: Bool = true,
+        options: [ObservableOptions] = [.new],
+        closure: @escaping (Type, ObservableOptions) -> Void) {
+        
+        if removeIfExists {
+            removeObserver(observer)
+        }
+        
+        let callback = Callback(observer: observer, options: options, closure: closure)
+        callbacks.append(callback)
+        
+        if options.contains(.initial) {
+            closure(value, .initial)
+        }
+    }
+    
+    public func removeObserver(_ observer: AnyObject) {
+        callbacks = callbacks.filter { $0.observer !== observer }
+    }
+}
+
+// MARK: - ObservableOptions
+public struct ObservableOptions: OptionSet {
+    
+    public static let initial = ObservableOptions(rawValue: 1 << 0)
+    public static let old = ObservableOptions(rawValue: 1 << 1)
+    public static let new = ObservableOptions(rawValue: 1 << 2)
+    
+    public var rawValue: Int
+    
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+}
+
+```
+使用起来和KVO差不多.  
+#### 2. 使用
+需要监听的类
+
+```swift
+public class User {
+    // 监听的属性需要是Observable类型
+    public let name: Observable<String>
+    
+    public init(name: String) {
+        self.name = Observable(name)
+    }
+}
+```
+使用
+
+```swift
+// 创建对象
+let user = User(name: "Made")
+
+// 设置监听
+user.name.addObserver(self, options: [.new]) { name, change in
+    print("name:\(name), change:\(change)")
+}
+
+// 修改对象的属性
+user.name.value = "Amel"  // 这时就可以被监听到
+
+// 移除监听
+user.name.removeObserver(self)
+
+```
+> 注意: 在使用过程中,如果改变value, addObserver方法不调用,很有可能是Observer对象已经被释放掉了.
 
