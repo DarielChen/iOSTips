@@ -15,7 +15,7 @@
 [8.iOS9之后全局动态修改StatusBar样式](#8)  
 [9.使用面向协议实现app的主题功能](#9)  
 [10.swift中多继承的实现](#10)  
-
+[11.华丽的TableView刷新动效](#10)
 
 
 
@@ -844,3 +844,92 @@ class MyClass: ProtocolA, ProtocolB {}
 	2. 直接修改协议中重复的方法
 
 相对来时第二种方法会好一点,所以多继承要注意,尽量避免多继承的协议中的方法的重复.
+
+
+<h2 id="11">11.华丽的TableView刷新动效</h2>  
+
+[先看效果](http://pcb5zz9k5.bkt.clouddn.com/TableViewRefreshAnimation2.gif
+)(由于这个页面的内容有点多,我尽量不放加载比较耗时的文件)
+
+#### 1. 简单的实现
+我们都知道`TableView`的刷新动效是设置在`tableView(_:,willDisplay:,forRowAt:)`这个方法中的.
+
+```swift
+override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    
+    cell.alpha = 0
+    UIView.animate(
+        withDuration: 0.5,
+        delay: 0.05 * Double(indexPath.row),
+        animations: {
+            cell.alpha = 1
+    })
+}      
+```
+这样一个简单的淡入效果就OK了.但这样做显然不够优雅,我们如果要在多个`TableView`使用这个效果该怎样封装呢?
+#### 2. 使用工厂设计模式进行封装
+
+##### 1. creator(创建者): `Animator`,用来传入参数,和设置动画
+
+```swift
+// Animation接收三个参数
+typealias Animation = (UITableViewCell, IndexPath, UITableView) -> Void
+
+final class Animator {
+    private var hasAnimatedAllCells = false
+    private let animation: Animation
+
+    init(animation: @escaping Animation) {
+        self.animation = animation
+    }
+
+    func animate(cell: UITableViewCell, at indexPath: IndexPath, in tableView: UITableView) {
+        guard !hasAnimatedAllCells else {
+            return
+        }
+        animation(cell, indexPath, tableView)
+		// 确保每个cell动画只执行一次
+        hasAnimatedAllCells = tableView.isLastVisibleCell(at: indexPath)
+    }
+}
+```
+
+##### 2. product（产品): `AnimationFactory`,用来设置不同的动画类型
+
+```swift
+enum AnimationFactory {
+    
+    static func makeFade(duration: TimeInterval, delayFactor: Double) -> Animation {
+        return { cell, indexPath, _ in
+            cell.alpha = 0
+            
+            UIView.animate(
+                withDuration: duration,
+                delay: delayFactor * Double(indexPath.row),
+                animations: {
+                    cell.alpha = 1
+            })
+        }
+    }
+    
+    // ... 
+}
+```
+将所有的动画设置封装在`Animation`的闭包中.  
+最后我们就可以在`tableView(_:,willDisplay:,forRowAt:)`这个方法中使用了
+
+```swift
+let animation = AnimationFactory.makeFade(duration: 0.5, delayFactor: 0.05)
+let animator = TableViewAnimator(animation: animation)
+animator.animate(cell: cell, at: indexPath, in: tableView)
+```
+
+动画相关的可以参考我之前写的文章  [猛击](https://www.jianshu.com/p/6af8a7a8a15a)  
+[实现效果](http://pcb5zz9k5.bkt.clouddn.com/TableViewRefreshAnimation2.gif)  
+[示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/11.%E5%8D%8E%E4%B8%BD%E7%9A%84TableView%E5%88%B7%E6%96%B0%E5%8A%A8%E6%95%88)  
+
+
+
+
+
+
