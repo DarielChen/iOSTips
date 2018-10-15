@@ -18,3 +18,22 @@ extension UIView {
         subviews.forEach(addSubview)
     }
 }
+
+
+extension UIView {
+    
+    /// 添加点击手势 action: #selector(touchAction)
+    public func addTapGesture(tapNumber: Int = 1, target: AnyObject, action: Selector) {
+        let tap = UITapGestureRecognizer(target: target, action: action)
+        tap.numberOfTapsRequired = tapNumber
+        addGestureRecognizer(tap)
+        isUserInteractionEnabled = true
+    }
+    
+    /// 添加点击手势,使用闭包回调   记得使用 [weak self]
+    public func addTapGesture(tapNumber: Int = 1, action: ((UITapGestureRecognizer) -> Void)?) {
+        let tap = ClosureTapGesture(tapCount: tapNumber, fingerCount: 1, action: action)
+        addGestureRecognizer(tap)
+        isUserInteractionEnabled = true
+    }
+}

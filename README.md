@@ -17,7 +17,8 @@
 [10.swift中多继承的实现](#10)  
 [11.华丽的TableView刷新动效](#11)  
 [12.实现一个不基于Runtime的KVO](#12)  
-[13.实现多重代理](#13)
+[13.实现多重代理](#13)  
+[14.用闭包实现手势监听和按钮点击事件](#14)
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1180,3 +1181,136 @@ master.orderToEat()
 #### 2. 多重代理的应用场景
 1. IM消息接收之后在多个地方做回调,比如显示消息,改变小红点,显示消息数.
 2. `UISearchBar`的回调,当我们需要在多个地方获取数据的时候,类似的还有`UINavigationController`的回调等.
+
+
+<h2 id="14">14.用闭包实现手势监听和按钮点击事件</h2>  
+
+#### 1. 通常姿势
+
+通常手势监听我们需要这样写:
+
+```swift
+let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap))
+view.addGestureRecognizer(tapGesture)
+view.isUserInteractionEnabled = true
+
+@objc func tap() {
+    print("手势响应方法")
+}
+```
+按钮的点击事件我们需要这样写:
+
+```swift
+btn.addTarget(self, action:#selector(actionTouch), for: .touchUpInside)
+
+@objc func actionTouch() {
+    print("按钮点击事件")
+}
+```
+但有没有发现这样写代码的问题?按钮,手势的监听和响应是分开的,代码阅读起来就要来回切换,所以我们可以用闭包.
+
+#### 2. 使用闭包封装
+
+##### 1. 手势事件
+######1. 实现
+		
+```swift
+// 定义一个子类,使得响应事件转闭包
+open class ClosureTapGesture: UITapGestureRecognizer {
+    
+    private var tapAction: ((UITapGestureRecognizer) -> Void)?
+    
+    public override init(target: Any?, action: Selector?) {
+        super.init(target: target, action: action)
+    }
+    
+    public convenience init (
+        tapCount: Int = 1,
+        fingerCount: Int = 1,
+        action: ((UITapGestureRecognizer) -> Void)?) {
+        self.init()
+        self.numberOfTapsRequired = tapCount
+        self.numberOfTouchesRequired = fingerCount        
+        self.tapAction = action
+        self.addTarget(self, action: #selector(ClosureTapGesture.didTap(_:)))
+    }
+    
+    @objc open func didTap (_ tap: UITapGestureRecognizer) {
+        tapAction? (tap)
+    }
+}
+
+
+extension UIView {
+      
+    /// 添加点击手势,使用闭包回调   记得使用 [weak self]
+    public func addTapGesture(tapNumber: Int = 1, action: ((UITapGestureRecognizer) -> Void)?) {
+        let tap = ClosureTapGesture(tapCount: tapNumber, fingerCount: 1, action: action)
+        addGestureRecognizer(tap)
+        isUserInteractionEnabled = true
+    }
+}
+
+```
+###### 2. 使用  
+
+```swift
+view.addTapGesture { tap in
+    print("手势响应方法")
+}
+```
+
+##### 2. 按钮点击事件  
+###### 1. 实现  
+
+```swift
+public typealias ClosureButtonAction = (_ sender: ClosureButton) -> Void
+
+/// 通过闭包实现按钮响应
+open class ClosureButton: UIButton {
+    
+    open var action: ClosureButtonAction?
+    
+    // MARK: 构造方法
+    public init() {
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        defaultInit()
+    }
+
+    public init(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat) {
+        super.init(frame: CGRect(x: x, y: y, width: w, height: h))
+        defaultInit()
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        defaultInit()
+    }
+
+    private func defaultInit() {
+        addTarget(self, action: #selector(ClosureButton.didPressed(_:)), for: UIControl.Event.touchUpInside)
+		// ...
+    }
+    
+    /// 按钮响应方法
+    open func addAction(_ action: @escaping ClosureButtonAction) {
+        self.action = action
+    }
+    
+    @objc private func didPressed(_ sender: ClosureButton) {
+        action?(sender)
+    }
+}
+```
+这边只给出了部分实现,详细内容 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/ClosureTapGesture.swift)
+###### 2. 使用 
+
+```swift
+let btn = ClosureButton()
+btn.addAction { btn in
+    print(btn)
+}
+```
+
+
+

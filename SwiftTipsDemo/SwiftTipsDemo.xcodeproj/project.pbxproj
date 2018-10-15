@@ -16,6 +16,8 @@
 		156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B4FC8216CEC140096E543 /* UIColor+Extension.swift */; };
 		158FCD85217093530067A406 /* DCTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD84217093530067A406 /* DCTool.swift */; };
 		158FCD87217093640067A406 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD86217093640067A406 /* Observable.swift */; };
+		15940C4C217474A000E83DC4 /* ClosureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4B217474A000E83DC4 /* ClosureButton.swift */; };
+		15940C4E21747B5600E83DC4 /* ClosureTapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */; };
 		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +33,8 @@
 		156B4FC8216CEC140096E543 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		158FCD84217093530067A406 /* DCTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCTool.swift; sourceTree = "<group>"; };
 		158FCD86217093640067A406 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		15940C4B217474A000E83DC4 /* ClosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureButton.swift; sourceTree = "<group>"; };
+		15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureTapGesture.swift; sourceTree = "<group>"; };
 		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,6 +84,8 @@
 			children = (
 				158FCD84217093530067A406 /* DCTool.swift */,
 				158FCD86217093640067A406 /* Observable.swift */,
+				15940C4B217474A000E83DC4 /* ClosureButton.swift */,
+				15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */,
 			);
 			path = DCTool;
 			sourceTree = "<group>";
@@ -181,6 +187,8 @@
 				15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */,
 				156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */,
 				156B4FC7216CE9CF0096E543 /* UIWindow+Extension.swift in Sources */,
+				15940C4E21747B5600E83DC4 /* ClosureTapGesture.swift in Sources */,
+				15940C4C217474A000E83DC4 /* ClosureButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
