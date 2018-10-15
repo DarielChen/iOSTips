@@ -1207,12 +1207,12 @@ btn.addTarget(self, action:#selector(actionTouch), for: .touchUpInside)
     print("按钮点击事件")
 }
 ```
-但有没有发现这样写代码的问题?按钮,手势的监听和响应是分开的,代码阅读起来就要来回切换,所以我们可以用闭包.
+但有没有发现这样写代码的问题?按钮,手势的监听和响应是分开的,代码阅读起来就要来回切换.
 
 #### 2. 使用闭包封装
 
 ##### 1. 手势事件
-######1. 实现
+###### 1. 实现
 		
 ```swift
 // 定义一个子类,使得响应事件转闭包
@@ -1302,7 +1302,7 @@ open class ClosureButton: UIButton {
     }
 }
 ```
-这边只给出了部分实现,详细内容 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/ClosureTapGesture.swift)
+这边只给出了部分实现,详细内容 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/ClosureButton.swift)
 ###### 2. 使用 
 
 ```swift

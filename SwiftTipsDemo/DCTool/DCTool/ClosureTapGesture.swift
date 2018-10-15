@@ -22,9 +22,7 @@ open class ClosureTapGesture: UITapGestureRecognizer {
         action: ((UITapGestureRecognizer) -> Void)?) {
         self.init()
         self.numberOfTapsRequired = tapCount
-        
         self.numberOfTouchesRequired = fingerCount
-        
         self.tapAction = action
         self.addTarget(self, action: #selector(ClosureTapGesture.didTap(_:)))
     }
@@ -32,4 +30,5 @@ open class ClosureTapGesture: UITapGestureRecognizer {
     @objc open func didTap (_ tap: UITapGestureRecognizer) {
         tapAction? (tap)
     }
+    
 }
