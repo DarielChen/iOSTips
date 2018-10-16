@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		153E37802175BC8E00D7634D /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153E377F2175BC8E00D7634D /* Collection+Extension.swift */; };
 		156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156787B0215DC79600AE6F31 /* AppDelegate.swift */; };
 		156787B3215DC79600AE6F31 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156787B2215DC79600AE6F31 /* ViewController.swift */; };
 		156787B6215DC79600AE6F31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 156787B4215DC79600AE6F31 /* Main.storyboard */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		153E377F2175BC8E00D7634D /* Collection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
 		156787AD215DC79600AE6F31 /* SwiftTipsDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftTipsDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		156787B0215DC79600AE6F31 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		156787B2215DC79600AE6F31 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				156B4FC6216CE9CF0096E543 /* UIWindow+Extension.swift */,
 				156B4FC8216CEC140096E543 /* UIColor+Extension.swift */,
 				15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */,
+				153E377F2175BC8E00D7634D /* Collection+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -183,6 +186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				153E37802175BC8E00D7634D /* Collection+Extension.swift in Sources */,
 				158FCD85217093530067A406 /* DCTool.swift in Sources */,
 				156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */,
 				156787B3215DC79600AE6F31 /* ViewController.swift in Sources */,

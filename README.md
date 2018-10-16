@@ -497,6 +497,21 @@ extension Sequence where Element: Numeric {
 print([1,2,3,4].sum) // 10
 ```
 
+#### 6. 为某些高阶函数的限定条件
+
+```swift
+let names = ["Joan", "John", "Jack"]
+let firstJname = names.first(where: { (name) -> Bool in
+    return name.first == "J"
+})
+// "Joan"
+let fruits = ["Banana", "Apple", "Kiwi"]
+let containsBanana = fruits.contains(where: { (fruit) in
+    return fruit == "Banana"
+})
+// true
+```
+
 参考: [Swift where 关键字](https://www.jianshu.com/p/1546594b856b)  
 
 
