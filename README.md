@@ -1314,7 +1314,10 @@ btn.addAction { btn in
 ```
 
 <h2 id="15">15.自动检查控制器是否被销毁</h2>  
+
+
 检查内存泄漏除了使用`Instruments`,还有查看控制器`pop`或`dismiss`后是否被销毁,后者相对来说更方便一点.但老是盯着析构函数`deinit`看日志输出是否有点麻烦呢?
+
 
 `UIViewController`有提供两个不知名的属性: 
  
