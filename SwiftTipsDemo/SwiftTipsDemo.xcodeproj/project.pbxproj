@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		153E377E21758E1600D7634D /* ChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153E377D21758E1600D7634D /* ChildViewController.swift */; };
 		156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156787B0215DC79600AE6F31 /* AppDelegate.swift */; };
 		156787B3215DC79600AE6F31 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156787B2215DC79600AE6F31 /* ViewController.swift */; };
 		156787B6215DC79600AE6F31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 156787B4215DC79600AE6F31 /* Main.storyboard */; };
@@ -18,10 +19,12 @@
 		158FCD87217093640067A406 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD86217093640067A406 /* Observable.swift */; };
 		15940C4C217474A000E83DC4 /* ClosureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4B217474A000E83DC4 /* ClosureButton.swift */; };
 		15940C4E21747B5600E83DC4 /* ClosureTapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */; };
+		15940C5021748FAB00E83DC4 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */; };
 		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		153E377D21758E1600D7634D /* ChildViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildViewController.swift; sourceTree = "<group>"; };
 		156787AD215DC79600AE6F31 /* SwiftTipsDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftTipsDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		156787B0215DC79600AE6F31 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		156787B2215DC79600AE6F31 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -35,6 +38,7 @@
 		158FCD86217093640067A406 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		15940C4B217474A000E83DC4 /* ClosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureButton.swift; sourceTree = "<group>"; };
 		15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureTapGesture.swift; sourceTree = "<group>"; };
+		15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -71,6 +75,7 @@
 				15E04D7221606D01007D1AF9 /* DCTool */,
 				156787B0215DC79600AE6F31 /* AppDelegate.swift */,
 				156787B2215DC79600AE6F31 /* ViewController.swift */,
+				153E377D21758E1600D7634D /* ChildViewController.swift */,
 				156787B4215DC79600AE6F31 /* Main.storyboard */,
 				156787B7215DC79800AE6F31 /* Assets.xcassets */,
 				156787B9215DC79800AE6F31 /* LaunchScreen.storyboard */,
@@ -96,6 +101,7 @@
 				15DE142B21639C6E008BD316 /* UIView+Extension.swift */,
 				156B4FC6216CE9CF0096E543 /* UIWindow+Extension.swift */,
 				156B4FC8216CEC140096E543 /* UIColor+Extension.swift */,
+				15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -180,6 +186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				153E377E21758E1600D7634D /* ChildViewController.swift in Sources */,
 				158FCD85217093530067A406 /* DCTool.swift in Sources */,
 				156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */,
 				156787B3215DC79600AE6F31 /* ViewController.swift in Sources */,
@@ -188,6 +195,7 @@
 				156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */,
 				156B4FC7216CE9CF0096E543 /* UIWindow+Extension.swift in Sources */,
 				15940C4E21747B5600E83DC4 /* ClosureTapGesture.swift in Sources */,
+				15940C5021748FAB00E83DC4 /* UIViewController+Extension.swift in Sources */,
 				15940C4C217474A000E83DC4 /* ClosureButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

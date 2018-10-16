@@ -18,7 +18,8 @@
 [11.华丽的TableView刷新动效](#11)  
 [12.实现一个不基于Runtime的KVO](#12)  
 [13.实现多重代理](#13)  
-[14.用闭包实现手势监听和按钮点击事件](#14)
+[14.用闭包实现手势监听和按钮点击事件](#14)  
+[15.自动检查控制器是否被销毁](#15)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1312,5 +1313,48 @@ btn.addAction { btn in
 }
 ```
 
+<h2 id="15">15.自动检查控制器是否被销毁</h2>  
+检查内存泄漏除了使用`Instruments`,还有查看控制器`pop`或`dismiss`后是否被销毁,后者相对来说更方便一点.但老是盯着析构函数`deinit`看日志输出是否有点麻烦呢?
+
+`UIViewController`有提供两个不知名的属性: 
+ 
+ 1. `isBeingDismissed`: 当modal出来的控制器被`dismiss`后的值为`true`.  
+ 2.  `isMovingFromParent`: 在控制器的堆栈中,如果当前控制器从父控制器中移除,值会变成`true`.
 
 
+如果这两个属性都为`true`,表明控制器马上要被销毁了,但这是由ARC去做内存管理,我们并不知道多久之后被销毁,简单起见就设个2秒吧.
+
+```swift
+extension UIViewController {
+    
+    public func dch_checkDeallocation(afterDelay delay: TimeInterval = 2.0) {
+        let rootParentViewController = dch_rootParentViewController
+        
+        if isMovingFromParent || rootParentViewController.isBeingDismissed {
+            let disappearanceSource: String = isMovingFromParent ? "removed from its parent" : "dismissed"
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: { [weak self] in
+                if let VC = self {
+                    assert(self == nil, "\(VC.description) not deallocated after being \(disappearanceSource)")
+                }
+            })
+        }
+    }
+    private var dch_rootParentViewController: UIViewController {
+        var root = self
+        while let parent = root.parent {
+            root = parent
+        }
+        return root
+    }
+}
+```
+我们把这个方法添加到`viewDidDisappear(_:)`中
+
+```swift
+override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    
+    dch_checkDeallocation()
+}
+```
+如果发生循环引用,控制就不会被销毁,会触发`assert`报错.
