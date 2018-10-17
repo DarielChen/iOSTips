@@ -20,7 +20,9 @@
 [13.实现多重代理](#13)  
 [14.用闭包实现手势监听和按钮点击事件](#14)  
 [15.自动检查控制器是否被销毁](#15)  
-[16.向控制器中注入代码](#16)
+[16.向控制器中注入代码](#16)  
+[17.给Extension添加存储属性](#17)
+
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1439,4 +1441,28 @@ class ViewControllerInjector {
 }
 ```
 
-代码注入可以在不修改原有代码的基础上自定义自己所要的.相比继承,代码的可重用性会高一点,侵入性会小一点.  
+代码注入可以在不修改原有代码的基础上自定义自己所要的.相比继承,代码的可重用性会高一点,侵入性会小一点. 
+
+
+<h2 id="17">17.给Extension添加存储属性</h2>  
+我们都知道`Extension`中可以添加计算属性,但不能添加存储属性.  
+
+对 我们可以使用`runtime`  
+
+```swift
+private var nameKey: Void?
+
+extension UIView {
+    
+    // 给UIView添加一个name属性
+    var name: String? {
+        get {
+            return objc_getAssociatedObject(self, &nameKey) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &nameKey, newValue,. OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+}
+```
+
