@@ -13,6 +13,7 @@
 		156787B6215DC79600AE6F31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 156787B4215DC79600AE6F31 /* Main.storyboard */; };
 		156787B8215DC79800AE6F31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 156787B7215DC79800AE6F31 /* Assets.xcassets */; };
 		156787BB215DC79800AE6F31 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 156787B9215DC79800AE6F31 /* LaunchScreen.storyboard */; };
+		156936762176CAC4004F8A24 /* ViewControllerInjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156936752176CAC4004F8A24 /* ViewControllerInjector.swift */; };
 		156B4FC7216CE9CF0096E543 /* UIWindow+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B4FC6216CE9CF0096E543 /* UIWindow+Extension.swift */; };
 		156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B4FC8216CEC140096E543 /* UIColor+Extension.swift */; };
 		158FCD85217093530067A406 /* DCTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD84217093530067A406 /* DCTool.swift */; };
@@ -32,6 +33,7 @@
 		156787B7215DC79800AE6F31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		156787BA215DC79800AE6F31 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		156787BC215DC79800AE6F31 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		156936752176CAC4004F8A24 /* ViewControllerInjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerInjector.swift; sourceTree = "<group>"; };
 		156B4FC6216CE9CF0096E543 /* UIWindow+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extension.swift"; sourceTree = "<group>"; };
 		156B4FC8216CEC140096E543 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		158FCD84217093530067A406 /* DCTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCTool.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				158FCD86217093640067A406 /* Observable.swift */,
 				15940C4B217474A000E83DC4 /* ClosureButton.swift */,
 				15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */,
+				156936752176CAC4004F8A24 /* ViewControllerInjector.swift */,
 			);
 			path = DCTool;
 			sourceTree = "<group>";
@@ -188,6 +191,7 @@
 			files = (
 				153E37802175BC8E00D7634D /* Collection+Extension.swift in Sources */,
 				158FCD85217093530067A406 /* DCTool.swift in Sources */,
+				156936762176CAC4004F8A24 /* ViewControllerInjector.swift in Sources */,
 				156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */,
 				156787B3215DC79600AE6F31 /* ViewController.swift in Sources */,
 				158FCD87217093640067A406 /* Observable.swift in Sources */,

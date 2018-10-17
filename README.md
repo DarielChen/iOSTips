@@ -20,6 +20,7 @@
 [13.实现多重代理](#13)  
 [14.用闭包实现手势监听和按钮点击事件](#14)  
 [15.自动检查控制器是否被销毁](#15)  
+[16.向控制器中注入代码](#16)
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1376,3 +1377,66 @@ override func viewDidDisappear(_ animated: Bool) {
 }
 ```
 如果发生循环引用,控制就不会被销毁,会触发`assert`报错.
+
+
+<h2 id="16">16.向控制器中注入代码</h2>  
+
+使用场景: 在某些控制器的`viewDidLoad`方法中,我们需要添加一段代码,用于统计某个页面的打开次数.
+
+最常用的解决方案:   
+在父类或者`extension`中定义一个方法,然后在需要做统计的控制器的`viewDidLoad`方法中调用刚刚定义好的方法.
+
+或者还可以使用代码注入.
+#### 1. 代码注入的使用
+
+
+```swift
+ViewControllerInjector.inject(into: [ViewController.self], selector: #selector(UIViewController.viewDidLoad)) {
+
+	// $0 为ViewController对象            
+	// 统计代码...
+}
+```
+
+#### 2.代码注入的实现
+
+swift虽然是门静态语言,但依然支持OC的`runtime`.可以允许我们在静态类型中使用动态代码.代码注入就是通过`runtime`的交换方法实现的.
+
+```swift
+class ViewControllerInjector {
+    
+    typealias methodRef = @convention(c)(UIViewController, Selector) -> Void
+    
+    static func inject(into supportedClasses: [UIViewController.Type], selector: Selector, injection: @escaping (UIViewController) -> Void) {
+        
+        guard let originalMethod = class_getInstanceMethod(UIViewController.self, selector) else {
+            fatalError("\(selector) must be implemented")
+        }
+        
+        var originalIMP: IMP? = nil
+        
+        let swizzledViewDidLoadBlock: @convention(block) (UIViewController) -> Void = { receiver in
+            if let originalIMP = originalIMP {
+                let castedIMP = unsafeBitCast(originalIMP, to: methodRef.self)
+                castedIMP(receiver, selector)
+            }
+            
+            if ViewControllerInjector.canInject(to: receiver, supportedClasses: supportedClasses) {
+                injection(receiver)
+            }
+        }
+        
+        let swizzledIMP = imp_implementationWithBlock(unsafeBitCast(swizzledViewDidLoadBlock, to: AnyObject.self))
+        originalIMP = method_setImplementation(originalMethod, swizzledIMP)
+    }
+    
+    
+    private static func canInject(to receiver: Any, supportedClasses: [UIViewController.Type]) -> Bool {
+        let supportedClassesIDs = supportedClasses.map { ObjectIdentifier($0) }
+        let receiverType = type(of: receiver)
+        return supportedClassesIDs.contains(ObjectIdentifier(receiverType))
+    }
+}
+```
+
+代码注入可以在不修改原有代码的基础上自定义自己所要的.相比继承,代码的可重用性会高一点,侵入性会小一点.  
