@@ -37,17 +37,3 @@ extension UIView {
         isUserInteractionEnabled = true
     }
 }
-
-private var nameKey: Void?
-
-extension UIView {
-    
-    var name: String? {
-        get {
-            return objc_getAssociatedObject(self, &nameKey) as? String
-        }
-        set {
-            objc_setAssociatedObject(self, &nameKey, newValue,. OBJC_ASSOCIATION_COPY_NONATOMIC)
-        }
-    }
-}
