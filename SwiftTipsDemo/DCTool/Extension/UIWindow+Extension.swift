@@ -9,7 +9,6 @@
 import UIKit
 
 public extension UIWindow {
-    
     /// 刷新所有的子控件
     func reload() {
         subviews.forEach { view in

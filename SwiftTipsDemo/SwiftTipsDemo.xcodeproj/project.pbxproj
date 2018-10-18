@@ -18,11 +18,10 @@
 		156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B4FC8216CEC140096E543 /* UIColor+Extension.swift */; };
 		158FCD85217093530067A406 /* DCTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD84217093530067A406 /* DCTool.swift */; };
 		158FCD87217093640067A406 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD86217093640067A406 /* Observable.swift */; };
-		15940C4C217474A000E83DC4 /* ClosureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4B217474A000E83DC4 /* ClosureButton.swift */; };
-		15940C4E21747B5600E83DC4 /* ClosureTapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */; };
 		15940C5021748FAB00E83DC4 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */; };
 		15B9519B217816180059D579 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B9519A217816180059D579 /* UIButton+Extension.swift */; };
 		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
+		4FECA9FC4F459B74ADBEE5CA /* Pods_SwiftTipsDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3A354119B6DE1E2B772349 /* Pods_SwiftTipsDemo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,11 +38,12 @@
 		156B4FC8216CEC140096E543 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		158FCD84217093530067A406 /* DCTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCTool.swift; sourceTree = "<group>"; };
 		158FCD86217093640067A406 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
-		15940C4B217474A000E83DC4 /* ClosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureButton.swift; sourceTree = "<group>"; };
-		15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureTapGesture.swift; sourceTree = "<group>"; };
 		15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		15B9519A217816180059D579 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
 		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		1651656BA8381E35829DD90E /* Pods-SwiftTipsDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftTipsDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SwiftTipsDemo/Pods-SwiftTipsDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		5859E189745EF772CC73CF55 /* Pods-SwiftTipsDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftTipsDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-SwiftTipsDemo/Pods-SwiftTipsDemo.release.xcconfig"; sourceTree = "<group>"; };
+		7C3A354119B6DE1E2B772349 /* Pods_SwiftTipsDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftTipsDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FECA9FC4F459B74ADBEE5CA /* Pods_SwiftTipsDemo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +63,8 @@
 			children = (
 				156787AF215DC79600AE6F31 /* SwiftTipsDemo */,
 				156787AE215DC79600AE6F31 /* Products */,
+				4BC3C8E9F1984D4D79750638 /* Pods */,
+				E990792FF2A69E19E7CD4BC2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,8 +95,6 @@
 			children = (
 				158FCD84217093530067A406 /* DCTool.swift */,
 				158FCD86217093640067A406 /* Observable.swift */,
-				15940C4B217474A000E83DC4 /* ClosureButton.swift */,
-				15940C4D21747B5600E83DC4 /* ClosureTapGesture.swift */,
 				156936752176CAC4004F8A24 /* ViewControllerInjector.swift */,
 			);
 			path = DCTool;
@@ -121,6 +122,23 @@
 			path = DCTool;
 			sourceTree = SOURCE_ROOT;
 		};
+		4BC3C8E9F1984D4D79750638 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1651656BA8381E35829DD90E /* Pods-SwiftTipsDemo.debug.xcconfig */,
+				5859E189745EF772CC73CF55 /* Pods-SwiftTipsDemo.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E990792FF2A69E19E7CD4BC2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7C3A354119B6DE1E2B772349 /* Pods_SwiftTipsDemo.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -128,9 +146,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 156787BF215DC79800AE6F31 /* Build configuration list for PBXNativeTarget "SwiftTipsDemo" */;
 			buildPhases = (
+				257A753C667403E3AAD8008E /* [CP] Check Pods Manifest.lock */,
 				156787A9215DC79600AE6F31 /* Sources */,
 				156787AA215DC79600AE6F31 /* Frameworks */,
 				156787AB215DC79600AE6F31 /* Resources */,
+				15B9519C217864730059D579 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -187,6 +207,44 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		15B9519C217864730059D579 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+		257A753C667403E3AAD8008E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SwiftTipsDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		156787A9215DC79600AE6F31 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -202,9 +260,7 @@
 				15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */,
 				156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */,
 				156B4FC7216CE9CF0096E543 /* UIWindow+Extension.swift in Sources */,
-				15940C4E21747B5600E83DC4 /* ClosureTapGesture.swift in Sources */,
 				15940C5021748FAB00E83DC4 /* UIViewController+Extension.swift in Sources */,
-				15940C4C217474A000E83DC4 /* ClosureButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +404,7 @@
 		};
 		156787C0215DC79800AE6F31 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1651656BA8381E35829DD90E /* Pods-SwiftTipsDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -366,6 +423,7 @@
 		};
 		156787C1215DC79800AE6F31 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5859E189745EF772CC73CF55 /* Pods-SwiftTipsDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

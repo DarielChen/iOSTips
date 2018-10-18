@@ -1209,7 +1209,7 @@ master.orderToEat()
 通常按钮的点击事件我们需要这样写:
 
 ```swift
-btn.addTarget(self, action:#selector(actionTouch), for: .touchUpInside)
+btn.addTarget(self, action: #selector(actionTouch), for: .touchUpInside)
 
 @objc func actionTouch() {
     print("按钮点击事件")
@@ -1234,7 +1234,7 @@ extension UIButton {
             return objc_getAssociatedObject(self, &actionDictKey) as? Dictionary<String, ButtonAction>
         }
         set {
-            objc_setAssociatedObject(self, &actionDictKey, newValue,. OBJC_ASSOCIATION_COPY_NONATOMIC)
+            objc_setAssociatedObject(self, &actionDictKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         }
     }
     
@@ -1446,7 +1446,7 @@ extension UIView {
             return objc_getAssociatedObject(self, &nameKey) as? String
         }
         set {
-            objc_setAssociatedObject(self, &nameKey, newValue,. OBJC_ASSOCIATION_COPY_NONATOMIC)
+            objc_setAssociatedObject(self, &nameKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
         }
     }
 }

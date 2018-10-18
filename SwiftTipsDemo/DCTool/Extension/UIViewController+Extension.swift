@@ -9,21 +9,18 @@
 import UIKit
 
 extension UIViewController {
-    
     public func dch_checkDeallocation(afterDelay delay: TimeInterval = 2.0) {
-        let rootParentViewController = dch_rootParentViewController
-        
+        let rootParentViewController = dchRootParentViewController
         if isMovingFromParent || rootParentViewController.isBeingDismissed {
             let disappearanceSource: String = isMovingFromParent ? "removed from its parent" : "dismissed"
             DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: { [weak self] in
-                if let VC = self {
-                    assert(self == nil, "\(VC.description) not deallocated after being \(disappearanceSource)")
+                if let controller = self {
+                    assert(self == nil, "\(controller.description) not deallocated after being \(disappearanceSource)")
                 }
             })
         }
     }
-    
-    private var dch_rootParentViewController: UIViewController {
+    private var dchRootParentViewController: UIViewController {
         var root = self
         while let parent = root.parent {
             root = parent

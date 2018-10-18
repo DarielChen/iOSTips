@@ -9,13 +9,10 @@
 import UIKit
 
 extension UIColor {
-    
     class var darkNight: UIColor {
         return UIColor(2, 21, 51)
     }
-    
-    public convenience init(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ a: CGFloat = 1) {
-        self.init(red: r / 255.0, green: g / 255.0, blue: b / 255.0, alpha: a)
+    public convenience init(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat, _ alpha: CGFloat = 1) {
+        self.init(red: red / 255.0, green: green / 255.0, blue: blue / 255.0, alpha: alpha)
     }
 }
-

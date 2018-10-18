@@ -7,8 +7,6 @@
 //
 
 import Foundation
-
-
 /// 判断多个值中是否包含某一个值
 ///
 /// - Parameter values: 需要比较的值,可以是多个
@@ -24,15 +22,11 @@ func any<T: Equatable>(of values: T...) -> EquatableValueSequence<T> {
 }
 
 struct EquatableValueSequence<T: Equatable> {
-    static func ==(lhs: EquatableValueSequence<T>, rhs: T) -> Bool {
+    static func == (lhs: EquatableValueSequence<T>, rhs: T) -> Bool {
         return lhs.values.contains(rhs)
     }
-    
-    static func ==(lhs: T, rhs: EquatableValueSequence<T>) -> Bool {
+    static func == (lhs: T, rhs: EquatableValueSequence<T>) -> Bool {
         return rhs == lhs
     }
-    
     fileprivate let values: [T]
 }
-
-
