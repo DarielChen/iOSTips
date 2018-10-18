@@ -17,12 +17,12 @@
 [10.swift中多继承的实现](#10)  
 [11.华丽的TableView刷新动效](#11)  
 [12.实现一个不基于Runtime的KVO](#12)  
-[13.实现多重代理](#13)  
-[14.用闭包实现按钮的链式点击事件](#14)  
-[15.自动检查控制器是否被销毁](#15)  
-[16.向控制器中注入代码](#16)  
-[17.给Extension添加存储属性](#17)
-
+[13.实现多重代理](#13)   
+[14.自动检查控制器是否被销毁](#14)  
+[15.向控制器中注入代码](#15)  
+[16.给Extension添加存储属性](#16)  
+[17.用闭包实现按钮的链式点击事件](#17)  
+[18.用闭包实现手势的链式监听事件](#18)
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1202,7 +1202,142 @@ master.orderToEat()
 2. `UISearchBar`的回调,当我们需要在多个地方获取数据的时候,类似的还有`UINavigationController`的回调等.
 
 
-<h2 id="14">14.用闭包实现按钮的链式点击事件</h2>  
+<h2 id="14">14.自动检查控制器是否被销毁</h2>  
+
+
+检查内存泄漏除了使用`Instruments`,还有查看控制器`pop`或`dismiss`后是否被销毁,后者相对来说更方便一点.但老是盯着析构函数`deinit`看日志输出是否有点麻烦呢?
+
+
+`UIViewController`有提供两个不知名的属性: 
+ 
+ 1. `isBeingDismissed`: 当modal出来的控制器被`dismiss`后的值为`true`.  
+ 2.  `isMovingFromParent`: 在控制器的堆栈中,如果当前控制器从父控制器中移除,值会变成`true`.
+
+
+如果这两个属性都为`true`,表明控制器马上要被销毁了,但这是由ARC去做内存管理,我们并不知道多久之后被销毁,简单起见就设个2秒吧.
+
+```swift
+extension UIViewController {
+    
+    public func dch_checkDeallocation(afterDelay delay: TimeInterval = 2.0) {
+        let rootParentViewController = dch_rootParentViewController
+        
+        if isMovingFromParent || rootParentViewController.isBeingDismissed {
+            let disappearanceSource: String = isMovingFromParent ? "removed from its parent" : "dismissed"
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: { [weak self] in
+                if let VC = self {
+                    assert(self == nil, "\(VC.description) not deallocated after being \(disappearanceSource)")
+                }
+            })
+        }
+    }
+    private var dch_rootParentViewController: UIViewController {
+        var root = self
+        while let parent = root.parent {
+            root = parent
+        }
+        return root
+    }
+}
+```
+我们把这个方法添加到`viewDidDisappear(_:)`中
+
+```swift
+override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    
+    dch_checkDeallocation()
+}
+```
+如果发生循环引用,控制就不会被销毁,会触发`assert`报错.
+
+
+<h2 id="15">15.向控制器中注入代码</h2>  
+
+使用场景: 在某些控制器的`viewDidLoad`方法中,我们需要添加一段代码,用于统计某个页面的打开次数.  
+
+最常用的解决方案:   
+在父类或者`extension`中定义一个方法,然后在需要做统计的控制器的`viewDidLoad`方法中调用刚刚定义好的方法.
+
+或者还可以使用代码注入.
+#### 1. 代码注入的使用
+
+
+```swift
+ViewControllerInjector.inject(into: [ViewController.self], selector: #selector(UIViewController.viewDidLoad)) {
+
+	// $0 为ViewController对象            
+	// 统计代码...
+}
+```
+
+#### 2.代码注入的实现
+
+swift虽然是门静态语言,但依然支持OC的`runtime`.可以允许我们在静态类型中使用动态代码.代码注入就是通过`runtime`的交换方法实现的.
+
+```swift
+class ViewControllerInjector {
+    
+    typealias methodRef = @convention(c)(UIViewController, Selector) -> Void
+    
+    static func inject(into supportedClasses: [UIViewController.Type], selector: Selector, injection: @escaping (UIViewController) -> Void) {
+        
+        guard let originalMethod = class_getInstanceMethod(UIViewController.self, selector) else {
+            fatalError("\(selector) must be implemented")
+        }
+        
+        var originalIMP: IMP? = nil
+        
+        let swizzledViewDidLoadBlock: @convention(block) (UIViewController) -> Void = { receiver in
+            if let originalIMP = originalIMP {
+                let castedIMP = unsafeBitCast(originalIMP, to: methodRef.self)
+                castedIMP(receiver, selector)
+            }
+            
+            if ViewControllerInjector.canInject(to: receiver, supportedClasses: supportedClasses) {
+                injection(receiver)
+            }
+        }
+        
+        let swizzledIMP = imp_implementationWithBlock(unsafeBitCast(swizzledViewDidLoadBlock, to: AnyObject.self))
+        originalIMP = method_setImplementation(originalMethod, swizzledIMP)
+    }
+    
+    
+    private static func canInject(to receiver: Any, supportedClasses: [UIViewController.Type]) -> Bool {
+        let supportedClassesIDs = supportedClasses.map { ObjectIdentifier($0) }
+        let receiverType = type(of: receiver)
+        return supportedClassesIDs.contains(ObjectIdentifier(receiverType))
+    }
+}
+```
+代码注入可以在不修改原有代码的基础上自定义自己所要的.相比继承,代码的可重用性会高一点,侵入性会小一点. 
+
+
+
+<h2 id="16">16.给Extension添加存储属性</h2>  
+
+我们都知道`Extension`中可以添加计算属性,但不能添加存储属性.  
+
+对 我们可以使用`runtime`  
+
+```swift
+private var nameKey: Void?
+extension UIView {
+    // 给UIView添加一个name属性
+    var name: String? {
+        get {
+            return objc_getAssociatedObject(self, &nameKey) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &nameKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+}
+```
+
+
+<h2 id="17">17.用闭包实现按钮的链式点击事件</h2>  
 
 #### 1. 通常姿势
 
@@ -1218,7 +1353,6 @@ btn.addTarget(self, action: #selector(actionTouch), for: .touchUpInside)
 如果有多个点击事件,往往还要写多个方法,写多了有没有觉得有点烦,代码阅读起来还要上下跳转.
 
 #### 2. 使用闭包封装
-
 ##### 1. 实现  
 
 ```swift
@@ -1317,138 +1451,104 @@ extension UIButton {
 ```
 有没有觉得相比之前的会好一点呢?
 
-<h2 id="15">15.自动检查控制器是否被销毁</h2>  
 
 
-检查内存泄漏除了使用`Instruments`,还有查看控制器`pop`或`dismiss`后是否被销毁,后者相对来说更方便一点.但老是盯着析构函数`deinit`看日志输出是否有点麻烦呢?
+<h2 id="18">18.用闭包实现手势的链式监听事件</h2>  
+和tips17中的按钮点击事件类似,手势也可以封装成链式闭包回调.
 
-
-`UIViewController`有提供两个不知名的属性: 
- 
- 1. `isBeingDismissed`: 当modal出来的控制器被`dismiss`后的值为`true`.  
- 2.  `isMovingFromParent`: 在控制器的堆栈中,如果当前控制器从父控制器中移除,值会变成`true`.
-
-
-如果这两个属性都为`true`,表明控制器马上要被销毁了,但这是由ARC去做内存管理,我们并不知道多久之后被销毁,简单起见就设个2秒吧.
+#### 1. 使用
 
 ```swift
-extension UIViewController {
-    
-    public func dch_checkDeallocation(afterDelay delay: TimeInterval = 2.0) {
-        let rootParentViewController = dch_rootParentViewController
-        
-        if isMovingFromParent || rootParentViewController.isBeingDismissed {
-            let disappearanceSource: String = isMovingFromParent ? "removed from its parent" : "dismissed"
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: { [weak self] in
-                if let VC = self {
-                    assert(self == nil, "\(VC.description) not deallocated after being \(disappearanceSource)")
-                }
-            })
-        }
+view
+    .addTapGesture { tap in
+        print(tap)
+    }.addPinchGesture { pinch in
+        print(pinch)
     }
-    private var dch_rootParentViewController: UIViewController {
-        var root = self
-        while let parent = root.parent {
-            root = parent
-        }
-        return root
-    }
-}
-```
-我们把这个方法添加到`viewDidDisappear(_:)`中
-
-```swift
-override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
-    
-    dch_checkDeallocation()
-}
-```
-如果发生循环引用,控制就不会被销毁,会触发`assert`报错.
-
-
-<h2 id="16">16.向控制器中注入代码</h2>  
-
-使用场景: 在某些控制器的`viewDidLoad`方法中,我们需要添加一段代码,用于统计某个页面的打开次数.
-
-最常用的解决方案:   
-在父类或者`extension`中定义一个方法,然后在需要做统计的控制器的`viewDidLoad`方法中调用刚刚定义好的方法.
-
-或者还可以使用代码注入.
-#### 1. 代码注入的使用
-
-
-```swift
-ViewControllerInjector.inject(into: [ViewController.self], selector: #selector(UIViewController.viewDidLoad)) {
-
-	// $0 为ViewController对象            
-	// 统计代码...
-}
 ```
 
-#### 2.代码注入的实现
-
-swift虽然是门静态语言,但依然支持OC的`runtime`.可以允许我们在静态类型中使用动态代码.代码注入就是通过`runtime`的交换方法实现的.
+#### 2. 实现过程
 
 ```swift
-class ViewControllerInjector {
-    
-    typealias methodRef = @convention(c)(UIViewController, Selector) -> Void
-    
-    static func inject(into supportedClasses: [UIViewController.Type], selector: Selector, injection: @escaping (UIViewController) -> Void) {
-        
-        guard let originalMethod = class_getInstanceMethod(UIViewController.self, selector) else {
-            fatalError("\(selector) must be implemented")
-        }
-        
-        var originalIMP: IMP? = nil
-        
-        let swizzledViewDidLoadBlock: @convention(block) (UIViewController) -> Void = { receiver in
-            if let originalIMP = originalIMP {
-                let castedIMP = unsafeBitCast(originalIMP, to: methodRef.self)
-                castedIMP(receiver, selector)
-            }
-            
-            if ViewControllerInjector.canInject(to: receiver, supportedClasses: supportedClasses) {
-                injection(receiver)
-            }
-        }
-        
-        let swizzledIMP = imp_implementationWithBlock(unsafeBitCast(swizzledViewDidLoadBlock, to: AnyObject.self))
-        originalIMP = method_setImplementation(originalMethod, swizzledIMP)
-    }
-    
-    
-    private static func canInject(to receiver: Any, supportedClasses: [UIViewController.Type]) -> Bool {
-        let supportedClassesIDs = supportedClasses.map { ObjectIdentifier($0) }
-        let receiverType = type(of: receiver)
-        return supportedClassesIDs.contains(ObjectIdentifier(receiverType))
-    }
-}
-```
-
-代码注入可以在不修改原有代码的基础上自定义自己所要的.相比继承,代码的可重用性会高一点,侵入性会小一点. 
-
-
-<h2 id="17">17.给Extension添加存储属性</h2>  
-我们都知道`Extension`中可以添加计算属性,但不能添加存储属性.  
-
-对 我们可以使用`runtime`  
-
-```swift
-private var nameKey: Void?
+public typealias GestureClosures = (UIGestureRecognizer) -> Void
+private var gestureDictKey: Void?
 
 extension UIView {
-    
-    // 给UIView添加一个name属性
-    var name: String? {
+    private enum GestureType: String {
+        case tapGesture
+        case pinchGesture
+        case rotationGesture
+        case swipeGesture
+        case panGesture
+        case longPressGesture
+    }
+
+    // MARK: - 属性
+    private var gestureDict: [String: GestureClosures]? {
         get {
-            return objc_getAssociatedObject(self, &nameKey) as? String
+            return objc_getAssociatedObject(self, &gestureDictKey) as? [String: GestureClosures]
         }
         set {
-            objc_setAssociatedObject(self, &nameKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            objc_setAssociatedObject(self, &gestureDictKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+
+    // MARK: - API
+    /// 点击
+    @discardableResult
+    public func addTapGesture(_ gesture: @escaping GestureClosures) -> UIView {
+        addGesture(gesture: gesture, for: .tapGesture)
+        return self
+    }
+    /// 捏合
+    @discardableResult
+    public func addPinchGesture(_ gesture: @escaping GestureClosures) -> UIView {
+        addGesture(gesture: gesture, for: .pinchGesture)
+        return self
+    }
+   	 // ...省略相关手势
+   	 
+    // MARK: - 私有方法
+    private func addGesture(gesture: @escaping GestureClosures, for gestureType: GestureType) {
+        let gestureKey = String(gestureType.rawValue)
+        if var gestureDict = self.gestureDict {
+            gestureDict.updateValue(gesture, forKey: gestureKey)
+            self.gestureDict = gestureDict
+        } else {
+            self.gestureDict = [gestureKey: gesture]
+        }
+        isUserInteractionEnabled = true
+        switch gestureType {
+        case .tapGesture:
+            let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
+            addGestureRecognizer(tap)
+        case .pinchGesture:
+            let pinch = UIPinchGestureRecognizer(target: self, action: #selector(pinchGestureAction(_:)))
+            addGestureRecognizer(pinch)
+        default:
+            break
+        }
+    }
+    @objc private func tapGestureAction (_ tap: UITapGestureRecognizer) {
+        executeGestureAction(.tapGesture, gesture: tap)
+    }
+    @objc private func pinchGestureAction (_ pinch: UIPinchGestureRecognizer) {
+        executeGestureAction(.pinchGesture, gesture: pinch)
+    }
+   
+    private func executeGestureAction(_ gestureType: GestureType, gesture: UIGestureRecognizer) {
+        let gestureKey = String(gestureType.rawValue)
+        if let gestureDict = self.gestureDict, let gestureReg = gestureDict[gestureKey] {
+            gestureReg(gesture)
         }
     }
 }
+
 ```
+
+具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift)
+
+
+
+
 
