@@ -22,7 +22,8 @@
 [15.向控制器中注入代码](#15)  
 [16.给Extension添加存储属性](#16)  
 [17.用闭包实现按钮的链式点击事件](#17)  
-[18.用闭包实现手势的链式监听事件](#18)
+[18.用闭包实现手势的链式监听事件](#18)  
+[19.用闭包实现通知的监听事件](#19)
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1437,6 +1438,7 @@ extension UIButton {
 }
 
 ```
+
 ##### 2. 使用 
 
 ```swift
@@ -1449,8 +1451,12 @@ extension UIButton {
         print("addTouchDownAction")
     }
 ```
-有没有觉得相比之前的会好一点呢?
+##### 3. 实现原理
+利用`runtime`在按钮的`extension`中添加一个字典属性,`key`对应的是事件类型,`value`对应的是该事件类型所要执行的闭包.然后再添加按钮的监听事件,在响应方法中,根据事件类型找到并执行对应的闭包.
 
+链式调用就是不断返回自身.
+
+有没有觉得如果这样做代码写起来会简洁一点呢?
 
 
 <h2 id="18">18.用闭包实现手势的链式监听事件</h2>  
@@ -1549,6 +1555,72 @@ extension UIView {
 具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift)
 
 
+
+<h2 id="19">19.用闭包实现通知的监听事件</h2>  
+#### 1. 使用
+
+```swift
+// 通知监听
+self.observerNotification(.notifyName1) { notify in
+    print(notify.userInfo)
+}
+// 发出通知
+self.postNotification(.notifyName1, userInfo: ["infoKey": "info"])
+
+// 移除通知
+self.removeNotification(.notifyName1)
+```
+
+#### 2. 实现
+
+```swift
+public typealias NotificationClosures = (Notification) -> Void
+private var notificationActionKey: Void?
+
+// 用于存放通知名称
+public enum NotificationNameType: String {
+    case notifyName1
+    case notifyName2
+}
+
+extension NSObject {
+    private var notificationClosuresDict: [NSNotification.Name: NotificationClosures]? {
+        get {
+            return objc_getAssociatedObject(self, &notificationActionKey)
+                as? [NSNotification.Name: NotificationClosures]
+        }
+        set {
+            objc_setAssociatedObject(self, &notificationActionKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+    public func postNotification(_ name: NotificationNameType, userInfo: [AnyHashable: Any]?) {
+        NotificationCenter.default.post(name: NSNotification.Name(name.rawValue), object: self, userInfo: userInfo)
+    }
+    public func observerNotification(_ name: NotificationNameType, action: @escaping NotificationClosures) {
+        if var dict = notificationClosuresDict {
+            guard dict[NSNotification.Name(name.rawValue)] == nil else {
+                return
+            }
+            dict.updateValue(action, forKey: NSNotification.Name(name.rawValue))
+            self.notificationClosuresDict = dict
+        } else {
+            self.notificationClosuresDict = [NSNotification.Name(name.rawValue): action]
+        }
+        NotificationCenter.default.addObserver(self, selector: #selector(notificationAction),
+                                               name: NSNotification.Name(name.rawValue), object: nil)
+    }
+    public func removeNotification(_ name: NotificationNameType) {
+        NotificationCenter.default.removeObserver(self)
+        notificationClosuresDict?.removeValue(forKey: NSNotification.Name(name.rawValue))
+    }
+    @objc func notificationAction(notify: Notification) {
+        if let notificationClosures = notificationClosuresDict, let closures = notificationClosures[notify.name] {
+            closures(notify)
+        }
+    }
+}
+```
+具体实现过程和tips17、tips18类似.
 
 
 
