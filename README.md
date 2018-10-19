@@ -1460,6 +1460,7 @@ extension UIButton {
 
 
 <h2 id="18">18.用闭包实现手势的链式监听事件</h2>  
+
 和tips17中的按钮点击事件类似,手势也可以封装成链式闭包回调.
 
 #### 1. 使用
@@ -1549,14 +1550,12 @@ extension UIView {
         }
     }
 }
-
 ```
 
 具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift)
 
+<h2 id="19">19.用闭包实现通知的监听事件</h2>   
 
-
-<h2 id="19">19.用闭包实现通知的监听事件</h2>  
 #### 1. 使用
 
 ```swift
