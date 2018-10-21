@@ -23,7 +23,10 @@
 [16.给Extension添加存储属性](#16)  
 [17.用闭包实现按钮的链式点击事件](#17)  
 [18.用闭包实现手势的链式监听事件](#18)  
-[19.用闭包实现通知的监听事件](#19)
+[19.用闭包实现通知的监听事件](#19)  
+[20.使用命令模式给AppDelegate解耦](#20)
+
+
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1621,5 +1624,87 @@ extension NSObject {
 ```
 具体实现过程和tips17、tips18类似.
 
+
+<h2 id="20">20.使用命令模式给AppDelegate解耦</h2>  
+
+作为iOS整个项目的核心`App delegate`,随着项目的逐渐变大,会变得越来越臃肿,一不小心代码就过了千行.  
+
+大型项目的`App delegate`体积会大到什么程度呢?我们可以参考下国外2亿多月活的`Telegram`的 [App delegate](https://github.com/peter-iakovlev/Telegram/blob/public/Telegraph/TGAppDelegate.mm).是不是吓一跳,4千多行.看到这样的代码我一般都是直接点击左上角的x的.
+
+是时候该给`App delegate`解耦了,目标: 每个功能的配置或者初始化都分开,各自做各自的事情.`App delegate`要做到我只需要调用就好了.命令模式就正好满足这一点.
+
+> 命令模式: 发送方发送请求,然后接收方接受请求后执行,但发送方可能并不知道接受方是谁，执行的是什么操作,这样做的好处是发送方和接受方完全的松耦合，大大提高程序的灵活性.
+
+##### 1. 定义好协议,把相关初始化配置代码分类
+
+```swift
+protocol Command {
+    func execute()
+}
+
+struct InitializeThirdPartiesCommand: Command {
+    func execute() {
+    	// 第三方库初始化代码
+    }
+}
+
+struct InitialViewControllerCommand: Command {
+    let keyWindow: UIWindow
+    func execute() {
+		// 根控制器设置代码
+    }
+}
+
+struct InitializeAppearanceCommand: Command {
+    func execute() {
+        // 全局外观样式配置
+    }
+}
+
+struct RegisterToRemoteNotificationsCommand: Command {
+    func execute() {
+        // 远程推送配置        
+    }
+}
+
+```
+##### 2. 管理者
+
+```swift
+
+final class StartupCommandsBuilder {
+    private var window: UIWindow!
+    
+    func setKeyWindow(_ window: UIWindow) -> StartupCommandsBuilder {
+        self.window = window
+        return self
+    }
+    
+    func build() -> [Command] {
+        return [
+            InitializeThirdPartiesCommand(),
+            InitialViewControllerCommand(keyWindow: window),
+            InitializeAppearanceCommand(),
+            RegisterToRemoteNotificationsCommand()
+        ]
+    }
+}
+```
+
+##### 3. `App delegate`调用
+
+```swift
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        StartupCommandsBuilder()
+            .setKeyWindow(window!)
+            .build()
+            .forEach { $0.execute() }
+        
+        return true
+}
+```
+
+使用命令模式的好处是,如果要添加新的配置,设置完后只要加在`StartupCommandsBuilder`中就可以了.`App delegate`中不需要添加任何内容.
 
 
