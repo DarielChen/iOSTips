@@ -24,9 +24,8 @@
 [17.用闭包实现按钮的链式点击事件](#17)  
 [18.用闭包实现手势的链式监听事件](#18)  
 [19.用闭包实现通知的监听事件](#19)  
-[20.使用命令模式给AppDelegate解耦](#20)
-
-
+[20.使用命令模式给AppDelegate解耦](#20)  
+[21.常见的编译器诊断指令](#21)
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1644,14 +1643,14 @@ protocol Command {
 
 struct InitializeThirdPartiesCommand: Command {
     func execute() {
-    	// 第三方库初始化代码
+        // 第三方库初始化代码
     }
 }
 
 struct InitialViewControllerCommand: Command {
     let keyWindow: UIWindow
     func execute() {
-		// 根控制器设置代码
+        // 根控制器设置代码
     }
 }
 
@@ -1706,5 +1705,84 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ```
 
 使用命令模式的好处是,如果要添加新的配置,设置完后只要加在`StartupCommandsBuilder`中就可以了.`App delegate`中不需要添加任何内容.
+
+
+<h2 id="21">21.常见的编译器诊断指令</h2>  
+swift标准库提供了很多编译器诊断指令,用于在编译阶段提前处理好相关事情.
+
+下面列出了一些常见的编译器诊断指令:
+
+##### 1. 代码中警告错误标识: #warning和#error
+swift4.2中添加了这两个命令,再也不用在项目中自己配置错误和警告的命令了.  
+
+警告⚠️:
+
+```swift
+// Xcode会报一条黄色警告
+#warning("此处逻辑有问题,明天再说")
+
+// TODO
+#warning("TODO: Update this code for the new iOS 12 APIs")
+```
+错误❌:
+
+```swift
+// 手动设置一条错误
+#error("This framework requires UIKit!")
+```
+
+##### 2. #if - #endif 条件判断
+
+```swift
+#if !canImport(UIKit)
+#error("This framework requires UIKit!")
+#endif
+
+#if DEBUG
+#warning("TODO: Update this code for the new iOS 12 APIs")
+#endif        
+```
+
+##### 3. #file、#function、#line
+分别用于获取文件名,函数名称,当前所在行数,一般用于辅助日志输出.
+
+自定义Log
+
+```swift
+public struct dc {
+    
+    /// 自定义Log
+    ///
+    /// - Parameters:
+    ///   - message: 输出的内容
+    ///   - file: 默认
+    ///   - method: 默认
+    ///   - line: 默认
+    public static func log<T>(_ message: T, file: NSString = #file, method: String = #function, line: Int = #line) {
+        #if DEBUG
+        print("\(file.pathComponents.last!):\(method)[\(line)]: \(message)")
+        #endif
+    }
+}
+```
+
+##### 4. #available和@available
+
+一般用来判断当前代码块在某个版本及该版本以上是否可用.
+
+```swift
+if #available(iOS 8, *) {
+    // iOS 8 及其以上系统运行
+}
+
+guard #available(iOS 8, *) else {
+    return //iOS 8 以下系统就直接返回
+}
+
+@available(iOS 11.4, *)
+func myMethod() {
+    // do something
+}
+```
 
 
