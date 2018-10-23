@@ -25,7 +25,8 @@
 [18.用闭包实现手势的链式监听事件](#18)  
 [19.用闭包实现通知的监听事件](#19)  
 [20.使用命令模式给AppDelegate解耦](#20)  
-[21.常见的编译器诊断指令](#21)
+[21.常见的编译器诊断指令](#21)  
+[22.最后执行的defer代码块](#22)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -1785,4 +1786,78 @@ func myMethod() {
 }
 ```
 
+<h2 id="22">22.最后执行的defer代码块</h2>  
 
+`defer`这个关键字不是很常用,但有时还是很有用的.
+
+具体用法,简而言之就是,`defer`代码块会在函数的return前执行.
+
+```swift
+func printStringNumbers() {
+    defer { print("1") }
+    defer { print("2") }
+    defer { print("3") }
+    
+    print("4")
+}
+printStringNumbers() // 打印 4 3 2 1
+```
+
+下面列举几个常见的用途:
+
+##### 1. try-catch
+
+```swift
+func foo() throws {
+        
+	defer {
+	    print("two")
+	}
+	    
+	do {
+	    print("one")
+	    throw NSError()
+	    print("不会执行")
+	}
+	print("不会执行")
+}
+
+
+do {
+    try foo()
+} catch  {
+    print("three")
+}
+// 打印 one two three
+```
+`defer`可在函数throw之后被执行,而如果将代码添加到`throw NSError()`底部和`do{}`底部都不会被执行.
+
+##### 2. 文件操作
+
+```swift
+func writeFile() {
+    let file: FileHandle? = FileHandle(forReadingAtPath: filepath)
+    defer { file?.closeFile() }
+    
+    // 文件相关操作
+}
+```
+这样一方面可读性好一点,另一方面不会因为某个地方throw了一个错误而没有关闭资源文件了.
+
+##### 3. 避免忘记回调
+
+```swift
+func getData(completion: (_ result: Result<String>) -> Void) {
+    var result: Result<String>?
+
+    defer {
+        guard let result = result else {
+            fatalError("We should always end with a result")
+        }
+        completion(result)
+    }
+
+    // result的处理逻辑
+}
+```
+`defer`中可以做一些result的验证逻辑,这样不会和result的处理逻辑混淆,代码清晰.
