@@ -24,7 +24,7 @@
 [17.用闭包实现按钮的链式点击事件](#17)  
 [18.用闭包实现手势的链式监听事件](#18)  
 [19.用闭包实现通知的监听事件](#19)  
-[20.使用命令模式给AppDelegate解耦](#20)  
+[20.AppDelegate解耦](#20)  
 [21.常见的编译器诊断指令](#21)  
 [22.最后执行的defer代码块](#22)  
 
@@ -1625,13 +1625,16 @@ extension NSObject {
 具体实现过程和tips17、tips18类似.
 
 
-<h2 id="20">20.使用命令模式给AppDelegate解耦</h2>  
+<h2 id="20">20.AppDelegate解耦</h2>  
 
 作为iOS整个项目的核心`App delegate`,随着项目的逐渐变大,会变得越来越臃肿,一不小心代码就过了千行.  
 
-大型项目的`App delegate`体积会大到什么程度呢?我们可以参考下国外2亿多月活的`Telegram`的 [App delegate](https://github.com/peter-iakovlev/Telegram/blob/public/Telegraph/TGAppDelegate.mm).是不是吓一跳,4千多行.看到这样的代码我一般都是直接点击左上角的x的.
+大型项目的`App delegate`体积会大到什么程度呢?我们可以参考下国外2亿多月活的`Telegram`的 [App delegate](https://github.com/peter-iakovlev/Telegram/blob/public/Telegraph/TGAppDelegate.mm).是不是吓一跳,4千多行.看到这样的代码是不是很想点击左上角的x.
 
-是时候该给`App delegate`解耦了,目标: 每个功能的配置或者初始化都分开,各自做各自的事情.`App delegate`要做到我只需要调用就好了.命令模式就正好满足这一点.
+是时候该给`App delegate`解耦了,目标: 每个功能的配置或者初始化都分开,各自做各自的事情.`App delegate`要做到只需要调用就好了.
+
+
+#### 1.命令模式
 
 > 命令模式: 发送方发送请求,然后接收方接受请求后执行,但发送方可能并不知道接受方是谁，执行的是什么操作,这样做的好处是发送方和接受方完全的松耦合，大大提高程序的灵活性.
 
@@ -1707,6 +1710,143 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 使用命令模式的好处是,如果要添加新的配置,设置完后只要加在`StartupCommandsBuilder`中就可以了.`App delegate`中不需要添加任何内容.
 
+但这样做只能将`didFinishLaunchingWithOptions`中的代码解耦,`App delegate`中的其他方法怎样解耦呢?
+
+#### 2.组合模式
+
+> 组合模式: 可以将对象组合成树形结构来表现"整体/部分"层次结构. 组合后可以以一致的方法处理个别对象以及组合对象.
+
+这边我们给`App delegate`每个功能模块都设置一个子类,每个子类包含所有`App delegate`的方法.
+
+##### 1. 每个子模块实现各自的功能
+
+```swift
+// 推送
+class PushNotificationsAppDelegate: AppDelegateType {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        print("推送配置")
+        return true
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print("推送相关代码...")
+    }
+    
+    // 其余方法
+}
+
+// 外观样式
+class AppearanceAppDelegate: AppDelegateType {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        print("外观样式配置")
+        return true
+    }
+}
+
+
+// 控制器处理
+class ViewControllerAppDelegate: AppDelegateType {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        print("根控制器设置代码")
+        return true
+    }
+}
+
+
+// 第三方库
+class ThirdPartiesConfiguratorAppDelegate: AppDelegateType {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        print("第三方库初始化代码")
+        return true
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        print("ThirdPartiesConfiguratorAppDelegate - applicationDidEnterBackground")
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        print("ThirdPartiesConfiguratorAppDelegate - applicationDidBecomeActive")
+    }
+
+}
+
+```
+##### 2. 管理者
+
+```swift
+typealias AppDelegateType = UIResponder & UIApplicationDelegate
+
+class CompositeAppDelegate: AppDelegateType {
+    private let appDelegates: [AppDelegateType]
+
+    init(appDelegates: [AppDelegateType]) {
+        self.appDelegates = appDelegates
+    }
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        appDelegates.forEach { _ = $0.application?(application, didFinishLaunchingWithOptions: launchOptions) }
+        return true
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        appDelegates.forEach { _ = $0.application?(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken) }
+    }
+
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        appDelegates.forEach { _ = $0.applicationDidEnterBackground?(application)
+        }
+    }
+
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        appDelegates.forEach { _ = $0.applicationDidBecomeActive?(application)
+        }
+    }
+}
+```
+
+##### 3. `App delegate`调用
+
+```swift
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+    let appDelegate = AppDelegateFactory.makeDefault()
+
+    enum AppDelegateFactory {
+        static func makeDefault() -> AppDelegateType {
+            
+            return CompositeAppDelegate(appDelegates: [
+                PushNotificationsAppDelegate(),
+                AppearanceAppDelegate(),
+                ThirdPartiesConfiguratorAppDelegate(),
+                ViewControllerAppDelegate(),
+                ]
+            )
+        }
+    }
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+         _ = appDelegate.application?(application, didFinishLaunchingWithOptions: launchOptions)
+        return true
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        appDelegate.application?(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+    }
+
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        appDelegate.applicationDidBecomeActive?(application)
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        appDelegate.applicationDidEnterBackground?(application)
+    }
+}
+
+```
+`App delegate`解耦相比命令模式,使用组合模式可自定义程度会更高一点.
 
 <h2 id="21">21.常见的编译器诊断指令</h2>  
 swift标准库提供了很多编译器诊断指令,用于在编译阶段提前处理好相关事情.
