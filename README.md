@@ -27,6 +27,7 @@
 [20.AppDelegate解耦](#20)  
 [21.常见的编译器诊断指令](#21)  
 [22.最后执行的defer代码块](#22)  
+[23.定义全局常量](#23)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -2001,3 +2002,91 @@ func getData(completion: (_ result: Result<String>) -> Void) {
 }
 ```
 `defer`中可以做一些result的验证逻辑,这样不会和result的处理逻辑混淆,代码清晰.
+
+
+<h2 id="23">23.定义全局常量</h2>  
+作为整个项目中通用的全局常量为了方便管理最好集中定义在一个地方.
+
+下面介绍几种全局常量定义的姿势:
+
+##### 1. 使用结构体
+
+```swift
+public struct Screen {
+    static var width: CGFloat {
+        return UIScreen.main.bounds.size.width
+    }
+    static var height: CGFloat {
+        return UIScreen.main.bounds.size.height
+    }
+    static var statusBarHeight: CGFloat {
+        return UIApplication.shared.statusBarFrame.height
+    }
+}
+
+Screen.width  // 屏幕宽度
+Screen.height // 屏幕高度
+Screen.statusBarHeight // statusBar高度
+```
+
+好处是能比较直观的看出全局常量的定义逻辑,方便后面扩展.
+
+##### 2. 使用没有case的枚举
+
+正常情况下的`enum`都是与`case`搭配使用,如果使用了`case`就要实例化`enum`.其实也可以不写`case`.
+
+```swift
+public enum ConstantsEnum {
+     static let width: CGFloat = 100
+     static let height: CGFloat = 50
+}
+
+ConstantsEnum.width
+
+let instance = ConstantsEnum()
+// ERROR: 'ConstantsEnum' cannot be constructed because it has no accessible initializers
+```
+`ConstantsEnum`不可以实例化,会报错.
+
+相比`struct`,使用枚举定义常量可以避免不经意间实例化对象.
+
+##### 3. 使用extension
+使用`extension`几乎可以为任何类型扩展常量.
+
+例如,通知名称
+
+```swift
+public extension Notification.Name {
+    // 名称
+    static let customNotification = Notification.Name("customNotification")
+}
+
+NotificationCenter.default.post(name: .customNotification, object: nil)
+```
+
+增加自定义颜色
+
+```swift
+public extension UIColor {
+    class var myGolden: UIColor {
+        return UIColor(red: 1.000, green: 0.894, blue: 0.541, alpha: 0.900)
+    }
+}
+
+view.backgroundColor = .myGolden
+```
+
+增加double常量
+
+```swift
+public extension Double {
+    public static let kRectX = 30.0
+    public static let kRectY = 30.0
+    public static let kRectWidth = 30.0
+    public static let kRectHeight = 30.0
+}
+
+CGRect(x: .kRectX, y: .kRectY, width: .kRectWidth, height: .kRectHeight)
+```
+
+因为传入参数类型是确定的,我们可以把类型名省略,直接用点语法.
