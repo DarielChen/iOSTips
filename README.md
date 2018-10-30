@@ -28,6 +28,7 @@
 [21.常见的编译器诊断指令](#21)  
 [22.最后执行的defer代码块](#22)  
 [23.定义全局常量](#23)  
+[24.使用Codable协议解析JSON](#24)
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -2005,6 +2006,7 @@ func getData(completion: (_ result: Result<String>) -> Void) {
 
 
 <h2 id="23">23.定义全局常量</h2>  
+
 作为整个项目中通用的全局常量为了方便管理最好集中定义在一个地方.
 
 下面介绍几种全局常量定义的姿势:
@@ -2090,3 +2092,127 @@ CGRect(x: .kRectX, y: .kRectY, width: .kRectWidth, height: .kRectHeight)
 ```
 
 因为传入参数类型是确定的,我们可以把类型名省略,直接用点语法.
+
+
+<h2 id="24">24.使用Codable协议解析JSON</h2>  
+
+swift4.0推出的`Codable`协议用来解析JSON还是挺不错的.
+
+```swift
+public typealias Codable = Decodable & Encodable
+```
+`Codable`是`Decodable`和`Encodable`这两个协议的综合,只要遵守了`Codable `协议,编译器就能帮我们实现好一些细节,然后就可以做编码和解码操作了.
+
+```swift
+public struct Pet: Codable {
+    var name: String
+    var age: Int
+}
+
+
+ let json = """
+            [{
+                "name": "WangCai",
+                "age": 2,
+            },{
+                "name": "xiaoHei",
+                "age": 3,
+            }
+            ]
+            """.data(using: .utf8)!
+
+// JSON -> 模型
+let decoder = JSONDecoder()
+do {
+    // 对于数组可以使用[Pet].self
+    let dogs = try decoder.decode([Pet].self, from: json)
+    print(dogs)
+}catch {
+    print(error)
+}
+
+// 模型 -> 字典
+let encoder = JSONEncoder()
+do {
+    let data = try encoder.encode(Pet(name: "XiaoHei", age: 3))
+    let dog = try JSONSerialization.jsonObject(with: data, options: [])
+} catch {
+    print(error)
+}
+```
+当然了,现实开发中需要解析的JSON不会这么简单.
+
+```swift
+
+ let json = """
+            {
+                "aircraft": {
+                    "identification": "NA875",
+                    "color": "Blue/White"
+                },
+                "route": ["KTTD", "KHIO"],
+                "departure_time": {
+                    "proposed": 1540868946509,
+                    "actual": 1540869946509,
+                },
+                "flight_rules": "IFR",
+                "remarks": null
+            }
+            """.data(using: .utf8)!
+            
+public struct Aircraft: Codable {
+    public var identification: String
+    public var color: String
+}
+public enum FlightRules: String, Codable {
+    case visual = "VFR"
+    case instrument = "IFR"
+}
+public struct FlightPlan: Codable {
+    // 嵌套模型
+    public var aircraft: Aircraft
+    // 包含数组
+    public var route: [String]
+    // 日期处理
+    private var departureDates: [String: Date]
+    public var proposedDepartureDate: Date? {
+        return departureDates["proposed"]
+    }
+    public var actualDepartureDate: Date? {
+        return departureDates["actual"]
+    }
+    // 枚举处理
+    public var flightRules: FlightRules
+    // 空值处理
+    public var remarks: String?
+    
+    // 下划线key转驼峰命名
+    private enum CodingKeys: String, CodingKey {
+        case aircraft
+        case flightRules = "flight_rules"
+        case route
+        case departureDates = "departure_time"
+        case remarks
+    }
+}
+
+let decoder = JSONDecoder()
+// 解码时,日期格式是13位时间戳
+decoder.dateDecodingStrategy = .millisecondsSince1970
+        
+do {
+    let plan = try decoder.decode(FlightPlan.self, from: json)
+    
+    plan.aircraft.color // Blue/White
+    plan.aircraft.identification // NA875
+    plan.route // ["KTTD", "KHIO"]
+    plan.proposedDepartureDate // 2018-10-30 03:09:06 +0000
+    plan.actualDepartureDate // 2018-10-30 03:25:46 +0000
+    plan.flightRules // instrument
+    plan.remarks // 可选类型 空
+}catch {
+    print(error)
+}
+
+```
+
