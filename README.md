@@ -2098,7 +2098,15 @@ CGRect(x: .kRectX, y: .kRectY, width: .kRectWidth, height: .kRectHeight)
 
 swift4.0推出的`Codable`协议用来解析JSON还是挺不错的.
 
+##### 1. JSON、模型互相转化
+
 ```swift
+public protocol Decodable { 
+	public init(from decoder: Decoder) throws 
+}
+public protocol Encodable { 
+	public func encode(to encoder: Encoder) throws 
+} 
 public typealias Codable = Decodable & Encodable
 ```
 `Codable`是`Decodable`和`Encodable`这两个协议的综合,只要遵守了`Codable `协议,编译器就能帮我们实现好一些细节,然后就可以做编码和解码操作了.
@@ -2109,18 +2117,16 @@ public struct Pet: Codable {
     var age: Int
 }
 
-
- let json = """
-            [{
-                "name": "WangCai",
-                "age": 2,
-            },{
-                "name": "xiaoHei",
-                "age": 3,
-            }
-            ]
-            """.data(using: .utf8)!
-
+let json = """
+    [{
+        "name": "WangCai",
+        "age": 2,
+    },{
+        "name": "xiaoHei",
+        "age": 3,
+    }]
+    """.data(using: .utf8)!
+    
 // JSON -> 模型
 let decoder = JSONDecoder()
 do {
@@ -2130,36 +2136,76 @@ do {
 }catch {
     print(error)
 }
-
-// 模型 -> 字典
+    
+// 模型 -> JSON
 let encoder = JSONEncoder()
+encoder.outputFormatting = .prettyPrinted // 美化样式
 do {
     let data = try encoder.encode(Pet(name: "XiaoHei", age: 3))
-    let dog = try JSONSerialization.jsonObject(with: data, options: [])
+    print(String(data: data, encoding: .utf8)!)
+//      {
+//          "name" : "XiaoHei",
+//          "age" : 3
+//      }
 } catch {
     print(error)
 }
 ```
+
+##### 2. `Codable`做了哪些事情
+
+下面我们重写系统的方法.
+
+```swift
+init(name: String, age: Int) { 
+	self.name = name
+	self.age = age
+}
+// decoding 
+init(from decoder: Decoder) throws { 
+	let container = try decoder.container(keyedBy: CodingKeys.self) 	let name = try container.decode(String.self, forKey: .name) 
+	let age = try container.decode(Int.self, forKey: .age) 	self.init(name: name, age: age) 
+} 
+
+// encoding 
+func encode(to encoder: Encoder) throws {
+	var container = encoder.container(keyedBy: CodingKeys.self) 
+	try container.encode(name, forKey: .name) 
+	try container.encode(age, forKey: .age) 
+}
+
+enum CodingKeys: String, CodingKey {
+    case name
+    case age
+}
+```
+
+对于编码和解码的过程,我们都是创建一个容器,该容器有一个`keyedBy`的参数,用于指定属性和JSON中key两者间的映射的规则,因此这次我们传`CodingKeys`的类型过去,说明我们要使用该规则来映射.对于解码的过程,我们使用该容器来进行解码,指定要值的类型和获取哪一个key的值,同样的,编码的过程中,我们使用该容器来指定要编码的值和该值对应json中的key,看起来有点像`Dictionary`的用法.
+
+##### 3. `Codable`实际使用场景
+
 当然了,现实开发中需要解析的JSON不会这么简单.
 
 ```swift
 
- let json = """
-            {
-                "aircraft": {
-                    "identification": "NA875",
-                    "color": "Blue/White"
-                },
-                "route": ["KTTD", "KHIO"],
-                "departure_time": {
-                    "proposed": 1540868946509,
-                    "actual": 1540869946509,
-                },
-                "flight_rules": "IFR",
-                "remarks": null
-            }
-            """.data(using: .utf8)!
-            
+let json = """
+        {
+            "aircraft": {
+                "identification": "NA875",
+                "color": "Blue/White"
+            },
+            "route": ["KTTD", "KHIO"],
+            "departure_time": {
+                "proposed": 1540868946509,
+                "actual": 1540869946509,
+            },
+            "flight_rules": "IFR",
+            "remarks": null,
+            "price": "NaN",
+        }
+        """.data(using: .utf8)!
+
+
 public struct Aircraft: Codable {
     public var identification: String
     public var color: String
@@ -2174,32 +2220,39 @@ public struct FlightPlan: Codable {
     // 包含数组
     public var route: [String]
     // 日期处理
-    private var departureDates: [String: Date]
+    private var departureTime: [String: Date]
     public var proposedDepartureDate: Date? {
-        return departureDates["proposed"]
+        return departureTime["proposed"]
     }
     public var actualDepartureDate: Date? {
-        return departureDates["actual"]
+        return departureTime["actual"]
     }
     // 枚举处理
     public var flightRules: FlightRules
     // 空值处理
     public var remarks: String?
-    
+    // 特殊值处理
+    public var price: Float
     // 下划线key转驼峰命名
     private enum CodingKeys: String, CodingKey {
         case aircraft
         case flightRules = "flight_rules"
         case route
-        case departureDates = "departure_time"
+        case departureTime = "departure_time"
         case remarks
+        case price
     }
 }
 
+
 let decoder = JSONDecoder()
-// 解码时,日期格式是13位时间戳
+
+// 解码时,日期格式是13位时间戳 .base64:通过base64解码
 decoder.dateDecodingStrategy = .millisecondsSince1970
-        
+
+// 指定 infinity、-infinity、nan 三个特殊值的表示方式
+decoder.nonConformingFloatDecodingStrategy = .convertFromString(positiveInfinity: "+∞", negativeInfinity: "-∞", nan: "NaN")
+
 do {
     let plan = try decoder.decode(FlightPlan.self, from: json)
     
@@ -2210,9 +2263,16 @@ do {
     plan.actualDepartureDate // 2018-10-30 03:25:46 +0000
     plan.flightRules // instrument
     plan.remarks // 可选类型 空
+    plan.price // nan
+    
 }catch {
     print(error)
 }
 
 ```
+
+swift4.1中有个属性可以自动将key转化为驼峰命名:
+`decoder.keyDecodingStrategy = .convertFromSnakeCase`,如果`CodingKeys`只是用来转成驼峰命名的话,设置好这个属性后就可以不用写`CodingKeys`这个枚举了.
+
+
 
