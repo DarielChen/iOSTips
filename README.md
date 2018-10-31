@@ -2157,9 +2157,9 @@ do {
 下面我们重写系统的方法.
 
 ```swift
-init(name: String, age: Int) { 
-	self.name = name
-	self.age = age
+init(name: String, age: Int) {  
+    self.name = name  
+    self.age = age
 }
 
 // decoding 
