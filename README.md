@@ -2161,21 +2161,24 @@ init(name: String, age: Int) {
 	self.name = name
 	self.age = age
 }
+
 // decoding 
 init(from decoder: Decoder) throws { 
-	let container = try decoder.container(keyedBy: CodingKeys.self) 	let name = try container.decode(String.self, forKey: .name) 
-	let age = try container.decode(Int.self, forKey: .age) 	self.init(name: name, age: age) 
+    let container = try decoder.container(keyedBy: CodingKeys.self)  
+    let name = try container.decode(String.self, forKey: .name)  
+    let age = try container.decode(Int.self, forKey: .age)  
+    self.init(name: name, age: age) 
 } 
 
 // encoding 
-func encode(to encoder: Encoder) throws {
-	var container = encoder.container(keyedBy: CodingKeys.self) 
-	try container.encode(name, forKey: .name) 
-	try container.encode(age, forKey: .age) 
+func encode(to encoder: Encoder) throws {  
+    var container = encoder.container(keyedBy: CodingKeys.self)  
+    try container.encode(name, forKey: .name)  
+    try container.encode(age, forKey: .age) 
 }
 
-enum CodingKeys: String, CodingKey {
-    case name
+enum CodingKeys: String, CodingKey {  
+    case name  
     case age
 }
 ```
