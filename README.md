@@ -28,8 +28,8 @@
 [21.常见的编译器诊断指令](#21)  
 [22.最后执行的defer代码块](#22)  
 [23.定义全局常量](#23)  
-[24.使用Codable协议解析JSON](#24)
-
+[24.使用Codable协议解析JSON](#24)  
+[25.dispatch_once替代方案](#25)  
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -2278,4 +2278,42 @@ swift4.1中有个属性可以自动将key转化为驼峰命名:
 `decoder.keyDecodingStrategy = .convertFromSnakeCase`,如果`CodingKeys`只是用来转成驼峰命名的话,设置好这个属性后就可以不用写`CodingKeys`这个枚举了.
 
 
+<h2 id="25">25.dispatch_once替代方案</h2>  
 
+OC中用来保证代码块只执行一次的`dispatch_once`在swfit中已经被废弃了,取而代之的是使用`static let`,`let`本身就带有线程安全性质的.
+
+例如单例的实现.
+
+```swift
+final public class MySingleton {
+    static let shared = MySingleton()
+    private init() {}
+}
+```
+但如果我们不想定义常量,需要某个代码块执行一次呢?
+
+```swift
+private lazy var takeOnceTime: Void = {
+    // 代码块...
+}()
+
+_ = takeOnceTime
+```
+定义一个懒加载的变量,防止在初始化的时候被执行.后面加一个`void`,为了在`_ = takeOnceTime`赋值时不耗性能,返回一个`Void`类型.  
+
+`lazy var`改为`static let`也可以,为了使用方便,我们用一个类方法封装下
+
+```swift
+class ClassName {
+    private static let takeOnceTime: Void = {
+        // 代码块...
+    }()
+    static func takeOnceTimeFunc() {
+        ClassName.takeOnceTime
+    }
+}
+
+// 使用
+ClassName.takeOnceTimeFunc()
+```
+这样就可以做到和`dispatch_once`一样的效果了.
