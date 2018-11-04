@@ -31,6 +31,7 @@
 [24.使用Codable协议解析JSON](#24)  
 [25.dispatch_once替代方案](#25)  
 [26.被废弃的+load()和+initialize()](#26)  
+[27.交换方法 Method Swizzling](#27)    
  
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -2330,7 +2331,7 @@ ClassName.takeOnceTimeFunc()
 
 然而在目前的swift版本中这两个方法都不可用了,那现在我们要在这个阶段搞事情该怎么做? 例如`method swizzling`.
 
-[JORDAN SMITH](http://jordansmith.io/handling-the-deprecation-of-initialize/)给出了一种很巧解决方案.`UIApplication`有一个`next`属性,它会在`applicationDidFinishLaunching`之前被调用,这个时候通过`runtime`获取到所有类的列表,然后向所有遵循SelfAware协议的类发送消息.
+[JORDAN SMITH大神](http://jordansmith.io/handling-the-deprecation-of-initialize/)给出了一种很巧解决方案.`UIApplication`有一个`next`属性,它会在`applicationDidFinishLaunching`之前被调用,这个时候通过`runtime`获取到所有类的列表,然后向所有遵循SelfAware协议的类发送消息.
 
 ```swift
 extension UIApplication {
@@ -2360,4 +2361,107 @@ class NothingToSeeHere {
 }
 ```
 
-之后任何遵守`SelfAware`协议实现的`+awake()`在这个阶段都会被调用.
+之后任何遵守`SelfAware`协议实现的`+awake()`方法在这个阶段都会被调用.
+
+
+ <h2 id="27">27.交换方法 Method Swizzling</h2>  
+
+`runtime`的黑魔法`Method Swizzling`在swift中实现的两个困难点
+
+- swizzling 应该保证只会执行一次.
+- swizzling 应该在加载所有类的时候调用.
+
+分别在`tips25`和`tips26`中给出了解决方案.
+
+下面给出了两个示例供参考:
+
+```swift
+protocol SelfAware: class {
+    static func awake()
+    static func swizzlingForClass(_ forClass: AnyClass, originalSelector: Selector, swizzledSelector: Selector)
+}
+
+extension SelfAware {
+    
+    static func swizzlingForClass(_ forClass: AnyClass, originalSelector: Selector, swizzledSelector: Selector) {
+        let originalMethod = class_getInstanceMethod(forClass, originalSelector)
+        let swizzledMethod = class_getInstanceMethod(forClass, swizzledSelector)
+        guard (originalMethod != nil && swizzledMethod != nil) else {
+            return
+        }
+        if class_addMethod(forClass, originalSelector, method_getImplementation(swizzledMethod!), method_getTypeEncoding(swizzledMethod!)) {
+            class_replaceMethod(forClass, swizzledSelector, method_getImplementation(originalMethod!), method_getTypeEncoding(originalMethod!))
+        } else {
+            method_exchangeImplementations(originalMethod!, swizzledMethod!)
+        }
+    }
+}
+
+class NothingToSeeHere {
+    static func harmlessFunction() {
+        let typeCount = Int(objc_getClassList(nil, 0))
+        let types = UnsafeMutablePointer<AnyClass>.allocate(capacity: typeCount)
+        let autoreleasingTypes = AutoreleasingUnsafeMutablePointer<AnyClass>(types)
+        objc_getClassList(autoreleasingTypes, Int32(typeCount))
+        for index in 0 ..< typeCount {
+            (types[index] as? SelfAware.Type)?.awake()
+        }
+        types.deallocate()
+    }
+}
+extension UIApplication {
+    private static let runOnce: Void = {
+        NothingToSeeHere.harmlessFunction()
+    }()
+    override open var next: UIResponder? {
+        UIApplication.runOnce
+        return super.next
+    }
+}
+```
+在`SelfAware`的`extension`中为`swizzlingForClass`做了默认实现,相当于一层封装.
+
+###### 1. 给按钮添加点击计数
+
+```swift
+extension UIButton: SelfAware {
+    static func awake() {
+        UIButton.takeOnceTime
+    }
+    private static let takeOnceTime: Void = {
+        let originalSelector = #selector(sendAction)
+        let swizzledSelector = #selector(xxx_sendAction(action:to:forEvent:))
+        
+        swizzlingForClass(UIButton.self, originalSelector: originalSelector, swizzledSelector: swizzledSelector)
+    }()
+    
+    @objc public func xxx_sendAction(action: Selector, to: AnyObject!, forEvent: UIEvent!) {
+        struct xxx_buttonTapCounter {
+            static var count: Int = 0
+        }
+        xxx_buttonTapCounter.count += 1
+        print(xxx_buttonTapCounter.count)
+        xxx_sendAction(action: action, to: to, forEvent: forEvent)
+    }
+}
+```
+###### 2. 替换控制器的`viewWillAppear`方法
+
+```swift
+extension UIViewController: SelfAware {
+    static func awake() {
+        swizzleMethod
+    }
+    private static let swizzleMethod: Void = {
+        let originalSelector = #selector(viewWillAppear(_:))
+        let swizzledSelector = #selector(swizzled_viewWillAppear(_:))
+        
+        swizzlingForClass(UIViewController.self, originalSelector: originalSelector, swizzledSelector: swizzledSelector)
+    }()
+    
+    @objc func swizzled_viewWillAppear(_ animated: Bool) {
+        swizzled_viewWillAppear(animated)
+        print("swizzled_viewWillAppear")
+    }
+}
+```
