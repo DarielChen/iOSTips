@@ -2366,7 +2366,7 @@ class NothingToSeeHere {
 
  <h2 id="27">27.交换方法 Method Swizzling</h2>  
 
-`runtime`的黑魔法`Method Swizzling`在swift中实现的两个困难点
+黑魔法`Method Swizzling`在swift中实现的两个困难点
 
 - swizzling 应该保证只会执行一次.
 - swizzling 应该在加载所有类的时候调用.
