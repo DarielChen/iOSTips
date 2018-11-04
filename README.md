@@ -30,6 +30,8 @@
 [23.定义全局常量](#23)  
 [24.使用Codable协议解析JSON](#24)  
 [25.dispatch_once替代方案](#25)  
+[26.被废弃的+load()和+initialize()](#26)  
+ 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -2317,3 +2319,45 @@ class ClassName {
 ClassName.takeOnceTimeFunc()
 ```
 这样就可以做到和`dispatch_once`一样的效果了.
+
+
+<h2 id="26">26.被废弃的+load()和+initialize()</h2>  
+
+我们都知道OC中两个方法`+load()`和`+initialize()`. 
+ 
+`+load()`:  app启动的时候会加载所有的类,此时就会调用每个类的load方法.  
+`+initialize()`: 第一次初始化这个类的时候会被调用.  
+
+然而在目前的swift版本中这两个方法都不可用了,那现在我们要在这个阶段搞事情该怎么做? 例如`method swizzling`.
+
+[JORDAN SMITH](http://jordansmith.io/handling-the-deprecation-of-initialize/)给出了一种很巧解决方案.`UIApplication`有一个`next`属性,它会在`applicationDidFinishLaunching`之前被调用,这个时候通过`runtime`获取到所有类的列表,然后向所有遵循SelfAware协议的类发送消息.
+
+```swift
+extension UIApplication {
+    private static let runOnce: Void = {
+        NothingToSeeHere.harmlessFunction()
+    }()
+    override open var next: UIResponder? {
+        // Called before applicationDidFinishLaunching
+        UIApplication.runOnce
+        return super.next
+    }
+}
+
+protocol SelfAware: class {
+    static func awake()
+}
+class NothingToSeeHere {
+    static func harmlessFunction() {
+        let typeCount = Int(objc_getClassList(nil, 0))
+        let types = UnsafeMutablePointer<AnyClass?>.allocate(capacity: typeCount)
+        let safeTypes = AutoreleasingUnsafeMutablePointer<AnyClass?>(types)
+        objc_getClassList(safeTypes, Int32(typeCount))
+        for index in 0 ..< typeCount { (types[index] as? SelfAware.Type)?.awake() }
+        types.deallocate(capacity: typeCount)
+
+    }
+}
+```
+
+之后任何遵守`SelfAware`协议实现的`+awake()`在这个阶段都会被调用.
