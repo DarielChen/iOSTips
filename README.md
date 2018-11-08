@@ -32,7 +32,8 @@
 [25.dispatch_once替代方案](#25)  
 [26.被废弃的+load()和+initialize()](#26)  
 [27.交换方法 Method Swizzling](#27)    
- 
+[28.获取UIAlertController的titleLabel和messageLabel](#28)  
+
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -2466,3 +2467,44 @@ extension UIViewController: SelfAware {
     }
 }
 ```
+<h2 id="28">28.获取UIAlertController的titleLabel和messageLabel</h2>  
+
+`UIAlertController`好用,但可自定义程度不高,例如我们想让`message`文字左对齐,就需要获取到`messageLabel`,但`UIAlertController`并没有提供这个属性.
+
+下面通过遍历`UIAlertController`子控件的手法拿到了`alertTitleLabel`和`alertMessageLabel`.
+
+```swift
+extension UIAlertController {
+    static var subviews: [UILabel] = []
+    
+    public var alertTitleLabel: UILabel? {
+        if let titleLabel = viewArray(root: view).first {
+            UIAlertController.subviews.removeAll()
+            return titleLabel
+        }else {
+            return nil
+        }
+    }
+    public var alertMessageLabel: UILabel? {
+        if let titleLabel = viewArray(root: view).last {
+            UIAlertController.subviews.removeAll()
+            return titleLabel
+        }else {
+            return nil
+        }
+    }
+    
+    private func viewArray(root: UIView) -> Array<UILabel> {
+        for view in root.subviews {
+            if view.isKind(of: UILabel.self) {
+                UIAlertController.subviews.append(view as! UILabel)
+            }
+            _ = viewArray(root: view)
+        }
+        return UIAlertController.subviews
+    }
+}
+```
+虽然通过这种方法可以拿到`alertTitleLabel`和`alertMessageLabel`.但没法区分哪个是哪个,`alertTitleLabel`为默认子控件的第一个`label`,如果`title`传空,`message`传值,`alertTitleLabel`和`alertMessageLabel`获取到的都是`message`的`label`.
+
+如果有更好的方法欢迎讨论.
