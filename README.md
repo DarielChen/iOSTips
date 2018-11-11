@@ -33,6 +33,9 @@
 [26.被废弃的+load()和+initialize()](#26)  
 [27.交换方法 Method Swizzling](#27)    
 [28.获取UIAlertController的titleLabel和messageLabel](#28)  
+[29.线程安全: 互斥锁和自旋锁](#29)  
+
+
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -2508,3 +2511,112 @@ extension UIAlertController {
 虽然通过这种方法可以拿到`alertTitleLabel`和`alertMessageLabel`.但没法区分哪个是哪个,`alertTitleLabel`为默认子控件的第一个`label`,如果`title`传空,`message`传值,`alertTitleLabel`和`alertMessageLabel`获取到的都是`message`的`label`.
 
 如果有更好的方法欢迎讨论.
+
+
+<h2 id="29">29.线程安全: 互斥锁和自旋锁</h2>  
+
+无并发,不编程.提到多线程就很难绕开锁🔐.
+
+iOS开发中较常见的两类锁:  
+###### 1. 互斥锁: 同一时刻只能有一个线程获得互斥锁,其余线程处于挂起状态.
+###### 2. 自旋锁: 当某个线程获得自旋锁后,别的线程会一直做循环,尝试加锁,当超过了限定的次数仍然没有成功获得锁时,线程也会被挂起.
+
+自旋锁较适用于锁的持有者保存时间较短的情况下,实际使用中互斥锁会用的多一些.
+
+#### 1. 互斥锁
+
+##### 1.遵守`NSLocking`协议的四种锁
+
+四种锁分别是:  
+`NSLock`、`NSConditionLock`、`NSRecursiveLock`、`NSCondition`
+ 
+`NSLocking`协议
+ 
+```swift
+public protocol NSLocking {    
+    public func lock()
+    public func unlock()
+}
+```
+
+下面举个多个售票点同时卖票的例子
+
+```swift
+var ticket = 20
+var lock = NSLock()
+    
+override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    let thread1 = Thread(target: self, selector: #selector(saleTickets), object: nil)
+    thread1.name = "售票点A"
+    thread1.start()
+    
+    let thread2 = Thread(target: self, selector: #selector(saleTickets), object: nil)
+    thread2.name = "售票点B"
+    thread2.start()
+}
+
+@objc private func saleTickets() {
+	while true {
+	    lock.lock()
+	    Thread.sleep(forTimeInterval: 0.5) // 模拟延迟
+	    if ticket > 0 {
+	        ticket = ticket - 1
+	        print("\(String(describing: Thread.current.name!)) 卖出了一张票,当前还剩\(ticket)张票")
+	        lock.unlock()
+	    }else {
+	        print("oh 票已经卖完了")
+	        lock.unlock()
+	        break;
+	    }
+	}
+}
+```
+遵守协议后实现的两个方法`lock()`和`unlock()`,意如其名.  
+
+除此之外`NSLock`、`NSConditionLock`、`NSRecursiveLock`、`NSCondition`四种互斥锁各有其实现: 
+###### 1. 除`NSCondition`外,三种锁都有的两个方法:
+
+```swift
+	// 尝试去锁,如果成功,返回true,否则返回false
+    open func `try`() -> Bool
+	// 给锁一个过期时间,时间到了自动解锁
+    open func lock(before limit: Date) -> Bool
+```
+###### 2. `NSCondition`:
+
+```swift
+	// 当前线程挂起
+	open func wait()
+	// 当前线程挂起,设置一个唤醒时间
+	open func wait(until limit: Date) -> Bool
+	// 唤醒当前线程
+	open func signal()
+	// 唤醒所有NSCondition挂起的线程
+	open func broadcast()
+```
+
+当调用`wait()`之后,`NSCondition`实例会解锁已有锁的当前线程,然后再使线程休眠,当被`signal()`通知后,线程被唤醒,然后再给当前线程加锁,所以看起来好像`wait()`一直持有该锁,但根据苹果文档中说明,直接把`wait()`当线程锁并不能保证线程安全.
+
+###### 3. `NSConditionLock `:
+
+`NSConditionLock`是借助`NSCondition`来实现的,在`NSCondition`的基础上加了限定条件,可自定义程度相对`NSCondition`会高些.
+
+```swift
+	// 锁的时候还需要满足condition
+	open func lock(whenCondition condition: Int)
+	// 同try,同样需要满足condition
+	open func tryLock(whenCondition condition: Int) -> Bool
+	// 同unlock,需要满足condition
+	open func unlock(withCondition condition: Int)
+	// 同lock,需要满足condition和在limit时间之前
+	open func lock(whenCondition condition: Int, before limit: Date) -> Bool
+```
+
+###### 4. `NSRecurisiveLock`:
+定义了可以多次给相同线程上锁并不会造成死锁的锁.
+
+提供的几个方法和`NSLock`类似.
+
+#### 2. 自旋锁
+
+#### 3. 性能比较
