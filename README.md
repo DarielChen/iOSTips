@@ -2513,7 +2513,7 @@ extension UIAlertController {
 如果有更好的方法欢迎讨论.
 
 
-<h2 id="29">29.线程安全: 互斥锁和自旋锁</h2>  
+<h2 id="29">29.线程安全: 互斥锁和自旋锁(10种)</h2>  
 
 无并发,不编程.提到多线程就很难绕开锁🔐.
 
@@ -2523,7 +2523,7 @@ iOS开发中较常见的两类锁:
 
 自旋锁较适用于锁的持有者保存时间较短的情况下,实际使用中互斥锁会用的多一些.
 
-#### 1. 互斥锁
+#### 1. 互斥锁,信号量
 
 ##### 1.遵守`NSLocking`协议的四种锁
 
@@ -2534,8 +2534,8 @@ iOS开发中较常见的两类锁:
  
 ```swift
 public protocol NSLocking {    
-    public func lock()
-    public func unlock()
+	public func lock()
+	public func unlock()
 }
 ```
 
@@ -2554,7 +2554,7 @@ override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     thread2.name = "售票点B"
     thread2.start()
 }
-
+	
 @objc private func saleTickets() {
 	while true {
 	    lock.lock()
@@ -2578,18 +2578,18 @@ override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 
 ```swift
 	// 尝试去锁,如果成功,返回true,否则返回false
-    open func `try`() -> Bool
-	// 给锁一个过期时间,时间到了自动解锁
-    open func lock(before limit: Date) -> Bool
+	open func `try`() -> Bool
+	// 在limit时间之前获得锁,没有返回NO
+	open func lock(before limit: Date) -> Bool
 ```
-###### 2. `NSCondition`:
+###### 2. `NSCondition`条件锁:
 
 ```swift
 	// 当前线程挂起
 	open func wait()
 	// 当前线程挂起,设置一个唤醒时间
 	open func wait(until limit: Date) -> Bool
-	// 唤醒当前线程
+	// 唤醒在等待的线程
 	open func signal()
 	// 唤醒所有NSCondition挂起的线程
 	open func broadcast()
@@ -2597,7 +2597,7 @@ override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 
 当调用`wait()`之后,`NSCondition`实例会解锁已有锁的当前线程,然后再使线程休眠,当被`signal()`通知后,线程被唤醒,然后再给当前线程加锁,所以看起来好像`wait()`一直持有该锁,但根据苹果文档中说明,直接把`wait()`当线程锁并不能保证线程安全.
 
-###### 3. `NSConditionLock `:
+###### 3. `NSConditionLock `条件锁:
 
 `NSConditionLock`是借助`NSCondition`来实现的,在`NSCondition`的基础上加了限定条件,可自定义程度相对`NSCondition`会高些.
 
@@ -2612,11 +2612,133 @@ override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 	open func lock(whenCondition condition: Int, before limit: Date) -> Bool
 ```
 
-###### 4. `NSRecurisiveLock`:
+###### 4. `NSRecurisiveLock`递归锁:
 定义了可以多次给相同线程上锁并不会造成死锁的锁.
 
 提供的几个方法和`NSLock`类似.
 
+
+
+##### 2. GCD的`DispatchSemaphore`和栅栏函数
+
+###### 1. `DispatchSemaphore`信号量:
+
+`DispatchSemaphore`中的信号量,可以解决资源抢占的问题,支持信号的通知和等待.每当发送一个信号通知,则信号量+1;每当发送一个等待信号时信号量-1,如果信号量为0则信号会处于等待状态.直到信号量大于0开始执行.所以我们一般将`DispatchSemaphore`的value设置为1.
+
+下面给出了`DispatchSemaphore`的封装类
+
+```swift
+	class GCDSemaphore {
+	// MARK: 变量
+	fileprivate var dispatchSemaphore: DispatchSemaphore!
+	// MARK: 初始化
+	public init() {
+	    dispatchSemaphore = DispatchSemaphore(value: 0)
+	}
+	public init(withValue: Int) {
+	    dispatchSemaphore = DispatchSemaphore(value: withValue)
+	}
+	// 执行
+	public func signal() -> Bool {
+	    return dispatchSemaphore.signal() != 0
+	}
+	public func wait() {
+	    _ = dispatchSemaphore.wait(timeout: DispatchTime.distantFuture)
+	}
+	public func wait(timeoutNanoseconds: DispatchTimeInterval) -> Bool {
+	    if dispatchSemaphore.wait(timeout: DispatchTime.now() + timeoutNanoseconds) == DispatchTimeoutResult.success {
+	        return true
+	    } else {
+	        return false
+	    }
+	}
+}
+```
+###### 2. `barrier`栅栏函数:
+栅栏函数也可以做线程同步,当然了这个肯定是要并行队列中才能起作用.只有当当前的并行队列执行完毕,才会执行栅栏队列.
+
+```swift
+	/// 创建并发队列
+	let queue = DispatchQueue(label: "queuename", attributes: .concurrent)
+	/// 异步函数
+	queue.async {
+	    for _ in 1...5 {
+	        print(Thread.current)
+	    }
+	}
+	queue.async {
+	    for _ in 1...5 {
+	        print(Thread.current)
+	    }
+	}
+	/// 栅栏函数
+	queue.async(flags: .barrier) {
+	    print("barrier")
+	}
+	queue.async {
+	    for _ in 1...5 {
+	        print(Thread.current)
+	    }
+	}
+```
+
+##### 3. 其他的互斥锁
+###### 1. `pthread_mutex`互斥锁
+`pthread`表示`POSIX thread`,跨平台的线程相关的API,`pthread_mutex`也是一种互斥锁,互斥锁的实现原理与信号量非常相似,阻塞线程并睡眠,需要进行上下文切换.
+
+一般情况下,一个线程只能申请一次锁,也只能在获得锁的情况下才能释放锁,多次申请锁或释放未获得的锁都会导致崩溃.假设在已经获得锁的情况下再次申请锁,线程会因为等待锁的释放而进入睡眠状态,因此就不可能再释放锁，从而导致死锁.
+
+这边给出了一个基于`pthread_mutex_t`(安全的"FIFO"互斥锁)的基本封装 [MutexLock]()
+
+
+###### 1. @synchronized条件锁
+日常开发中最常用的应该是@synchronized,这个关键字可以用来修饰一个变量,并为其自动加上和解除互斥锁.这样,可以保证变量在作用范围内不会被其他线程改变.但是在swift中它已经不存在了.其实@synchronized在幕后做的事情是调用了`objc_sync`中的`objc_sync_enter`和`objc_sync_exit` 方法，并且加入了一些异常判断.
+
+因为我们可以利用闭包自己封装一套.
+
+```swift
+func synchronized(lock: AnyObject, closure: () -> ()) {
+    objc_sync_enter(lock)
+    closure()
+    objc_sync_exit(lock)
+}
+
+// 使用
+synchronized(lock: AnyObject) {
+	// 此处AnyObject不会被其他线程改变
+}
+
+```
+
 #### 2. 自旋锁
 
+###### 1. `OSSpinLock `自旋锁
+执行效率最高的锁,不过在iOS10.0以后废弃了这种锁机制,使用`os_unfair_lock`替换,
+顾名思义能够保证不同优先级的线程申请锁的时候不会发生优先级反转问题.
+
+详见大神ibireme的[不再安全的 OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)
+
+###### 2. `os_unfair_lock`自旋锁
+
+对于`os_unfair_lock`,非FIFO的锁,苹果为了取代`OSSPinLock`新出的一个锁,一个高级的能够避免优先级带来的死锁问题的一个锁,`OSSPinLock`之前就爆出在iOS平台有由于优先级造成死锁的问题).
+
+注意: 这个锁适用于小场景下的一个高效锁,否则会大量消耗cpu资源.
+
+```swift
+	var unsafeMutex = os_unfair_lock()
+	os_unfair_lock_lock(&unsafeMutex)
+	os_unfair_lock_trylock(&unsafeMutex)
+	os_unfair_lock_unlock(&unsafeMutex)
+```
+
+这边给出了基于`os_unfair_lock`的封装 [MutexLock]()
+
 #### 3. 性能比较
+
+这边贴一张大神ibireme在iPhone6、iOS9对各种锁的性能测试图
+
+![](http://pcb5zz9k5.bkt.clouddn.com/lock_benchmark.png)
+
+参考:  
+[不再安全的OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)  
+[深入理解iOS开发中的锁](https://bestswifter.com/ios-lock/)

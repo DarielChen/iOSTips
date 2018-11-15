@@ -21,6 +21,7 @@
 		158FCD85217093530067A406 /* DCTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD84217093530067A406 /* DCTool.swift */; };
 		158FCD87217093640067A406 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD86217093640067A406 /* Observable.swift */; };
 		15940C5021748FAB00E83DC4 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */; };
+		15974107219D1A20003533C4 /* MutexLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15974106219D1A20003533C4 /* MutexLock.swift */; };
 		15B9519B217816180059D579 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B9519A217816180059D579 /* UIButton+Extension.swift */; };
 		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
 		4FECA9FC4F459B74ADBEE5CA /* Pods_SwiftTipsDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3A354119B6DE1E2B772349 /* Pods_SwiftTipsDemo.framework */; };
@@ -43,6 +44,7 @@
 		158FCD84217093530067A406 /* DCTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCTool.swift; sourceTree = "<group>"; };
 		158FCD86217093640067A406 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
+		15974106219D1A20003533C4 /* MutexLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutexLock.swift; sourceTree = "<group>"; };
 		15B9519A217816180059D579 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
 		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		1651656BA8381E35829DD90E /* Pods-SwiftTipsDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftTipsDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SwiftTipsDemo/Pods-SwiftTipsDemo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				158FCD84217093530067A406 /* DCTool.swift */,
+				15974106219D1A20003533C4 /* MutexLock.swift */,
 				158FCD86217093640067A406 /* Observable.swift */,
 				156936752176CAC4004F8A24 /* ViewControllerInjector.swift */,
 			);
@@ -268,6 +271,7 @@
 				15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */,
 				156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */,
 				156B4FC7216CE9CF0096E543 /* UIWindow+Extension.swift in Sources */,
+				15974107219D1A20003533C4 /* MutexLock.swift in Sources */,
 				15940C5021748FAB00E83DC4 /* UIViewController+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
