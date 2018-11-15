@@ -33,7 +33,7 @@
 [26.被废弃的+load()和+initialize()](#26)  
 [27.交换方法 Method Swizzling](#27)    
 [28.获取UIAlertController的titleLabel和messageLabel](#28)  
-[29.线程安全: 互斥锁和自旋锁](#29)  
+[29.线程安全: 互斥锁和自旋锁(10种)](#29)  
 
 
 
@@ -2534,8 +2534,8 @@ iOS开发中较常见的两类锁:
  
 ```swift
 public protocol NSLocking {    
-	public func lock()
-	public func unlock()
+    public func lock()
+    public func unlock()
 }
 ```
 
@@ -2577,22 +2577,22 @@ override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 ###### 1. 除`NSCondition`外,三种锁都有的两个方法:
 
 ```swift
-	// 尝试去锁,如果成功,返回true,否则返回false
-	open func `try`() -> Bool
-	// 在limit时间之前获得锁,没有返回NO
-	open func lock(before limit: Date) -> Bool
+    // 尝试去锁,如果成功,返回true,否则返回false
+    open func `try`() -> Bool
+    // 在limit时间之前获得锁,没有返回NO
+    open func lock(before limit: Date) -> Bool
 ```
 ###### 2. `NSCondition`条件锁:
 
 ```swift
-	// 当前线程挂起
-	open func wait()
-	// 当前线程挂起,设置一个唤醒时间
-	open func wait(until limit: Date) -> Bool
-	// 唤醒在等待的线程
-	open func signal()
-	// 唤醒所有NSCondition挂起的线程
-	open func broadcast()
+    // 当前线程挂起
+    open func wait()
+    // 当前线程挂起,设置一个唤醒时间
+    open func wait(until limit: Date) -> Bool
+    // 唤醒在等待的线程
+    open func signal()
+    // 唤醒所有NSCondition挂起的线程
+    open func broadcast()
 ```
 
 当调用`wait()`之后,`NSCondition`实例会解锁已有锁的当前线程,然后再使线程休眠,当被`signal()`通知后,线程被唤醒,然后再给当前线程加锁,所以看起来好像`wait()`一直持有该锁,但根据苹果文档中说明,直接把`wait()`当线程锁并不能保证线程安全.
@@ -2602,14 +2602,14 @@ override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 `NSConditionLock`是借助`NSCondition`来实现的,在`NSCondition`的基础上加了限定条件,可自定义程度相对`NSCondition`会高些.
 
 ```swift
-	// 锁的时候还需要满足condition
-	open func lock(whenCondition condition: Int)
-	// 同try,同样需要满足condition
-	open func tryLock(whenCondition condition: Int) -> Bool
-	// 同unlock,需要满足condition
-	open func unlock(withCondition condition: Int)
-	// 同lock,需要满足condition和在limit时间之前
-	open func lock(whenCondition condition: Int, before limit: Date) -> Bool
+    // 锁的时候还需要满足condition
+    open func lock(whenCondition condition: Int)
+    // 同try,同样需要满足condition
+    open func tryLock(whenCondition condition: Int) -> Bool
+    // 同unlock,需要满足condition
+    open func unlock(withCondition condition: Int)
+    // 同lock,需要满足condition和在limit时间之前
+    open func lock(whenCondition condition: Int, before limit: Date) -> Bool
 ```
 
 ###### 4. `NSRecurisiveLock`递归锁:
@@ -2628,58 +2628,58 @@ override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 下面给出了`DispatchSemaphore`的封装类
 
 ```swift
-	class GCDSemaphore {
-	// MARK: 变量
-	fileprivate var dispatchSemaphore: DispatchSemaphore!
-	// MARK: 初始化
-	public init() {
-	    dispatchSemaphore = DispatchSemaphore(value: 0)
+class GCDSemaphore {
+    // MARK: 变量
+    fileprivate var dispatchSemaphore: DispatchSemaphore!
+    // MARK: 初始化
+    public init() {
+        dispatchSemaphore = DispatchSemaphore(value: 0)
 	}
-	public init(withValue: Int) {
-	    dispatchSemaphore = DispatchSemaphore(value: withValue)
+    public init(withValue: Int) {
+        dispatchSemaphore = DispatchSemaphore(value: withValue)
 	}
-	// 执行
-	public func signal() -> Bool {
-	    return dispatchSemaphore.signal() != 0
-	}
-	public func wait() {
-	    _ = dispatchSemaphore.wait(timeout: DispatchTime.distantFuture)
-	}
-	public func wait(timeoutNanoseconds: DispatchTimeInterval) -> Bool {
-	    if dispatchSemaphore.wait(timeout: DispatchTime.now() + timeoutNanoseconds) == DispatchTimeoutResult.success {
-	        return true
-	    } else {
-	        return false
-	    }
-	}
+    // 执行
+    public func signal() -> Bool {
+        return dispatchSemaphore.signal() != 0
+    }
+    public func wait() {
+        _ = dispatchSemaphore.wait(timeout: DispatchTime.distantFuture)
+    }
+    public func wait(timeoutNanoseconds: DispatchTimeInterval) -> Bool {
+        if dispatchSemaphore.wait(timeout: DispatchTime.now() + timeoutNanoseconds) == DispatchTimeoutResult.success {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 ```
 ###### 2. `barrier`栅栏函数:
 栅栏函数也可以做线程同步,当然了这个肯定是要并行队列中才能起作用.只有当当前的并行队列执行完毕,才会执行栅栏队列.
 
 ```swift
-	/// 创建并发队列
-	let queue = DispatchQueue(label: "queuename", attributes: .concurrent)
-	/// 异步函数
-	queue.async {
-	    for _ in 1...5 {
-	        print(Thread.current)
-	    }
-	}
-	queue.async {
-	    for _ in 1...5 {
-	        print(Thread.current)
-	    }
-	}
-	/// 栅栏函数
-	queue.async(flags: .barrier) {
-	    print("barrier")
-	}
-	queue.async {
-	    for _ in 1...5 {
-	        print(Thread.current)
-	    }
-	}
+/// 创建并发队列
+let queue = DispatchQueue(label: "queuename", attributes: .concurrent)
+/// 异步函数
+queue.async {
+    for _ in 1...5 {
+        print(Thread.current)
+    }
+}
+queue.async {
+    for _ in 1...5 {
+        print(Thread.current)
+    }
+}
+/// 栅栏函数
+queue.async(flags: .barrier) {
+    print("barrier")
+}
+queue.async {
+    for _ in 1...5 {
+        print(Thread.current)
+    }
+}
 ```
 
 ##### 3. 其他的互斥锁
@@ -2688,7 +2688,7 @@ override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 
 一般情况下,一个线程只能申请一次锁,也只能在获得锁的情况下才能释放锁,多次申请锁或释放未获得的锁都会导致崩溃.假设在已经获得锁的情况下再次申请锁,线程会因为等待锁的释放而进入睡眠状态,因此就不可能再释放锁，从而导致死锁.
 
-这边给出了一个基于`pthread_mutex_t`(安全的"FIFO"互斥锁)的基本封装 [MutexLock]()
+这边给出了一个基于`pthread_mutex_t`(安全的"FIFO"互斥锁)的基本封装 [MutexLock](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/MutexLock.swift)
 
 
 ###### 1. @synchronized条件锁
@@ -2725,13 +2725,13 @@ synchronized(lock: AnyObject) {
 注意: 这个锁适用于小场景下的一个高效锁,否则会大量消耗cpu资源.
 
 ```swift
-	var unsafeMutex = os_unfair_lock()
-	os_unfair_lock_lock(&unsafeMutex)
-	os_unfair_lock_trylock(&unsafeMutex)
-	os_unfair_lock_unlock(&unsafeMutex)
+var unsafeMutex = os_unfair_lock()
+os_unfair_lock_lock(&unsafeMutex)
+os_unfair_lock_trylock(&unsafeMutex)
+os_unfair_lock_unlock(&unsafeMutex)
 ```
 
-这边给出了基于`os_unfair_lock`的封装 [MutexLock]()
+这边给出了基于`os_unfair_lock`的封装 [MutexLock](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/MutexLock.swift)
 
 #### 3. 性能比较
 
