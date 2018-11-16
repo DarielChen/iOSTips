@@ -51,3 +51,14 @@ extension NSObject {
         }
     }
 }
+
+extension NSObject {
+    var className: String {
+        let name = type(of: self).description()
+        if name.contains(".") {
+            return name.components(separatedBy: ".")[1]
+        } else {
+            return name
+        }
+    }
+}

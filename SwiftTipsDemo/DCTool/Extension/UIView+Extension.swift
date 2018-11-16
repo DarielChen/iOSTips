@@ -133,3 +133,25 @@ extension UIView {
         }
     }
 }
+
+extension UIView {
+    private static var getAllsubviews: [UIView] = []
+    public func getSubView(name: String) -> [UIView] {
+        let viewArr = viewArray(root: self)
+        UIView.getAllsubviews = []
+        return viewArr.filter {$0.className == name}
+    }
+    public func getAllSubViews() -> [UIView] {
+        UIView.getAllsubviews = []
+        return viewArray(root: self)
+    }
+    private func viewArray(root: UIView) -> [UIView] {
+        for view in root.subviews {
+            if view.isKind(of: UIView.self) {
+                UIView.getAllsubviews.append(view)
+            }
+            _ = viewArray(root: view)
+        }
+        return UIView.getAllsubviews
+    }
+}

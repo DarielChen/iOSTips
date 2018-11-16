@@ -32,7 +32,7 @@
 [25.dispatch_once替代方案](#25)  
 [26.被废弃的+load()和+initialize()](#26)  
 [27.交换方法 Method Swizzling](#27)    
-[28.获取UIAlertController的titleLabel和messageLabel](#28)  
+[28.获取View的指定子视图](#28)  
 [29.线程安全: 互斥锁和自旋锁(10种)](#29)  
 
 
@@ -2470,41 +2470,69 @@ extension UIViewController: SelfAware {
     }
 }
 ```
-<h2 id="28">28.获取UIAlertController的titleLabel和messageLabel</h2>  
+<h2 id="28">28.获取View的指定子视图</h2>  
 
-`UIAlertController`好用,但可自定义程度不高,例如我们想让`message`文字左对齐,就需要获取到`messageLabel`,但`UIAlertController`并没有提供这个属性.
+通过递归获取指定`view`的所有子视图.
 
-下面通过遍历`UIAlertController`子控件的手法拿到了`alertTitleLabel`和`alertMessageLabel`.
+#### 1. 获取`View`的子视图
+
+使用
 
 ```swift
-extension UIAlertController {
-    static var subviews: [UILabel] = []
-    
-    public var alertTitleLabel: UILabel? {
-        if let titleLabel = viewArray(root: view).first {
-            UIAlertController.subviews.removeAll()
-            return titleLabel
-        }else {
-            return nil
-        }
+    let subViewArr = view.getAllSubViews() // 获取所有子视图
+    let imageViewArr = view.getSubView(name: "UIImageView") // 获取指定类名的子视图
+```
+
+实现
+
+```swift
+extension UIView {
+    private static var getAllsubviews: [UIView] = []
+    public func getSubView(name: String) -> [UIView] {
+        let viewArr = viewArray(root: self)
+        UIView.getAllsubviews = []
+        return viewArr.filter {$0.className == name}
     }
-    public var alertMessageLabel: UILabel? {
-        if let titleLabel = viewArray(root: view).last {
-            UIAlertController.subviews.removeAll()
-            return titleLabel
-        }else {
-            return nil
-        }
+    public func getAllSubViews() -> [UIView] {
+        UIView.getAllsubviews = []
+        return viewArray(root: self)
     }
-    
-    private func viewArray(root: UIView) -> Array<UILabel> {
+    private func viewArray(root: UIView) -> [UIView] {
         for view in root.subviews {
-            if view.isKind(of: UILabel.self) {
-                UIAlertController.subviews.append(view as! UILabel)
+            if view.isKind(of: UIView.self) {
+                UIView.getAllsubviews.append(view)
             }
             _ = viewArray(root: view)
         }
-        return UIAlertController.subviews
+        return UIView.getAllsubviews
+    }
+}
+
+extension NSObject {
+    var className: String {
+        let name = type(of: self).description()
+        if name.contains(".") {
+            return name.components(separatedBy: ".")[1]
+        } else {
+            return name
+        }
+    }
+}
+
+```
+
+#### 2. 获取UIAlertController的titleLabel和messageLabel
+`UIAlertController`好用,但可自定义程度不高,例如我们想让`message`文字左对齐,就需要获取到`messageLabel`,但`UIAlertController`并没有提供这个属性.
+
+我们就可以通过递归拿到`alertTitleLabel`和`alertMessageLabel`.
+
+```swift
+extension UIAlertController {
+    public var alertTitleLabel: UILabel? {
+        return self.view.getSubView(name: "UILabel").first as? UILabel
+    }
+    public var alertMessageLabel: UILabel? {
+        return self.view.getSubView(name: "UILabel").last as? UILabel
     }
 }
 ```
@@ -2688,7 +2716,7 @@ queue.async {
 
 一般情况下,一个线程只能申请一次锁,也只能在获得锁的情况下才能释放锁,多次申请锁或释放未获得的锁都会导致崩溃.假设在已经获得锁的情况下再次申请锁,线程会因为等待锁的释放而进入睡眠状态,因此就不可能再释放锁，从而导致死锁.
 
-这边给出了一个基于`pthread_mutex_t`(安全的"FIFO"互斥锁)的基本封装 [MutexLock](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/MutexLock.swift)
+这边给出了一个基于`pthread_mutex_t`(安全的"FIFO"互斥锁)的封装 [MutexLock](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/MutexLock.swift)
 
 
 ###### 1. @synchronized条件锁
@@ -2712,15 +2740,14 @@ synchronized(lock: AnyObject) {
 
 #### 2. 自旋锁
 
-###### 1. `OSSpinLock `自旋锁
-执行效率最高的锁,不过在iOS10.0以后废弃了这种锁机制,使用`os_unfair_lock`替换,
-顾名思义能够保证不同优先级的线程申请锁的时候不会发生优先级反转问题.
+###### 1. `OSSpinLock`自旋锁
+`OSSpinLock`是执行效率最高的锁,不过在iOS10.0以后已经被废弃了.
 
 详见大神ibireme的[不再安全的 OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)
 
 ###### 2. `os_unfair_lock`自旋锁
 
-对于`os_unfair_lock`,非FIFO的锁,苹果为了取代`OSSPinLock`新出的一个锁,一个高级的能够避免优先级带来的死锁问题的一个锁,`OSSPinLock`之前就爆出在iOS平台有由于优先级造成死锁的问题).
+它能够保证不同优先级的线程申请锁的时候不会发生优先级反转问题.这是苹果为了取代`OSSPinLock`新出的一个能够避免优先级带来的死锁问题的一个锁,`OSSPinLock`就是有由于优先级造成死锁的问题.
 
 注意: 这个锁适用于小场景下的一个高效锁,否则会大量消耗cpu资源.
 
