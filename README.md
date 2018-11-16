@@ -2634,10 +2634,10 @@ class GCDSemaphore {
     // MARK: 初始化
     public init() {
         dispatchSemaphore = DispatchSemaphore(value: 0)
-	}
+    }
     public init(withValue: Int) {
         dispatchSemaphore = DispatchSemaphore(value: withValue)
-	}
+    }
     // 执行
     public func signal() -> Bool {
         return dispatchSemaphore.signal() != 0
@@ -2694,7 +2694,7 @@ queue.async {
 ###### 1. @synchronized条件锁
 日常开发中最常用的应该是@synchronized,这个关键字可以用来修饰一个变量,并为其自动加上和解除互斥锁.这样,可以保证变量在作用范围内不会被其他线程改变.但是在swift中它已经不存在了.其实@synchronized在幕后做的事情是调用了`objc_sync`中的`objc_sync_enter`和`objc_sync_exit` 方法，并且加入了一些异常判断.
 
-因为我们可以利用闭包自己封装一套.
+因此我们可以利用闭包自己封装一套.
 
 ```swift
 func synchronized(lock: AnyObject, closure: () -> ()) {
@@ -2705,7 +2705,7 @@ func synchronized(lock: AnyObject, closure: () -> ()) {
 
 // 使用
 synchronized(lock: AnyObject) {
-	// 此处AnyObject不会被其他线程改变
+    // 此处AnyObject不会被其他线程改变
 }
 
 ```
