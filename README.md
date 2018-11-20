@@ -2773,10 +2773,11 @@ os_unfair_lock_unlock(&unsafeMutex)
 
 `Optional`(可选类型)为swift的类型安全起到了巨大的作用.
 
-但使用起来总觉得有些繁琐.
+几种将可选值解包的操作.
 
 ```swift
 var optionalStr: String? = "可选类型"
+
 // 强制解包
 print(optionalStr!)
     
@@ -2797,10 +2798,10 @@ print(optionalStr ?? "optionalStr为空")
 这是常见的几种解包方式  
 1. 强制解包不太推荐使用,除非真的很确定当前可选类型不为空  
 2. 可选绑定解包,虽然可以保证安全,但使用多了很容易造成层层嵌套,阅读性不好  
-3. guard解包虽然能避免层层嵌套,但如果return下面还有业务逻辑咋办  
-4. ??用起来很方便,但后面只能是值,或者表达式,可能满足不了要求
+3. `guard`解包虽然能避免层层嵌套,但如果`return`下面还有需要执行的业务逻辑咋办  
+4. `??`用起来很方便,但后面只能是值,或者表达式,可能满足不了要求
 
-其实我们可以用`extension`为`Optional`添加自定义的Api.
+其实我们可以用`extension`为`Optional`添加自定义的API.
 
 ##### 1. `isNone`和`isSome`
 
@@ -2821,7 +2822,7 @@ extension Optional {
     }    
 }
 ```
-这样比使用`if optionalStr == nil`简洁多了.
+`optionalStr.isNone`这样使用比`if optionalStr == nil`简洁一些.
 
 ##### 2. or
 
@@ -2844,6 +2845,9 @@ extension Optional {
 `@autoclosure`关键词可以让表达式自动封装成一个闭包,从而可以去掉`{}`.`or`为`??`做了一层封装,当可选值为空时,执行??后面的表达式,或者闭包.
 
 ```swift
+// 为??做了一层封装
+print(optionalStr.or("为空"))
+
 // 之前的写法
 if viewController == nil {
     viewController = UIViewController()
@@ -2919,9 +2923,18 @@ let optionalInt: Int? = nil
 print(optionalArr.map({$0 * $0 }) ?? 3)
 // 使用后,这样可阅读性会更好一些
 print(optionalArr.map({ $0 * $0 }, default: 3))
-print(optionalArr.map({ $0 * $0 }, else: { return 3}))
+// else后添加闭包
+print(optionalArr.map({ $0 * $0 }, else: { return 3 }))
+
+// 使用链式调用去空格并转大写
+let optionalString: String? = "Hello World"
+print(optionalString.and(then: {$0.filter{$0 != " "}}).and(then:{$0.uppercased()}).or("为空")) // 打印 HELLOWORLD
+
 ```
 
 
+具体代码 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/Optional%2BExtension.swift)
 
+参考:  
+[Useful Optional Extensions](https://appventure.me/2018/01/10/optional-extensions/)
 
