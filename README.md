@@ -34,8 +34,7 @@
 [27.交换方法 Method Swizzling](#27)    
 [28.获取View的指定子视图](#28)  
 [29.线程安全: 互斥锁和自旋锁(10种)](#29)  
-
-
+[30.可选类型扩展](#30)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -2769,3 +2768,160 @@ os_unfair_lock_unlock(&unsafeMutex)
 参考:  
 [不再安全的OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)  
 [深入理解iOS开发中的锁](https://bestswifter.com/ios-lock/)
+
+<h2 id="30">30.可选类型扩展</h2>  
+
+`Optional`(可选类型)为swift的类型安全起到了巨大的作用.
+
+但使用起来总觉得有些繁琐.
+
+```swift
+var optionalStr: String? = "可选类型"
+// 强制解包
+print(optionalStr!)
+    
+// (Optional binding)可选绑定解包
+if let optionalStr = optionalStr {
+    print(optionalStr)
+}
+// guard解包
+guard let optionalStr2 = optionalStr else {
+    return
+}
+print(optionalStr2)
+
+// ?? 如果??前面的值为空,就输出后面的值
+print(optionalStr ?? "optionalStr为空")
+```
+
+这是常见的几种解包方式  
+1. 强制解包不太推荐使用,除非真的很确定当前可选类型不为空  
+2. 可选绑定解包,虽然可以保证安全,但使用多了很容易造成层层嵌套,阅读性不好  
+3. guard解包虽然能避免层层嵌套,但如果return下面还有业务逻辑咋办  
+4. ??用起来很方便,但后面只能是值,或者表达式,可能满足不了要求
+
+其实我们可以用`extension`为`Optional`添加自定义的Api.
+
+##### 1. `isNone`和`isSome`
+
+```swift
+extension Optional {
+    /// 判断是否为空
+    var isNone: Bool {
+        switch self {
+        case .none:
+            return true
+        case .some:
+            return false
+        }
+    }
+    /// 判断是否有值
+    var isSome: Bool {
+        return !isNone
+    }    
+}
+```
+这样比使用`if optionalStr == nil`简洁多了.
+
+##### 2. or
+
+```swift
+extension Optional {
+    /// 返回解包后的值或者默认值
+    func or(_ default: Wrapped) -> Wrapped {
+        return self ?? `default`
+    }
+    /// 返回解包后的值或`else`表达式的值
+    func or(else: @autoclosure () -> Wrapped) -> Wrapped {
+        return self ?? `else`()
+    }
+    /// 返回解包后的值或执行闭包返回值
+    func or(else: () -> Wrapped) -> Wrapped {
+        return self ?? `else`()
+    }
+}
+```
+`@autoclosure`关键词可以让表达式自动封装成一个闭包,从而可以去掉`{}`.`or`为`??`做了一层封装,当可选值为空时,执行??后面的表达式,或者闭包.
+
+```swift
+// 之前的写法
+if viewController == nil {
+    viewController = UIViewController()
+}
+// 使用or的写法
+var viewController: UIViewController?
+viewController = viewController.or(else: UIViewController())
+
+// or的else参数传入闭包
+var firstView: UIView? = nil
+firstView = firstView.or { () -> UIView in
+    let view = UIView()
+    // ...其他属性设置
+    return view
+}  
+```
+##### 3. on
+
+```swift
+extension Optional {
+    /// 当可选值不为空时，执行 `some` 闭包
+    func on(some: () throws -> Void) rethrows {
+        if self != nil { try some() }
+    }
+    /// 当可选值为空时，执行 `none` 闭包
+    func on(none: () throws -> Void) rethrows {
+        if self == nil { try none() }
+    }
+}
+```
+可选值为空和不为空执行的两个闭包.
+
+```swift
+let firstView: UIView? = nil
+firstView.on(some: {
+    print("不为nil执行的闭包")
+})
+firstView.on(none: {
+    print("为nil执行的闭包")
+})
+```
+
+##### 4.其他的一些高级用法
+
+```swift
+extension Optional {
+    /// 返回解包后的`map`过的值，如果为空，则返回默认值
+    func map<T>(_ closure: (Wrapped) throws -> T, default: T) rethrows -> T {
+        return try map(closure) ?? `default`
+    }
+    /// 返回解包后的`map`过的值，如果为空，则调用else闭包
+    func map<T>(_ closure: (Wrapped) throws -> T, else: () throws -> T) rethrows -> T {
+        return try map(closure) ?? `else`()
+    }
+    /// 可选值不为空时执行then闭包,返回执行结果
+    /// 可链式调用
+    func and<T>(then: (Wrapped) throws -> T?) rethrows -> T? {
+        guard let unwrapped = self else { return nil }
+        return try then(unwrapped)
+    }
+    /// 可选值不为空且可选值满足 `predicate` 条件才返回，否则返回 `nil`
+    func filter(_ predicate: (Wrapped) -> Bool) -> Wrapped? {
+        guard let unwrapped = self,
+            predicate(unwrapped) else { return nil }
+        return self
+    }
+}
+```
+
+```swift
+let optionalInt: Int? = nil
+// 使用前
+print(optionalArr.map({$0 * $0 }) ?? 3)
+// 使用后,这样可阅读性会更好一些
+print(optionalArr.map({ $0 * $0 }, default: 3))
+print(optionalArr.map({ $0 * $0 }, else: { return 3}))
+```
+
+
+
+
