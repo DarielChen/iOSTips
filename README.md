@@ -2846,24 +2846,24 @@ extension Optional {
 `@autoclosure`关键词可以让表达式自动封装成一个闭包,从而可以去掉`{}`.`or`为`??`做了一层封装,当可选值为空时,执行??后面的表达式,或者闭包.
 
 ```swift
-// 为??做了一层封装
-print(optionalStr.or("为空"))
+    // 为??做了一层封装
+    print(optionalStr.or("为空"))
 
-// 之前的写法
-if viewController == nil {
-    viewController = UIViewController()
-}
-// 使用or的写法
-var viewController: UIViewController?
-viewController = viewController.or(else: UIViewController())
+    // 之前的写法
+    if viewController == nil {
+        viewController = UIViewController()
+    }
+    // 使用or的写法
+    var viewController: UIViewController?
+    viewController = viewController.or(else: UIViewController())
 
-// or的else参数传入闭包
-var firstView: UIView? = nil
-firstView = firstView.or { () -> UIView in
-    let view = UIView()
-    // ...其他属性设置
-    return view
-}  
+    // or的else参数传入闭包
+    var firstView: UIView? = nil
+    firstView = firstView.or { () -> UIView in
+        let view = UIView()
+        // ...其他属性设置
+        return view
+    }  
 ```
 ##### 3. on
 
@@ -2882,13 +2882,13 @@ extension Optional {
 可选值为空和不为空执行的两个闭包.
 
 ```swift
-let firstView: UIView? = nil
-firstView.on(some: {
-    print("不为nil执行的闭包")
-})
-firstView.on(none: {
-    print("为nil执行的闭包")
-})
+    let firstView: UIView? = nil
+    firstView.on(some: {
+        print("不为nil执行的闭包")
+    })
+    firstView.on(none: {
+        print("为nil执行的闭包")
+    })
 ```
 
 ##### 4.其他的一些高级用法
@@ -2919,17 +2919,17 @@ extension Optional {
 ```
 
 ```swift
-let optionalInt: Int? = nil
-// 使用前
-print(optionalArr.map({$0 * $0 }) ?? 3)
-// 使用后,这样可阅读性会更好一些
-print(optionalArr.map({ $0 * $0 }, default: 3))
-// else后添加闭包
-print(optionalArr.map({ $0 * $0 }, else: { return 3 }))
+    let optionalInt: Int? = nil
+    // 使用前
+    print(optionalArr.map({$0 * $0 }) ?? 3)
+    // 使用后,这样可阅读性会更好一些
+    print(optionalArr.map({ $0 * $0 }, default: 3))
+    // else后添加闭包
+    print(optionalArr.map({ $0 * $0 }, else: { return 3 }))
 
-// 使用链式调用去空格并转大写
-let optionalString: String? = "Hello World"
-print(optionalString.and(then: {$0.filter{$0 != " "}}).and(then:{$0.uppercased()}).or("为空")) // 打印 HELLOWORLD
+    // 使用链式调用去空格并转大写
+    let optionalString: String? = "Hello World"
+    print(optionalString.and(then: {$0.filter{$0 != " "}}).and(then:{$0.uppercased()}).or("为空")) // 打印 HELLOWORLD
 
 ```
 
@@ -2972,7 +2972,6 @@ do {
 #### 2. 明了的处理方式
 
 ```swift
-// 错误类型
 let error = should {
     let result = try throwError(code: 300) // 返回值
 }
