@@ -35,6 +35,7 @@
 [28.获取View的指定子视图](#28)  
 [29.线程安全: 互斥锁和自旋锁(10种)](#29)  
 [30.可选类型扩展](#30)  
+[31.更明了的异常处理封装](#31)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -2932,9 +2933,57 @@ print(optionalString.and(then: {$0.filter{$0 != " "}}).and(then:{$0.uppercased()
 
 ```
 
-
 具体代码 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/Optional%2BExtension.swift)
 
 参考:  
 [Useful Optional Extensions](https://appventure.me/2018/01/10/optional-extensions/)
 
+<h2 id="31">31.更明了的异常处理封装</h2>  
+
+```swift
+// 错误类型
+enum ExceptionError: Error {
+    case httpCode(Int)
+}
+
+// 可能会抛出异常的方法
+func throwError(code: Int) throws -> Int {
+    if code == 200 {
+        return code
+    } else {
+        throw ExceptionError.httpCode(code)
+    }
+}
+```
+
+#### 1. 正常的处理方式
+
+```swift
+do {
+    let result =  try throwError(code: 300) // 返回值
+} catch {
+    print(error)
+}
+
+```
+
+当`do`代码块捕捉到异常时放在`catch`中处理.
+
+#### 2. 明了的处理方式
+
+```swift
+// 错误类型
+let error = should {
+    let result = try throwError(code: 300) // 返回值
+}
+
+func should(_ try: () throws -> Void) -> Error? {
+    do {
+        try `try`()
+        return nil
+    } catch let error {
+        return error
+    }
+}
+```
+在很多情况下,这样的处理方式更方便一些.
