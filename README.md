@@ -628,6 +628,19 @@ public extension UIWindow {
 
 <img src="http://pcb5zz9k5.bkt.clouddn.com/changeStatusBarStyle2.gif" width=250>
 
+#### 4. 怎么根据导航栏颜色自动修改StatusBar样式
+
+在修改导航栏颜色的时候,判断下导航栏颜色的深浅
+
+```swift
+public extension UIColor {
+    func isDarkColor() -> Bool {
+        var w: CGFloat = 0
+        self.getWhite(&w, alpha: nil)
+        return w > 0.5 ? false : true
+    }
+}
+```
 
 <h2 id="9">9.使用面向协议实现app的主题功能</h2>
 
