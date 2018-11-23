@@ -36,7 +36,7 @@
 [29.线程安全: 互斥锁和自旋锁(10种)](#29)  
 [30.可选类型扩展](#30)  
 [31.更明了的异常处理封装](#31)  
-
+[32.关键字static和class的区别](#32)  
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -426,7 +426,7 @@ let label = UILabel()
 let button = UIButton()
 view.add(view, label, button)
 
-extension UIView {
+public extension UIView {
     /// 同时添加多个子控件
     ///
     /// - Parameter subviews: 单个或多个子控件
@@ -1871,6 +1871,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 `App delegate`解耦相比命令模式,使用组合模式可自定义程度会更高一点.
 
 <h2 id="21">21.常见的编译器诊断指令</h2>  
+
 swift标准库提供了很多编译器诊断指令,用于在编译阶段提前处理好相关事情.
 
 下面列出了一些常见的编译器诊断指令:
@@ -2999,3 +3000,64 @@ func should(_ try: () throws -> Void) -> Error? {
 }
 ```
 在很多情况下,这样的处理方式更方便一些.
+
+
+<h2 id="32">32.关键字static和class的区别</h2>  
+
+在`class`中`static`和`class`关键字都可以来修饰属性和方法,但它们有着本质的不同.
+
+`static`关键字: 它能够用在所有类型(`class`、`struct`、`enum`),表示静态方法或静态属性(计算属性和存储属性).  
+`class`关键字: 只能够用在`class`中,表示类方法或类属性(只能是计算属性).
+
+> 计算属性: 不直接存储值,而是提供一个`getter`和`setter `方法来获取和设置其他属性或变量的值.  
+> 存储属性: 就是定义一个常量或者变量来存储值.
+
+```swift
+class MyClass {
+    class var name: String {
+        return "className"
+    }
+    static var staticName: String {
+        return "staticName"
+    }
+    class func classDescription() {
+        print("classDescription")
+    }
+    static func staticDescription() {
+        print("staticDescription")
+    }
+}
+
+class MyClassChild: MyClass {
+    override class var name: String {
+        return "className"
+    }
+    
+//    override static var staticName: String {
+//        return "staticName"
+//    }
+    //   Error: Cannot override static var
+    
+    override class func classDescription() {
+        print("classDescription")
+    }
+
+//    override static func staticDescription() {
+//        print("staticDescription")
+//    }
+    // Error: Cannot override static method
+}
+
+    print(MyClass.name) // 打印:className
+    print(MyClass.staticName) // 打印:staticName
+    MyClass.classDescription() // 打印:classDescription
+    MyClass.staticDescription() // 打印:staticDescription
+    
+    print(MyClassChild.name) // 打印:className
+    MyClassChild.classDescription() // 打印:classDescription
+
+```
+
+使用`static`修饰的类方法和类属性无法在子类中重写,相当于`final class`.
+
+
