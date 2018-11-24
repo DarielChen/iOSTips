@@ -146,6 +146,8 @@ let resultArr = chainArr.filter {
 // 136
 ```
 
+<br><a href = "#table-of-contents">:arrow_up: Back to top</a>
+
 
 <h2 id="2">2.高阶函数扩展</h2> 
 
