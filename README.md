@@ -4,7 +4,7 @@
 [![Language: Swift 4.2](https://img.shields.io/badge/language-swift4.2-f48041.svg?style=flat)](https://developer.apple.com/swift)
 ![Platform: iOS 12](https://img.shields.io/badge/platform-iOS-blue.svg?style=flat)
 
-##目录
+## 目录
 
 [1.常用的几个高阶函数](#1)  
 [2.高阶函数扩展](#2)  
@@ -147,7 +147,7 @@ let resultArr = chainArr.filter {
 // 136
 ```
 
-[:arrow_up: 返回目录](##目录)
+[返回目录](##目录)
 
 
 <h2 id="2">2.高阶函数扩展</h2> 
