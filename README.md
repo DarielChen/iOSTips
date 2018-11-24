@@ -255,6 +255,10 @@ let wordArr = line.split(whereSeparator: { $0 == " " })
 // ["BLANCHE:", "I", "don\'t", "want", "realism.", "I", "want", "magic!"]
 ```
 
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="3">3.优雅的判断多个值中是否包含某一个值</h2>  
 
 我们最常用的方式
@@ -305,6 +309,9 @@ struct EquatableValueSequence<T: Equatable> {
 }
 ```
 这样做的前提是any中传入的值需要实现`Equatable`协议.
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
 
 
 <h2 id="4">4. Hashable、Equatable和Comparable协议</h2>  
@@ -397,6 +404,11 @@ let sortedAnimals = [a1, a2, a3, a4].sorted(by: <)
 
 `Comparable`协议除了应用在类上,还可以用在**结构体**和**枚举**上.
 
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+
  <h2 id="5">5.可变参数函数</h2>  
 在定义函数的时候,如果参数的个数不确定时,需要使用可变参数函数.举个例子,对数组的求和.
 
@@ -440,6 +452,10 @@ public extension UIView {
 }
 
 ```
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 
 <h2 id="6">6.where关键字</h2>   
 
@@ -534,6 +550,9 @@ let containsBanana = fruits.contains(where: { (fruit) in
 
 参考: [Swift where 关键字](https://www.jianshu.com/p/1546594b856b)  
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 
 <h2 id="7">7.switch中判断枚举类型,尽量避免使用default</h2> 
 
@@ -558,6 +577,9 @@ func handle(_ state: State) {
 }
 
 ```
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
 
 
  <h2 id="8">8.iOS9之后全局动态修改StatusBar样式</h2>  
@@ -645,6 +667,10 @@ public extension UIColor {
     }
 }
 ```
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
 
 <h2 id="9">9.使用面向协议实现app的主题功能</h2>
 
@@ -774,6 +800,9 @@ public extension UIWindow {
 [示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/9.%E4%BD%BF%E7%94%A8%E9%9D%A2%E5%90%91%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0app%E7%9A%84%E4%B8%BB%E9%A2%98%E5%8A%9F%E8%83%BD)  
 [实现效果](http://pcb5zz9k5.bkt.clouddn.com/themeDemo.gif)
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 
 <h2 id="10">10.swift中多继承的实现</h2>  
 
@@ -897,6 +926,9 @@ class MyClass: ProtocolA, ProtocolB {}
 相对来时第二种方法会好一点,所以多继承要注意,尽量避免多继承的协议中的方法的重复.
 
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="11">11.华丽的TableView刷新动效</h2>  
 
 [先看效果](http://pcb5zz9k5.bkt.clouddn.com/TableViewRefreshAnimation2.gif
@@ -980,6 +1012,9 @@ animator.animate(cell: cell, at: indexPath, in: tableView)
 动画相关的可以参考我之前写的文章  [猛击](https://www.jianshu.com/p/6af8a7a8a15a)  
 [实现效果](http://pcb5zz9k5.bkt.clouddn.com/TableViewRefreshAnimation2.gif)  
 [示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/11.%E5%8D%8E%E4%B8%BD%E7%9A%84TableView%E5%88%B7%E6%96%B0%E5%8A%A8%E6%95%88)  
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
 
 
 
@@ -1118,6 +1153,11 @@ user.name.removeObserver(self)
 ```
 > 注意: 在使用过程中,如果改变value, addObserver方法不调用,很有可能是Observer对象已经被释放掉了.
 
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+
 <h2 id="13">13.实现多重代理</h2>  
 
 作为iOS开发中最常用的设计模式之一`Delegate`,只能是一对一的关系,如果要一对多,就只能使用`NSNotification`了,但我们可以有更好的解决方案,多重代理.
@@ -1232,6 +1272,9 @@ master.orderToEat()
 2. `UISearchBar`的回调,当我们需要在多个地方获取数据的时候,类似的还有`UINavigationController`的回调等.
 
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="14">14.自动检查控制器是否被销毁</h2>  
 
 
@@ -1280,6 +1323,9 @@ override func viewDidDisappear(_ animated: Bool) {
 }
 ```
 如果发生循环引用,控制就不会被销毁,会触发`assert`报错.
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
 
 
 <h2 id="15">15.向控制器中注入代码</h2>  
@@ -1344,6 +1390,9 @@ class ViewControllerInjector {
 代码注入可以在不修改原有代码的基础上自定义自己所要的.相比继承,代码的可重用性会高一点,侵入性会小一点. 
 
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 
 <h2 id="16">16.给Extension添加存储属性</h2>  
 
@@ -1365,6 +1414,9 @@ extension UIView {
     }
 }
 ```
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
 
 
 <h2 id="17">17.用闭包实现按钮的链式点击事件</h2>  
@@ -1487,6 +1539,9 @@ extension UIButton {
 
 有没有觉得如果这样做代码写起来会简洁一点呢?
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 
 <h2 id="18">18.用闭包实现手势的链式监听事件</h2>  
 
@@ -1583,6 +1638,9 @@ extension UIView {
 
 具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift)
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="19">19.用闭包实现通知的监听事件</h2>   
 
 #### 1. 使用
@@ -1649,6 +1707,9 @@ extension NSObject {
 }
 ```
 具体实现过程和tips17、tips18类似.
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
 
 
 <h2 id="20">20.AppDelegate解耦</h2>  
@@ -1874,6 +1935,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 ```
 `App delegate`解耦相比命令模式,使用组合模式可自定义程度会更高一点.
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="21">21.常见的编译器诊断指令</h2>  
 
 swift标准库提供了很多编译器诊断指令,用于在编译阶段提前处理好相关事情.
@@ -1953,6 +2017,9 @@ func myMethod() {
 }
 ```
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="22">22.最后执行的defer代码块</h2>  
 
 `defer`这个关键字不是很常用,但有时还是很有用的.
@@ -2028,6 +2095,9 @@ func getData(completion: (_ result: Result<String>) -> Void) {
 }
 ```
 `defer`中可以做一些result的验证逻辑,这样不会和result的处理逻辑混淆,代码清晰.
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
 
 
 <h2 id="23">23.定义全局常量</h2>  
@@ -2117,6 +2187,9 @@ CGRect(x: .kRectX, y: .kRectY, width: .kRectWidth, height: .kRectHeight)
 ```
 
 因为传入参数类型是确定的,我们可以把类型名省略,直接用点语法.
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
 
 
 <h2 id="24">24.使用Codable协议解析JSON</h2>  
@@ -2302,6 +2375,9 @@ do {
 swift4.1中有个属性可以自动将key转化为驼峰命名:
 `decoder.keyDecodingStrategy = .convertFromSnakeCase`,如果`CodingKeys`只是用来转成驼峰命名的话,设置好这个属性后就可以不用写`CodingKeys`这个枚举了.
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 
 <h2 id="25">25.dispatch_once替代方案</h2>  
 
@@ -2342,6 +2418,9 @@ class ClassName {
 ClassName.takeOnceTimeFunc()
 ```
 这样就可以做到和`dispatch_once`一样的效果了.
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
 
 
 <h2 id="26">26.被废弃的+load()和+initialize()</h2>  
@@ -2385,6 +2464,9 @@ class NothingToSeeHere {
 ```
 
 之后任何遵守`SelfAware`协议实现的`+awake()`方法在这个阶段都会被调用.
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
 
 
  <h2 id="27">27.交换方法 Method Swizzling</h2>  
@@ -2488,6 +2570,11 @@ extension UIViewController: SelfAware {
     }
 }
 ```
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="28">28.获取View的指定子视图</h2>  
 
 通过递归获取指定`view`的所有子视图.
@@ -2557,6 +2644,9 @@ extension UIAlertController {
 虽然通过这种方法可以拿到`alertTitleLabel`和`alertMessageLabel`.但没法区分哪个是哪个,`alertTitleLabel`为默认子控件的第一个`label`,如果`title`传空,`message`传值,`alertTitleLabel`和`alertMessageLabel`获取到的都是`message`的`label`.
 
 如果有更好的方法欢迎讨论.
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
 
 
 <h2 id="29">29.线程安全: 互斥锁和自旋锁(10种)</h2>  
@@ -2788,6 +2878,9 @@ os_unfair_lock_unlock(&unsafeMutex)
 [不再安全的OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)  
 [深入理解iOS开发中的锁](https://bestswifter.com/ios-lock/)
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="30">30.可选类型扩展</h2>  
 
 `Optional`(可选类型)为swift的类型安全起到了巨大的作用.
@@ -2956,6 +3049,9 @@ extension Optional {
 参考:  
 [Useful Optional Extensions](https://appventure.me/2018/01/10/optional-extensions/)
 
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
 <h2 id="31">31.更明了的异常处理封装</h2>  
 
 ```swift
@@ -3004,6 +3100,9 @@ func should(_ try: () throws -> Void) -> Error? {
 }
 ```
 在很多情况下,这样的处理方式更方便一些.
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
 
 
 <h2 id="32">32.关键字static和class的区别</h2>  
@@ -3064,4 +3163,6 @@ class MyClassChild: MyClass {
 
 使用`static`修饰的类方法和类属性无法在子类中重写,相当于`final class`.
 
+
+[:arrow_up: 返回目录](#table-of-contents)  
 
