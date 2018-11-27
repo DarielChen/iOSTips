@@ -39,6 +39,8 @@
 [30.可选类型扩展](#30)  
 [31.更明了的异常处理封装](#31)  
 [32.关键字static和class的区别](#32)  
+[33.在字典中用KeyPaths取值](#32)    
+
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
 
@@ -3166,3 +3168,164 @@ class MyClassChild: MyClass {
 
 [:arrow_up: 返回目录](#table-of-contents)  
 
+<h2 id="33">33.在字典中用KeyPaths取值</h2>  
+
+#### 1.`[String: Any]`取值的一般姿势
+作为一门强类型语言,`swift`对于层层嵌套的`Dictionary`类型的取值一点也不友好.
+
+比如我们要获取下面这个字典中`city`对应的值
+
+```swift
+var dict: [String: Any] = [
+                            "msg": "success",
+                            "code": "200",
+                            "data": [
+                                "userInfo": [
+                                    "name": "Dariel",
+                                    "city": "HangZhou",
+                                ],
+                                "other": [
+                                    "sign": "9527",
+                                ]
+                            ]
+                          ]
+        
+let city = ((dict["data"] as? [String: Any])?["userInfo"] as? [String: Any])?["city"] ?? "为空"  // HangZhou
+```
+这种方式跟OC的`NSDictionary`取值比起来是又臭又长,但`[String: Any]`类型取值又是一个无法绕开的问题.
+
+#### 2.`[String: Any]`取值的简便姿势
+
+在取值的过程中,既然每次都要将`[String: Any]`类型中取出来的值,转化为`String: Any]`,那为何不干脆写个分类自动转.
+
+```swift
+extension Dictionary {
+    subscript(dictForKey key: Key) -> [String: Any]? {
+        get { return self[key] as? [String: Any] }
+        set { self[key] = newValue as? Value }
+    }
+    // 最后一次取值返回字符串
+    subscript(stringForKey key: Key) -> String? {
+        get { return self[key] as? String }
+        set { self[key] = newValue as? Value }
+    }
+    // 最后一次取值返回类型可自己扩展
+    // ...
+}
+
+let city = dict[dictForKey: "data"]?[dictForKey: "userInfo"]?[stringForKey: "city"] ?? ""  // HangZhou
+
+```
+这样看起来就好多了,把类型转换交给`extension`去做.
+
+#### 2.`[String: Any]`取值的终极解决方案
+
+以什么样的方式取值好呢?我们可以参照下`KVC`的.
+
+```swift
+class Person: NSObject {
+    @objc dynamic var firstName: String = ""
+    
+    init(firstName: String) {
+        self.firstName = firstName
+    }
+}
+
+let john = Person(firstName: "John")
+// #keyPath()编译的时候检查表达式是否有效
+john.setValue("Dariel", forKey: #keyPath(Person.firstName))
+john.value(forKeyPath: #keyPath(Person.firstName))  // 打印 Dariel
+
+```
+通过`keyPath`取值,以这样的方式
+
+```swift
+let city = dict[keyPath: "data.userInfo.city"] ?? "" // HangZhou
+```
+
+具体实现:
+
+```swift
+extension Dictionary where Key: StringProtocol {
+    subscript(keyPath keyPath: KeyPath) -> Any? {
+        get {
+            switch keyPath.headAndTail() {
+            case nil:
+                return nil
+            case let (head, remainingKeyPath)? where remainingKeyPath.isEmpty:
+                return self[Key(string: head)]
+            case let (head, remainingKeyPath)?:
+                let key = Key(string: head)
+                switch self[key] {
+                case let nestedDict as [Key: Any]:
+                    return nestedDict[keyPath: remainingKeyPath]
+                default:
+                    return nil
+                }
+            }
+        }
+        set {
+            switch keyPath.headAndTail() {
+            case nil:
+                return
+            case let (head, remainingKeyPath)? where remainingKeyPath.isEmpty:
+                let key = Key(string: head)
+                self[key] = newValue as? Value
+            case let (head, remainingKeyPath)?:
+                let key = Key(string: head)
+                let value = self[key]
+                switch value {
+                case var nestedDict as [Key: Any]:
+                    nestedDict[keyPath: remainingKeyPath] = newValue
+                    self[key] = nestedDict as? Value
+                default:
+                    return
+                }
+            }
+        }
+    }
+}
+struct KeyPath {
+    var segments: [String]
+    var isEmpty: Bool { return segments.isEmpty }
+    var path: String {
+        return segments.joined(separator: ".")
+    }
+    // 获取当前.前面的头部和后面的部分
+    func headAndTail() -> (head: String, tail: KeyPath)? {
+        guard !isEmpty else { return nil }
+        var tail = segments
+        let head = tail.removeFirst()
+        return (head, KeyPath(segments: tail))
+    }
+}
+extension KeyPath {
+    init(_ string: String) {
+        segments = string.components(separatedBy: ".")
+    }
+}
+// 为了可以以这样的方式 let path: KeyPath = "123" 创建对象
+extension KeyPath: ExpressibleByStringLiteral {
+    init(stringLiteral value: String) {
+        self.init(value)
+    }
+    init(unicodeScalarLiteral value: String) {
+        self.init(value)
+    }
+    init(extendedGraphemeClusterLiteral value: String) {
+        self.init(value)
+    }
+}
+
+// 这个协议的作用: 保证Dictionary中的key是个字符串
+protocol StringProtocol {
+    init(string s: String)
+}
+extension String: StringProtocol {
+    init(string s: String) {
+        self = s
+    }
+}
+```
+
+[:arrow_up: 返回目录](#table-of-contents)  

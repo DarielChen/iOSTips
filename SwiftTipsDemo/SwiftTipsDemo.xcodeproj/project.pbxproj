@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		152BE42E2179744200D9FB69 /* NSObject+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152BE42D2179744200D9FB69 /* NSObject+Extension.swift */; };
+		1534823C21AD99C000BDBCB0 /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1534823B21AD99C000BDBCB0 /* Dictionary+Extension.swift */; };
 		153E37802175BC8E00D7634D /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153E377F2175BC8E00D7634D /* Collection+Extension.swift */; };
 		156787B1215DC79600AE6F31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156787B0215DC79600AE6F31 /* AppDelegate.swift */; };
 		156787B3215DC79600AE6F31 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156787B2215DC79600AE6F31 /* ViewController.swift */; };
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		152BE42D2179744200D9FB69 /* NSObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Extension.swift"; sourceTree = "<group>"; };
+		1534823B21AD99C000BDBCB0 /* Dictionary+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
 		153E377F2175BC8E00D7634D /* Collection+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
 		156787AD215DC79600AE6F31 /* SwiftTipsDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftTipsDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		156787B0215DC79600AE6F31 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				15B9519A217816180059D579 /* UIButton+Extension.swift */,
 				152BE42D2179744200D9FB69 /* NSObject+Extension.swift */,
 				15A1A9AA21A3E0F200E695ED /* Optional+Extension.swift */,
+				1534823B21AD99C000BDBCB0 /* Dictionary+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 				153E37802175BC8E00D7634D /* Collection+Extension.swift in Sources */,
 				158FCD85217093530067A406 /* DCTool.swift in Sources */,
 				15B9519B217816180059D579 /* UIButton+Extension.swift in Sources */,
+				1534823C21AD99C000BDBCB0 /* Dictionary+Extension.swift in Sources */,
 				156981A5217885A7004FDA01 /* DetailViewController.swift in Sources */,
 				156936762176CAC4004F8A24 /* ViewControllerInjector.swift in Sources */,
 				156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */,
