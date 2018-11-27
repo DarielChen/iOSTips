@@ -39,7 +39,7 @@
 [30.可选类型扩展](#30)  
 [31.更明了的异常处理封装](#31)  
 [32.关键字static和class的区别](#32)  
-[33.在字典中用KeyPaths取值](#32)    
+[33.在字典中用KeyPaths取值](#33)    
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3192,7 +3192,7 @@ var dict: [String: Any] = [
         
 let city = ((dict["data"] as? [String: Any])?["userInfo"] as? [String: Any])?["city"] ?? "为空"  // HangZhou
 ```
-这种方式跟OC的`NSDictionary`取值比起来是又臭又长,但`[String: Any]`类型取值又是一个无法绕开的问题.
+这种方式跟OC的`NSDictionary`取值比起来是又臭又长,不推荐.
 
 #### 2.`[String: Any]`取值的简便姿势
 
@@ -3220,7 +3220,7 @@ let city = dict[dictForKey: "data"]?[dictForKey: "userInfo"]?[stringForKey: "cit
 
 #### 2.`[String: Any]`取值的终极解决方案
 
-以什么样的方式取值好呢?我们可以参照下`KVC`的.
+如果自定义程度高一点,是不是还会有更方便的取值方式呢?我们可以参照下`KVC`的.
 
 ```swift
 class Person: NSObject {
