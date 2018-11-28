@@ -3170,7 +3170,7 @@ class MyClassChild: MyClass {
 
 <h2 id="33">33.在字典中用KeyPaths取值</h2>  
 
-#### 1.`[String: Any]`取值的一般姿势
+#### 1.`[String: Any]`的正常取值办法
 作为一门强类型语言,`swift`对于层层嵌套的`Dictionary`类型的取值一点也不友好.
 
 比如我们要获取下面这个字典中`city`对应的值
@@ -3194,7 +3194,7 @@ let city = ((dict["data"] as? [String: Any])?["userInfo"] as? [String: Any])?["c
 ```
 这种方式跟OC的`NSDictionary`取值比起来是又臭又长,不推荐.
 
-#### 2.`[String: Any]`取值的简便姿势
+#### 2.`[String: Any]`取值的简便方式
 
 在取值的过程中,既然每次都要将`[String: Any]`类型中取出来的值,转化为`String: Any]`,那为何不干脆写个分类自动转.
 
@@ -3218,7 +3218,7 @@ let city = dict[dictForKey: "data"]?[dictForKey: "userInfo"]?[stringForKey: "cit
 ```
 这样看起来就好多了,把类型转换交给`extension`去做.
 
-#### 2.`[String: Any]`取值的终极解决方案
+#### 2.通过`KeyPath`取值
 
 如果自定义程度高一点,是不是还会有更方便的取值方式呢?我们可以参照下`KVC`的.
 
