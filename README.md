@@ -40,6 +40,7 @@
 [31.更明了的异常处理封装](#31)  
 [32.关键字static和class的区别](#32)  
 [33.在字典中用KeyPaths取值](#33)    
+[34.给UIView顶部添加圆角](#34)    
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3329,3 +3330,40 @@ extension String: StringProtocol {
 ```
 
 [:arrow_up: 返回目录](#table-of-contents)  
+
+<h2 id="34">34.给UIView顶部添加圆角</h2>  
+
+之前给`UIView`添加圆角,都是通过分类去操作.
+
+```swift
+extension UIView {
+    /// 设置顶部两个圆角
+    ///
+    /// - Parameter radius: 圆角半径
+    public func topRoundCorners(radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: UIRectCorner(rawValue: UIRectCorner.topLeft.rawValue | UIRectCorner.topRight.rawValue) , cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        self.layer.mask = mask
+    }
+}
+```
+
+ios11出了一个属性`maskedCorners`,共有四种类型:   
+  
+- layerMinXMinYCorner  左上角
+- layerMaxXMinYCorner  右上角
+- layerMinXMaxYCorner  左下角
+- layerMaxXMaxYCorner  右下角
+
+```swift
+if #available(iOS 11, *) {
+    darkView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+    darkView.layer.cornerRadius = 8
+}
+```
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+
+

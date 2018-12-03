@@ -12,8 +12,19 @@ extension UIView {
     /// 同时添加多个子控件
     ///
     /// - Parameter subviews: 单个或多个子控件
-    func add(_ subviews: UIView...) {
+    public func add(_ subviews: UIView...) {
         subviews.forEach(addSubview)
+    }
+    /// 设置顶部两个圆角
+    ///
+    /// - Parameter radius: 圆角半径
+    public func topRoundCorners(radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners:
+            UIRectCorner(rawValue: UIRectCorner.topLeft.rawValue | UIRectCorner.topRight.rawValue),
+                                cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        self.layer.mask = mask
     }
 }
 
