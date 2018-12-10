@@ -3368,7 +3368,7 @@ if #available(iOS 11, *) {
 
 <h2 id="35">35.使用系统自带气泡弹框</h2>  
 
-<img src="../SwiftTips/Source/showStyle.png" width=250>
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/showStyle.png" width=250>
 
 iOS中提供这几种转场样式  
 
@@ -3380,7 +3380,7 @@ iOS中提供这几种转场样式
 
 我们平时用的比较多的是`Show`和`Present Modally`,`Present As Popover`这种气泡弹出样式是用在`iPad`上的,但有时`iPhone`上会用到,我们可以做下特殊处理,不让它覆盖整个屏幕.
 
-<img src="../SwiftTips/Source/popOverView.gif" width=250>
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/popOverView.gif" width=250>
 
 实现
 
@@ -3428,9 +3428,10 @@ extension ViewController: UIPopoverPresentationControllerDelegate {
 }
 ```
 
+
 因为`PopoverView`是一个控制器,相比第三方气泡弹框,可自定义程度会高一点.
 
-[示例Demo](../SwiftTips/tree/master/Demo/35.使用系统自带气泡弹框)  
+[示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/35.%E4%BD%BF%E7%94%A8%E7%B3%BB%E7%BB%9F%E8%87%AA%E5%B8%A6%E6%B0%94%E6%B3%A1%E5%BC%B9%E6%A1%86)  
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
