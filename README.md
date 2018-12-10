@@ -41,6 +41,7 @@
 [32.关键字static和class的区别](#32)  
 [33.在字典中用KeyPaths取值](#33)    
 [34.给UIView顶部添加圆角](#34)    
+[35.使用系统自带气泡弹框](#34)    
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3365,5 +3366,73 @@ if #available(iOS 11, *) {
 [:arrow_up: 返回目录](#table-of-contents)  
 
 
+<h2 id="35">35.使用系统自带气泡弹框</h2>  
+
+<img src="../SwiftTips/Source/showStyle.png" width=250>
+
+iOS中提供这几种转场样式  
+
+  - **Show**: 用在`UINavigationController`堆栈视图时,`presentedViewController`进入时由右向左，退出时由左向右.新压入的视图控制器有返回按钮,单击可以返回.
+  - **Show Detail**: 只适用于嵌入在`UISplitViewController`对象内的视图控制器,分割控制器用以替换详细控制器,不提供返回按钮.
+  - **Present Modally**: 有多种不同呈现方式,可根据需要设置.在`iPhone`中，一般以动画的形式自下向上覆盖整个屏幕.
+  - **Present As Popover**: 在`iPad`中,目标视图以浮动窗样式呈现,点击目标视图以外区域,目标视图消失;在`iPhone`中,默认目标视图以模态覆盖整个屏幕.
+  - **Custom**: 可自定义转场样式.
+
+我们平时用的比较多的是`Show`和`Present Modally`,`Present As Popover`这种气泡弹出样式是用在`iPad`上的,但有时`iPhone`上会用到,我们可以做下特殊处理,不让它覆盖整个屏幕.
+
+<img src="../SwiftTips/Source/popOverView.gif" width=250>
+
+实现
+
+#### 1. 在`StroyBoard`中的布局
+
+1. 设置`PopoverView`控制器的尺寸.
+2. 添加`segue`并进行绑定.
+
+具体步骤参考:[How to popover not full screen](https://stackoverflow.com/questions/47905805/storyboard-how-to-popover-not-full-screen)
+
+#### 2. `UIPopoverPresentationControllerDelegate`设置
+
+```swift
+extension ViewController: UIPopoverPresentationControllerDelegate {
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "popoverSegue" {
+            let popoverViewController = segue.destination
+            popoverViewController.popoverPresentationController!.delegate = self
+        }
+    }
+    
+    // 特殊处理 返回none 不让PopoverView覆盖整个屏幕
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        setAlphaOfBackgroundViews(alpha: 1)
+    }
+    
+    func prepareForPopoverPresentation(_ popoverPresentationController: UIPopoverPresentationController) {
+        setAlphaOfBackgroundViews(alpha: 0.8)
+    }
+    
+    // 设置灰色背景
+    func setAlphaOfBackgroundViews(alpha: CGFloat) {
+        let statusBarWindow = UIApplication.shared.value(forKey: "statusBarWindow") as? UIWindow
+        UIView.animate(withDuration: 0.2) {
+            statusBarWindow?.alpha = alpha
+            self.view.alpha = alpha
+            self.navigationController?.navigationBar.alpha = alpha
+        }
+    }
+}
+```
+
+因为`PopoverView`是一个控制器,相比第三方气泡弹框,可自定义程度会高一点.
+
+[示例Demo](../SwiftTips/tree/master/Demo/35.使用系统自带气泡弹框)  
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
 
 
