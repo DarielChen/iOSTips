@@ -3492,10 +3492,9 @@ extension EdgeInsetLabel {
 
 既然`@IBDesignable`可以做到所见即所得的视图,那干脆把`cornerRadius`、`borderWidth`、`borderColor`、`shadowRadius`、`shadowOpacity`、`shadowOffset`、`shadowColor`都交给它去做好了.面向`StoryBoard`和`Xib`编程.
 
-<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/popOverView.gif" width=250>
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/IBDesignableView.png" width=250>
 
-具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/Source/IBDesignableView.png)
-
+具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift) 
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
