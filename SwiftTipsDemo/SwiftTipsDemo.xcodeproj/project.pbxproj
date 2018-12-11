@@ -23,6 +23,7 @@
 		158FCD87217093640067A406 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD86217093640067A406 /* Observable.swift */; };
 		15940C5021748FAB00E83DC4 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */; };
 		15974107219D1A20003533C4 /* MutexLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15974106219D1A20003533C4 /* MutexLock.swift */; };
+		15979E3A21BFA45F00CA35F4 /* EdgeInsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15979E3921BFA45F00CA35F4 /* EdgeInsetLabel.swift */; };
 		15A1A9AB21A3E0F200E695ED /* Optional+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15A1A9AA21A3E0F200E695ED /* Optional+Extension.swift */; };
 		15B9519B217816180059D579 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B9519A217816180059D579 /* UIButton+Extension.swift */; };
 		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
@@ -48,6 +49,7 @@
 		158FCD86217093640067A406 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		15974106219D1A20003533C4 /* MutexLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutexLock.swift; sourceTree = "<group>"; };
+		15979E3921BFA45F00CA35F4 /* EdgeInsetLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetLabel.swift; sourceTree = "<group>"; };
 		15A1A9AA21A3E0F200E695ED /* Optional+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Extension.swift"; sourceTree = "<group>"; };
 		15B9519A217816180059D579 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
 		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				15974106219D1A20003533C4 /* MutexLock.swift */,
 				158FCD86217093640067A406 /* Observable.swift */,
 				156936752176CAC4004F8A24 /* ViewControllerInjector.swift */,
+				15979E3921BFA45F00CA35F4 /* EdgeInsetLabel.swift */,
 			);
 			path = DCTool;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				1534823C21AD99C000BDBCB0 /* Dictionary+Extension.swift in Sources */,
 				156981A5217885A7004FDA01 /* DetailViewController.swift in Sources */,
 				156936762176CAC4004F8A24 /* ViewControllerInjector.swift in Sources */,
+				15979E3A21BFA45F00CA35F4 /* EdgeInsetLabel.swift in Sources */,
 				156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */,
 				156787B3215DC79600AE6F31 /* ViewController.swift in Sources */,
 				15A1A9AB21A3E0F200E695ED /* Optional+Extension.swift in Sources */,

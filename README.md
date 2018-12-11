@@ -41,7 +41,8 @@
 [32.关键字static和class的区别](#32)  
 [33.在字典中用KeyPaths取值](#33)    
 [34.给UIView顶部添加圆角](#34)    
-[35.使用系统自带气泡弹框](#35)    
+[35.使用系统自带气泡弹框](#35)  
+[36.给UILabel添加内边距](#36) 
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3436,4 +3437,55 @@ extension ViewController: UIPopoverPresentationControllerDelegate {
 
 [:arrow_up: 返回目录](#table-of-contents)  
 
+<h2 id="36">36.给UILabel添加内边距</h2>  
 
+之前给`Label`设置左右内边距都是文字加空格,但觉得这样的方式不优雅.要是碰到需要设置上下内边距该咋办? 
+
+`CSS`中可以用`padding`设置内边距,感觉很方便.或者我们可以有更好的解决办法.
+
+```swift
+@IBDesignable
+class EdgeInsetLabel: UILabel {
+    var textInsets = UIEdgeInsets.zero {
+        didSet { invalidateIntrinsicContentSize() }
+    }
+    override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
+        let insetRect = bounds.inset(by: textInsets)
+        let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
+        let invertedInsets = UIEdgeInsets(top: -textInsets.top,
+                                          left: -textInsets.left,
+                                          bottom: -textInsets.bottom,
+                                          right: -textInsets.right)
+        return textRect.inset(by: invertedInsets)
+    }
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: textInsets))
+    }
+}
+
+extension EdgeInsetLabel {
+    @IBInspectable
+    var leftTextInset: CGFloat {
+        set { textInsets.left = newValue }
+        get { return textInsets.left }
+    }
+    @IBInspectable
+    var rightTextInset: CGFloat {
+        set { textInsets.right = newValue }
+        get { return textInsets.right }
+    }
+    @IBInspectable
+    var topTextInset: CGFloat {
+        set { textInsets.top = newValue }
+        get { return textInsets.top }
+    }
+    @IBInspectable
+    var bottomTextInset: CGFloat {
+        set { textInsets.bottom = newValue }
+        get { return textInsets.bottom }
+    }
+}
+```
+加`@IBDesignable`和`@IBInspectable`可以在使用`StoryBoard`和`Xib`时有更好的体验.
+
+[:arrow_up: 返回目录](#table-of-contents)  
