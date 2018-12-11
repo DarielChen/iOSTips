@@ -3441,7 +3441,7 @@ extension ViewController: UIPopoverPresentationControllerDelegate {
 
 之前给`Label`设置左右内边距都是文字加空格,但觉得这样的方式不优雅.要是碰到需要设置上下内边距该咋办? 
 
-`CSS`中可以用`padding`设置内边距,感觉很方便.或者我们可以有更好的解决办法.
+`CSS`中用`padding`设置内边距,给了我们一个解决办法的思路.
 
 ```swift
 @IBDesignable
@@ -3486,17 +3486,15 @@ extension EdgeInsetLabel {
     }
 }
 ```
-加`@IBDesignable`和`@IBInspectable`可以在使用`StoryBoard`和`Xib`时有更好的体验.
+`@IBDesignable`和`@IBInspectable`可以在使用`StoryBoard`和`Xib`时有更好的体验.
 
 
-
-既然`@IBDesignable`可以做到所见即所得的视图,那干脆把`cornerRadius`、`borderWidth`、`borderColor`、`shadowRadius`、`shadowOpacity`、`shadowOffset`、`shadowColor`都交给它去做好了.
+`@IBDesignable`修饰的类可以变得所见即所得,我们可以把`cornerRadius`、`borderWidth`、`borderColor`、`shadowRadius`、`shadowOpacity`、`shadowOffset`、`shadowColor`都交给它去做.
 
 面向`StoryBoard`和`Xib`编程.
 
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/IBDesignableView.png" width=250>
 
 具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift) 
-
 
 [:arrow_up: 返回目录](#table-of-contents)  
