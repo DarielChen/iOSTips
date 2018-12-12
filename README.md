@@ -3443,6 +3443,8 @@ extension ViewController: UIPopoverPresentationControllerDelegate {
 
 `CSS`中用`padding`设置内边距,给了我们一个解决办法的思路.
 
+实现过程
+
 ```swift
 @IBDesignable
 class EdgeInsetLabel: UILabel {
@@ -3486,12 +3488,17 @@ extension EdgeInsetLabel {
     }
 }
 ```
+
+设置上下左右的内边距分别为: 10 20 30 40
+
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/padding.png" width=250>
+
 `@IBDesignable`和`@IBInspectable`可以在使用`StoryBoard`和`Xib`时有更好的体验.
 
 
 `@IBDesignable`修饰的类可以变得所见即所得,我们可以把`cornerRadius`、`borderWidth`、`borderColor`、`shadowRadius`、`shadowOpacity`、`shadowOffset`、`shadowColor`都交给它去做.
 
-面向`StoryBoard`和`Xib`编程.
+在`StoryBoard`和`Xib`可以达到如下图效果.
 
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/IBDesignableView.png" width=250>
 
