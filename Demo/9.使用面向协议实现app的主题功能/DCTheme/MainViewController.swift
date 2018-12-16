@@ -28,6 +28,5 @@ class MainViewController: UIViewController {
         }
         theme.apply(for: UIApplication.shared)
     }
-
 }
 

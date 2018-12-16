@@ -8,8 +8,7 @@
 
 import UIKit
 
-public extension UIView {
-    
+extension UIView {
     /// 边框颜色
     @IBInspectable var borderColor: UIColor? {
         get {
@@ -26,13 +25,11 @@ public extension UIView {
             layer.borderColor = color.cgColor
         }
     }
-    
     /// 边框宽度
     @IBInspectable var borderWidth: CGFloat {
         get { return layer.borderWidth }
         set { layer.borderWidth = newValue }
     }
-    
     /// 圆角半径
     @IBInspectable var cornerRadius: CGFloat {
         get { return layer.cornerRadius }

@@ -8,8 +8,7 @@
 
 import UIKit
 
-public extension UITableViewCell {
-    
+extension UITableViewCell {
     /// cell选中时的颜色
     @objc dynamic var selectedColor: UIColor? {
         get { return selectedBackgroundView?.backgroundColor }

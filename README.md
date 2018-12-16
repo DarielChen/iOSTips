@@ -447,7 +447,7 @@ let label = UILabel()
 let button = UIButton()
 view.add(view, label, button)
 
-public extension UIView {
+extension UIView {
     /// 同时添加多个子控件
     ///
     /// - Parameter subviews: 单个或多个子控件
@@ -647,7 +647,7 @@ UIApplication.shared.setStatusBarStyle(.default, animated: true)
     }
 }
 
-public extension UIWindow {
+extension UIWindow {
     func reload() {
         subviews.forEach { view in
             view.removeFromSuperview()
@@ -664,7 +664,7 @@ public extension UIWindow {
 在修改导航栏颜色的时候,判断下导航栏颜色的深浅
 
 ```swift
-public extension UIColor {
+extension UIColor {
     func isDarkColor() -> Bool {
         var w: CGFloat = 0
         self.getWhite(&w, alpha: nil)
@@ -791,7 +791,7 @@ extension LightTheme {
 在设置完`UIAppearance`后需要对所有的控件进行刷新,这个操作放在`apply`方法中.具体实现
 
 ```swift
-public extension UIWindow {
+extension UIWindow {
     /// 刷新所有子控件
     func reload() {
         subviews.forEach { view in
@@ -936,7 +936,8 @@ class MyClass: ProtocolA, ProtocolB {}
 
 <h2 id="11">11.华丽的TableView刷新动效</h2>  
 
-[先看效果](http://pcb5zz9k5.bkt.clouddn.com/TableViewRefreshAnimation2.gif
+
+[先看效果](https://github.com/DarielChen/SwiftTips/blob/master/Source/TableViewRefreshAnimation2.gif
 )(由于这个页面的内容有点多,我尽量不放加载比较耗时的文件)
 
 #### 1. 简单的实现
@@ -2158,7 +2159,7 @@ let instance = ConstantsEnum()
 例如,通知名称
 
 ```swift
-public extension Notification.Name {
+extension Notification.Name {
     // 名称
     static let customNotification = Notification.Name("customNotification")
 }
@@ -2169,7 +2170,7 @@ NotificationCenter.default.post(name: .customNotification, object: nil)
 增加自定义颜色
 
 ```swift
-public extension UIColor {
+extension UIColor {
     class var myGolden: UIColor {
         return UIColor(red: 1.000, green: 0.894, blue: 0.541, alpha: 0.900)
     }
@@ -2181,7 +2182,7 @@ view.backgroundColor = .myGolden
 增加double常量
 
 ```swift
-public extension Double {
+extension Double {
     public static let kRectX = 30.0
     public static let kRectY = 30.0
     public static let kRectWidth = 30.0
