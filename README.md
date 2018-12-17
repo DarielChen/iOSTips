@@ -42,7 +42,10 @@
 [33.在字典中用KeyPaths取值](#33)    
 [34.给UIView顶部添加圆角](#34)    
 [35.使用系统自带气泡弹框](#35)  
-[36.给UILabel添加内边距](#36) 
+[36.给UILabel添加内边距](#36)  
+[37.给UIViewController添加静态Cell](#37)  
+ 
+
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3504,5 +3507,31 @@ extension EdgeInsetLabel {
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/IBDesignableView.png" width=250>
 
 具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift) 
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="37">37.给UIViewController添加静态Cell</h2>  
+
+正常情况下,我们可以给`UIViewController`添加`UITableView`,但如果添加完之后想把`Content`设置为`Static Cells`时会报错.
+
+> error: Illegal Configuration: Static table views are only valid when embedded in UITableViewController instances
+
+只有在`UITableViewController`才能设置静态Cell.
+
+我们可以采取一个折中的办法,在`UIViewController`中添加一个`UITableViewController`子控制器.
+
+在`StoryBoard`中的操作步骤:  
+
+1.添加`Container View`到`UIViewController`,设置好相关尺寸.
+
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/addContainerView.png" width=350>
+
+2.删除右边的`UIViewController`,再添加一个`UITableViewController`,拖线的时候注意是`Embed`
+
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/embedTableViewController.png" width=350>
+
+
+然后用代理在`UIViewController`中操作`UITableViewController `.
 
 [:arrow_up: 返回目录](#table-of-contents)  
