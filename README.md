@@ -44,8 +44,7 @@
 [35.使用系统自带气泡弹框](#35)  
 [36.给UILabel添加内边距](#36)  
 [37.给UIViewController添加静态Cell](#37)  
- 
-
+[38.简化使用UserDefaults](#38)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -2892,9 +2891,9 @@ os_unfair_lock_unlock(&unsafeMutex)
 
 <h2 id="30">30.可选类型扩展</h2>  
 
-`Optional`(可选类型)为swift的类型安全起到了巨大的作用.
+`Optional`(可选类型)为swift的类型安全起到了巨大的作用。
 
-几种将可选值解包的操作.
+几种将可选值解包的操作。
 
 ```swift
 var optionalStr: String? = "可选类型"
@@ -2917,12 +2916,12 @@ print(optionalStr ?? "optionalStr为空")
 ```
 
 这是常见的几种解包方式  
-1. 强制解包不太推荐使用,除非真的很确定当前可选类型不为空  
-2. 可选绑定解包,虽然可以保证安全,但使用多了很容易造成层层嵌套,阅读性不好  
-3. `guard`解包虽然能避免层层嵌套,但如果`return`下面还有需要执行的业务逻辑咋办  
-4. `??`用起来很方便,但后面只能是值,或者表达式,可能满足不了要求
+1. 强制解包不太推荐使用，除非真的很确定当前可选类型不为空  
+2. 可选绑定解包，虽然可以保证安全，但使用多了很容易造成层层嵌套，阅读性不好  
+3. `guard`解包虽然能避免层层嵌套，但如果`return`下面还有需要执行的业务逻辑咋办  
+4. `??`用起来很方便，但后面只能是值，或者表达式，可能满足不了要求
 
-其实我们可以用`extension`为`Optional`添加自定义的API.
+其实我们可以用`extension`为`Optional`添加自定义的API。
 
 ##### 1. `isNone`和`isSome`
 
@@ -2943,7 +2942,7 @@ extension Optional {
     }    
 }
 ```
-`optionalStr.isNone`这样使用比`if optionalStr == nil`简洁一些.
+`optionalStr.isNone`这样使用比`if optionalStr == nil`简洁一些。
 
 ##### 2. or
 
@@ -2963,7 +2962,7 @@ extension Optional {
     }
 }
 ```
-`@autoclosure`关键词可以让表达式自动封装成一个闭包,从而可以去掉`{}`.`or`为`??`做了一层封装,当可选值为空时,执行??后面的表达式,或者闭包.
+`@autoclosure`关键词可以让表达式自动封装成一个闭包。从而可以去掉`{}`.`or`为`??`做了一层封装，当可选值为空时，执行??后面的表达式，或者闭包。
 
 ```swift
     // 为??做了一层封装
@@ -2999,7 +2998,7 @@ extension Optional {
     }
 }
 ```
-可选值为空和不为空执行的两个闭包.
+可选值为空和不为空执行的两个闭包。
 
 ```swift
     let firstView: UIView? = nil
@@ -3090,7 +3089,7 @@ do {
 
 ```
 
-当`do`代码块捕捉到异常时放在`catch`中处理.
+当`do`代码块捕捉到异常时放在`catch`中处理。
 
 #### 2. 明了的处理方式
 
@@ -3108,7 +3107,7 @@ func should(_ try: () throws -> Void) -> Error? {
     }
 }
 ```
-在很多情况下,这样的处理方式更方便一些.
+在很多情况下，这样的处理方式更方便一些。
 
 [:arrow_up: 返回目录](#table-of-contents)  
 
@@ -3116,13 +3115,13 @@ func should(_ try: () throws -> Void) -> Error? {
 
 <h2 id="32">32.关键字static和class的区别</h2>  
 
-在`class`中`static`和`class`关键字都可以来修饰属性和方法,但它们有着本质的不同.
+在`class`中`static`和`class`关键字都可以来修饰属性和方法，但它们有着本质的不同。
 
-`static`关键字: 它能够用在所有类型(`class`、`struct`、`enum`),表示静态方法或静态属性(计算属性和存储属性).  
-`class`关键字: 只能够用在`class`中,表示类方法或类属性(只能是计算属性).
+`static`关键字：它能够用在所有类型(`class`、`struct`、`enum`)，表示静态方法或静态属性(计算属性和存储属性)。  
+`class`关键字：只能够用在`class`中，表示类方法或类属性(只能是计算属性)。
 
-> 计算属性: 不直接存储值,而是提供一个`getter`和`setter `方法来获取和设置其他属性或变量的值.  
-> 存储属性: 就是定义一个常量或者变量来存储值.
+> 计算属性： 不直接存储值，而是提供一个`getter`和`setter `方法来获取和设置其他属性或变量的值。  
+> 存储属性： 就是定义一个常量或者变量来存储值。
 
 ```swift
 class MyClass {
@@ -3170,7 +3169,7 @@ class MyClassChild: MyClass {
 
 ```
 
-使用`static`修饰的类方法和类属性无法在子类中重写,相当于`final class`.
+使用`static`修饰的类方法和类属性无法在子类中重写，相当于`final class`。
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
@@ -3178,7 +3177,7 @@ class MyClassChild: MyClass {
 <h2 id="33">33.在字典中用KeyPaths取值</h2>  
 
 #### 1.`[String: Any]`的正常取值办法
-作为一门强类型语言,`swift`对于层层嵌套的`Dictionary`类型的取值一点也不友好.
+作为一门强类型语言，`swift`对于层层嵌套的`Dictionary`类型的取值一点也不友好。
 
 比如我们要获取下面这个字典中`city`对应的值
 
@@ -3199,11 +3198,11 @@ var dict: [String: Any] = [
         
 let city = ((dict["data"] as? [String: Any])?["userInfo"] as? [String: Any])?["city"] ?? "为空"  // HangZhou
 ```
-这种方式跟OC的`NSDictionary`取值比起来是又臭又长,不推荐.
+这种方式跟OC的`NSDictionary`取值比起来是又臭又长，不推荐。
 
 #### 2.`[String: Any]`取值的简便方式
 
-在取值的过程中,既然每次都要将`[String: Any]`类型中取出来的值,转化为`String: Any]`,那为何不干脆写个分类自动转.
+在取值的过程中，既然每次都要将`[String: Any]`类型中取出来的值,转化为`String: Any]`，那为何不干脆写个分类自动转。
 
 ```swift
 extension Dictionary {
@@ -3223,11 +3222,11 @@ extension Dictionary {
 let city = dict[dictForKey: "data"]?[dictForKey: "userInfo"]?[stringForKey: "city"] ?? ""  // HangZhou
 
 ```
-这样看起来就好多了,把类型转换交给`extension`去做.
+这样看起来就好多了，把类型转换交给`extension`去做。
 
 #### 2.通过`KeyPath`取值
 
-如果自定义程度高一点,是不是还会有更方便的取值方式呢?我们可以参照下`KVC`的.
+如果自定义程度高一点，是不是还会有更方便的取值方式呢?我们可以参照下`KVC`的。
 
 ```swift
 class Person: NSObject {
@@ -3244,13 +3243,13 @@ john.setValue("Dariel", forKey: #keyPath(Person.firstName))
 john.value(forKeyPath: #keyPath(Person.firstName))  // 打印 Dariel
 
 ```
-通过`keyPath`取值,以这样的方式
+通过`keyPath`取值，以这样的方式
 
 ```swift
 let city = dict[keyPath: "data.userInfo.city"] ?? "" // HangZhou
 ```
 
-具体实现:
+具体实现：
 
 ```swift
 extension Dictionary where Key: StringProtocol {
@@ -3339,7 +3338,7 @@ extension String: StringProtocol {
 
 <h2 id="34">34.给UIView顶部添加圆角</h2>  
 
-之前给`UIView`添加圆角,都是通过分类去操作.
+之前给`UIView`添加圆角，都是通过分类去操作。
 
 ```swift
 extension UIView {
@@ -3355,7 +3354,7 @@ extension UIView {
 }
 ```
 
-ios11出了一个属性`maskedCorners`,共有四种类型:   
+ios11出了一个属性`maskedCorners`，共有四种类型：   
   
 - layerMinXMinYCorner  左上角
 - layerMaxXMinYCorner  右上角
@@ -3377,13 +3376,13 @@ if #available(iOS 11, *) {
 
 iOS中提供这几种转场样式  
 
-  - **Show**: 用在`UINavigationController`堆栈视图时,`presentedViewController`进入时由右向左，退出时由左向右.新压入的视图控制器有返回按钮,单击可以返回.
-  - **Show Detail**: 只适用于嵌入在`UISplitViewController`对象内的视图控制器,分割控制器用以替换详细控制器,不提供返回按钮.
-  - **Present Modally**: 有多种不同呈现方式,可根据需要设置.在`iPhone`中，一般以动画的形式自下向上覆盖整个屏幕.
-  - **Present As Popover**: 在`iPad`中,目标视图以浮动窗样式呈现,点击目标视图以外区域,目标视图消失;在`iPhone`中,默认目标视图以模态覆盖整个屏幕.
-  - **Custom**: 可自定义转场样式.
+  - **Show**： 用在`UINavigationController`堆栈视图时，`presentedViewController`进入时由右向左，退出时由左向右。新压入的视图控制器有返回按钮，单击可以返回。
+  - **Show Detail**： 只适用于嵌入在`UISplitViewController`对象内的视图控制器，分割控制器用以替换详细控制器，不提供返回按钮。
+  - **Present Modally**： 有多种不同呈现方式，可根据需要设置。在`iPhone`中，一般以动画的形式自下向上覆盖整个屏幕。
+  - **Present As Popover**： 在`iPad`中，目标视图以浮动窗样式呈现，点击目标视图以外区域，目标视图消失；在`iPhone`中，默认目标视图以模态覆盖整个屏幕。
+  - **Custom**: 可自定义转场样式。
 
-我们平时用的比较多的是`Show`和`Present Modally`,`Present As Popover`这种气泡弹出样式是用在`iPad`上的,但有时`iPhone`上会用到,我们可以做下特殊处理,不让它覆盖整个屏幕.
+我们平时用的比较多的是`Show`和`Present Modally`，`Present As Popover`这种气泡弹出样式是用在`iPad`上的，但有时`iPhone`上会用到，我们可以做下特殊处理，不让它覆盖整个屏幕。
 
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/popOverView.gif" width=250>
 
@@ -3391,8 +3390,8 @@ iOS中提供这几种转场样式
 
 #### 1. 在`StroyBoard`中的布局
 
-1. 设置`PopoverView`控制器的尺寸.
-2. 添加`segue`并进行绑定.
+1. 设置`PopoverView`控制器的尺寸。
+2. 添加`segue`并进行绑定。
 
 具体步骤参考:[How to popover not full screen](https://stackoverflow.com/questions/47905805/storyboard-how-to-popover-not-full-screen)
 
@@ -3434,7 +3433,7 @@ extension ViewController: UIPopoverPresentationControllerDelegate {
 ```
 
 
-因为`PopoverView`是一个控制器,相比第三方气泡弹框,可自定义程度会高一点.
+因为`PopoverView`是一个控制器，相比第三方气泡弹框,可自定义程度会高一点。
 
 [示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/35.%E4%BD%BF%E7%94%A8%E7%B3%BB%E7%BB%9F%E8%87%AA%E5%B8%A6%E6%B0%94%E6%B3%A1%E5%BC%B9%E6%A1%86)  
 
@@ -3443,9 +3442,9 @@ extension ViewController: UIPopoverPresentationControllerDelegate {
 
 <h2 id="36">36.给UILabel添加内边距</h2>  
 
-之前给`Label`设置左右内边距都是文字加空格,但觉得这样的方式不优雅.要是碰到需要设置上下内边距该咋办? 
+之前给`Label`设置左右内边距都是文字加空格，但觉得这样的方式不优雅。要是碰到需要设置上下内边距该咋办？
 
-`CSS`中用`padding`设置内边距,给了我们一个解决办法的思路.
+`CSS`中用`padding`设置内边距，给了我们一个解决办法的思路。
 
 实现过程
 
@@ -3497,12 +3496,12 @@ extension EdgeInsetLabel {
 
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/padding.png" width=250>
 
-`@IBDesignable`和`@IBInspectable`可以在使用`StoryBoard`和`Xib`时有更好的体验.
+`@IBDesignable`和`@IBInspectable`可以在使用`StoryBoard`和`Xib`时有更好的体验。
 
 
-`@IBDesignable`修饰的类可以变得所见即所得,我们可以把`cornerRadius`、`borderWidth`、`borderColor`、`shadowRadius`、`shadowOpacity`、`shadowOffset`、`shadowColor`都交给它去做.
+`@IBDesignable`修饰的类可以变得所见即所得，我们可以把`cornerRadius`、`borderWidth`、`borderColor`、`shadowRadius`、`shadowOpacity`、`shadowOffset`、`shadowColor`都交给它去做。
 
-在`StoryBoard`和`Xib`可以达到如下图效果.
+在`StoryBoard`和`Xib`可以达到如下图效果。
 
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/IBDesignableView.png" width=250>
 
@@ -3513,25 +3512,127 @@ extension EdgeInsetLabel {
 
 <h2 id="37">37.给UIViewController添加静态Cell</h2>  
 
-正常情况下,我们可以给`UIViewController`添加`UITableView`,但如果添加完之后想把`Content`设置为`Static Cells`时会报错.
+正常情况下，我们可以给`UIViewController`添加`UITableView`，但如果添加完之后想把`Content`设置为`Static Cells`时会报错。
 
 > error: Illegal Configuration: Static table views are only valid when embedded in UITableViewController instances
 
-只有在`UITableViewController`才能设置静态Cell.
+只有在`UITableViewController`才能设置静态Cell。
 
-我们可以采取一个折中的办法,在`UIViewController`中添加一个`UITableViewController`子控制器.
+我们可以采取一个折中的办法，在`UIViewController`中添加一个`UITableViewController`子控制器。
 
-在`StoryBoard`中的操作步骤:  
+在`StoryBoard`中的操作步骤：  
 
-1.添加`Container View`到`UIViewController`,设置好相关尺寸.
+1.添加`Container View`到`UIViewController`，设置好相关尺寸。
 
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/addContainerView.png" width=350>
 
-2.删除右边的`UIViewController`,再添加一个`UITableViewController`,拖线的时候注意是`Embed`
+2.删除右边的`UIViewController`，再添加一个`UITableViewController`，拖线的时候注意是`Embed`
 
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/embedTableViewController.png" width=350>
 
 
-然后用代理在`UIViewController`中操作`UITableViewController `.
+然后用代理在`UIViewController`中操作`UITableViewController `。
 
 [:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="38">38.简化使用UserDefaults</h2>  
+
+用来做简单数据存储的`Preference`在我们的日常开发中使用的还是比较多的，但使用起来总感觉不那么方便。比如说需要去手动管理`key`，之前是这样做的。
+
+
+```swift
+public enum UserDefaultsKey: String {
+    case keyOne
+    case keyTwo
+}
+
+extension UserDefaults {
+    /// 存储
+    public final class func set(_ value: Any, forKey: UserDefaultsKey) {
+        UserDefaults.standard.set(value, forKey: forKey.rawValue)
+    }
+    /// 读取
+    public final class func getString(forKey: UserDefaultsKey) -> String? {
+        return UserDefaults.standard.string(forKey: forKey.rawValue)
+    }
+    public final class func getBool(forKey: UserDefaultsKey) -> Bool? {
+        return UserDefaults.standard.bool(forKey: forKey.rawValue)
+    }
+}
+
+// 存储数据
+UserDefaults.set(true, forKey: .keyOne)
+// 读取数据        
+UserDefaults.getBool(forKey: .keyOne)
+```
+
+我们可以通过使用`#function`避免手动管理`key`，在存储和读取数据时调动的`set`和`get`方法也可以交给目标属性默认的`set`和`get`方法去做,。
+
+```swift
+extension UserDefaults {
+    /// 通过下标使用枚举
+    subscript<T: RawRepresentable>(key: String) -> T? {
+        get {
+            if let rawValue = value(forKey: key) as? T.RawValue {
+                return T(rawValue: rawValue)
+            }
+            return nil
+        }
+        set { set(newValue?.rawValue, forKey: key) }
+    }
+    
+    subscript<T>(key: String) -> T? {
+        get { return value(forKey: key) as? T }
+        set { set(newValue, forKey: key) }
+    }
+}
+
+struct Preference {
+    /// bool
+    static var isFirstLogin: Bool {
+        get { return UserDefaults.standard[#function] ?? false }
+        set { UserDefaults.standard[#function] = newValue }
+    }
+    /// enum
+    static var appTheme: Theme {
+        get { return UserDefaults.standard[#function] ?? .light }
+        set { UserDefaults.standard[#function] = newValue }
+    }
+    /// 测试服跟正式服之间的切换（默认正式服）
+    static var serverUrl: ServerUrlType {
+        get { return UserDefaults.standard[#function] ?? .distributeServer }
+        set { UserDefaults.standard[#function] = newValue }
+    }
+}
+
+enum Theme: Int {
+    case light
+    case dark
+    case blue
+}
+
+enum ServerUrlType: String {
+    case developServer = "url: developServer" // 测试服
+    case distributeServer = "url: distributeServer" // 正式服
+}
+
+// 存储数据
+Preference.isFirstLogin = true
+Preference.appTheme = .dark
+Preference.serverUrl = .developServer 
+
+// 读取数据
+Preference.isFirstLogin // true
+Preference.appTheme == .dark // true 
+Preference.serverUrl.rawValue // url: developServer
+
+```
+
+在测试环节经常需要在测试服和正式服来回切换，为了避免老是打包，我们可以利用`UserDefaults`去更改服务器地址，在适当的位置（可以是个测试页面）加个`UISwitch`，然后设置`serverUrl`的值。
+
+> `UserDefaults`有性能问题吗？  
+> `UserDefaults`是带缓存的。它会把访问到的`key`缓存到内存中，下次再访问时，如果内存中命中就直接访问，如果未命中再从文件中载入。它还会时不时调用同步方法来保证内存与文件中的数据的一致性，有时在写入一个值后也最好调用下这个方法来保证数据真正写入文件。
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
