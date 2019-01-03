@@ -45,6 +45,7 @@
 [36.给UILabel添加内边距](#36)  
 [37.给UIViewController添加静态Cell](#37)  
 [38.简化使用UserDefaults](#38)  
+[39.给TabBar上的按钮添加动画](#39)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3636,3 +3637,36 @@ Preference.serverUrl.rawValue // url: developServer
 
 [:arrow_up: 返回目录](#table-of-contents)  
 
+<h2 id="39">39.给TabBar上的按钮添加动画</h2>  
+
+`UITabBarItem`中无法直接获取到按钮的`UIImageView`和`UILabel`，我们可以参照`tips28`,根据类名获取指定子视图。
+
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/tabbarAnimating.gif" width=350>
+
+
+`TabBar`上的按钮动画加在`didSelect`方法中。
+
+```swift
+extension TabBarController {
+  
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {      
+        guard let idx = tabBar.items?.index(of: item),
+            // tips28获取相关子视图
+            let imageView = tabBar.getSubView(name: "UITabBarSwappableImageView")[idx] as? UIImageView,
+            let label = tabBar.getSubView(name: "UITabBarButtonLabel")[idx] as? UILabel else {
+                return
+        }
+        
+        let bounceAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
+        bounceAnimation.values = [1.0, 1.4, 0.9, 1.02, 1.0]
+        bounceAnimation.duration = TimeInterval(0.3)
+        bounceAnimation.calculationMode = CAAnimationCalculationMode.cubic
+        
+        imageView.layer.add(bounceAnimation, forKey: nil)
+        label.layer.add(bounceAnimation, forKey: nil)
+    }
+}
+
+```
+
+[:arrow_up: 返回目录](#table-of-contents) 
