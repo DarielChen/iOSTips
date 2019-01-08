@@ -46,6 +46,7 @@
 [37.给UIViewController添加静态Cell](#37)  
 [38.简化使用UserDefaults](#38)  
 [39.给TabBar上的按钮添加动画](#39)  
+[40.给UICollectionView的Cell添加左滑删除](#40)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3668,5 +3669,83 @@ extension TabBarController {
 }
 
 ```
+
+[:arrow_up: 返回目录](#table-of-contents) 
+
+
+
+
+<h2 id="40">40.给UICollectionView的Cell添加左滑删除</h2>  
+
+我们都知道`UITableView`有现成的`API`可以用来添加左滑删除功能，但如果想在`UICollectionView`中添加左滑删除功能就只能自定义了。
+
+其实自定义的思路也是蛮简单的，在`Cell`上添加一个可以左右滚动的`UIScrollView`，把删除按钮放到右边，再用代理传递删除事件。
+
+
+这边使用iOS9时出的`NSLayoutAnchor`写布局，相比`NSLayoutConstraint`，代码简化了很多，可读性也好了很多。
+
+
+下面给出了`UICollectionViewCell`的基类`EditingCollectionViewCell`的实现过程。
+
+```swift
+protocol EditableCollectionViewCellDelegate: class {
+    func hiddenContainerViewTapped(inCell cell: UICollectionViewCell)
+}
+
+class EditingCollectionViewCell: UICollectionViewCell {
+    
+    // MARK: Properties
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView(frame: .zero)
+        scrollView.isPagingEnabled = true
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        return scrollView
+    }()
+    
+    let visibleContainerView = UIView()
+    let hiddenContainerView = UIView()
+    
+    weak var delegate: EditableCollectionViewCellDelegate?
+    
+    // MARK: Initializers
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupSubviews()
+        setupGestureRecognizer()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupSubviews() {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.addArrangedSubview(visibleContainerView)
+        stackView.addArrangedSubview(hiddenContainerView)
+        
+        addSubview(scrollView)
+        scrollView.pinEdgesToSuperView()
+        scrollView.addSubview(stackView)
+        stackView.pinEdgesToSuperView()
+        stackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor).isActive = true
+        stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, multiplier: 2).isActive = true
+    }
+    private func setupGestureRecognizer() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hiddenContainerViewTapped))
+        hiddenContainerView.addGestureRecognizer(tapGestureRecognizer)
+    }
+    @objc private func hiddenContainerViewTapped() {
+        delegate?.hiddenContainerViewTapped(inCell: self)
+    }
+}
+```
+`visibleContainerView`:用来存放Cell内容。
+`hiddenContainerView`: 用来存放左滑显示出来的视图。
+
+
+[示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/40.%e7%bb%99UICollectionView%e7%9a%84Cell%e6%b7%bb%e5%8a%a0%e5%b7%a6%e6%bb%91%e5%88%a0%e9%99%a4) 
 
 [:arrow_up: 返回目录](#table-of-contents) 
