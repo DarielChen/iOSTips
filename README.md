@@ -47,6 +47,7 @@
 [38.简化使用UserDefaults](#38)  
 [39.给TabBar上的按钮添加动画](#39)  
 [40.给UICollectionView的Cell添加左滑删除](#40)  
+[41.基于NSLayoutAnchor的轻量级AutoLayout扩展](#41)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3747,5 +3748,62 @@ class EditingCollectionViewCell: UICollectionViewCell {
 
 
 [示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/40.%e7%bb%99UICollectionView%e7%9a%84Cell%e6%b7%bb%e5%8a%a0%e5%b7%a6%e6%bb%91%e5%88%a0%e9%99%a4) 
+
+[:arrow_up: 返回目录](#table-of-contents) 
+
+<h2 id="41">41.基于NSLayoutAnchor的轻量级AutoLayout扩展</h2>  
+
+相比`NSLayoutConstraint`，`tips40`中用到的`NSLayoutAnchor`使用起来更方便一些。
+
+例如给一个高`40`的`label`设置左右上边距各为`20`，需要这样写：
+
+```swift
+label1.translatesAutoresizingMaskIntoConstraints = false
+label1.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 20).isActive = true
+label1.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+label1.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+label1.heightAnchor.constraint(equalToConstant: 40).isActive = true
+```
+但如果使用了基于`NSLayoutAnchor`的`AutoLayout`扩展后可以这样写
+
+```swift
+label1.layout {
+    $0.a_top == self.view.a_top + 20
+    $0.a_leading == self.view.a_leading + 20
+    $0.a_trailing == self.view.a_trailing - 20
+    $0.a_height == 40
+}
+```
+这样写跟使用`Storyboard`和`Xib`做`AutoLayout`布局的语法很相似，简洁，可读性好一点。
+
+下面再用`AutoLayout`扩展举一个例子
+
+三个label，宽度相等，高度为100，距顶部左右边距都是20。
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/anchor_autoLayout.png" width=250>
+
+```swift
+label1.layout {
+    $0.a_leading == self.view.a_leading + 20
+    $0.a_trailing == label2.a_leading - 20
+    $0.a_top == self.view.a_top + 20
+    $0.a_height == 100
+    $0.a_width == label2.a_width
+}
+
+label2.layout {
+    $0.a_top == self.view.a_top + 20
+    $0.a_height == 100
+    $0.a_trailing == label3.a_leading - 20
+    $0.a_width == label3.a_width
+}
+
+label3.layout {
+    $0.a_top == self.view.a_top + 20
+    $0.a_height == 100
+    $0.a_trailing == self.view.a_trailing - 20
+}
+```
+具体代码 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/LayoutProxy.swift)
+
 
 [:arrow_up: 返回目录](#table-of-contents) 

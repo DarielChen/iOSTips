@@ -19,6 +19,7 @@
 		156981A5217885A7004FDA01 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156981A4217885A7004FDA01 /* DetailViewController.swift */; };
 		156B4FC7216CE9CF0096E543 /* UIWindow+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B4FC6216CE9CF0096E543 /* UIWindow+Extension.swift */; };
 		156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B4FC8216CEC140096E543 /* UIColor+Extension.swift */; };
+		156B67EA21EE045F00B059DD /* LayoutProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156B67E921EE045F00B059DD /* LayoutProxy.swift */; };
 		158FCD85217093530067A406 /* DCTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD84217093530067A406 /* DCTool.swift */; };
 		158FCD87217093640067A406 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158FCD86217093640067A406 /* Observable.swift */; };
 		15940C5021748FAB00E83DC4 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */; };
@@ -45,6 +46,7 @@
 		156981A4217885A7004FDA01 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		156B4FC6216CE9CF0096E543 /* UIWindow+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extension.swift"; sourceTree = "<group>"; };
 		156B4FC8216CEC140096E543 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		156B67E921EE045F00B059DD /* LayoutProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutProxy.swift; sourceTree = "<group>"; };
 		158FCD84217093530067A406 /* DCTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DCTool.swift; sourceTree = "<group>"; };
 		158FCD86217093640067A406 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		15940C4F21748FAB00E83DC4 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 		158FCD83217093530067A406 /* DCTool */ = {
 			isa = PBXGroup;
 			children = (
+				156B67E921EE045F00B059DD /* LayoutProxy.swift */,
 				158FCD84217093530067A406 /* DCTool.swift */,
 				15974106219D1A20003533C4 /* MutexLock.swift */,
 				158FCD86217093640067A406 /* Observable.swift */,
@@ -276,6 +279,7 @@
 				156936762176CAC4004F8A24 /* ViewControllerInjector.swift in Sources */,
 				15979E3A21BFA45F00CA35F4 /* EdgeInsetLabel.swift in Sources */,
 				156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */,
+				156B67EA21EE045F00B059DD /* LayoutProxy.swift in Sources */,
 				156787B3215DC79600AE6F31 /* ViewController.swift in Sources */,
 				15A1A9AB21A3E0F200E695ED /* Optional+Extension.swift in Sources */,
 				152BE42E2179744200D9FB69 /* NSObject+Extension.swift in Sources */,
