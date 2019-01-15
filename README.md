@@ -3764,7 +3764,8 @@ label1.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).
 label1.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
 label1.heightAnchor.constraint(equalToConstant: 40).isActive = true
 ```
-但如果使用了基于`NSLayoutAnchor`的`AutoLayout`扩展后可以这样写
+
+但如果使用了基于`NSLayoutAnchor`的`AutoLayout`扩展后可以这样
 
 ```swift
 label1.layout {
@@ -3774,12 +3775,15 @@ label1.layout {
     $0.a_height == 40
 }
 ```
-这样写跟使用`Storyboard`和`Xib`做`AutoLayout`布局的语法很相似，简洁，可读性好一点。
+
+这种方式和使用`Storyboard`和`Xib`做`AutoLayout`布局的语法很相似，简洁，可读性好。
 
 下面再用`AutoLayout`扩展举一个例子
 
 三个label，宽度相等，高度为100，距顶部左右边距都是20。
+
 <img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/anchor_autoLayout.png" width=250>
+
 
 ```swift
 label1.layout {
@@ -3803,6 +3807,7 @@ label3.layout {
     $0.a_trailing == self.view.a_trailing - 20
 }
 ```
+
 具体代码 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/LayoutProxy.swift)
 
 
