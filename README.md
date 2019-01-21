@@ -48,6 +48,7 @@
 [39.给TabBar上的按钮添加动画](#39)  
 [40.给UICollectionView的Cell添加左滑删除](#40)  
 [41.基于NSLayoutAnchor的轻量级AutoLayout扩展](#41)  
+[42.简化复用Cell的代码](#42)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3769,10 +3770,10 @@ label1.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
 ```swift
 label1.layout {
-    $0.a_top == self.view.a_top + 20
-    $0.a_leading == self.view.a_leading + 20
-    $0.a_trailing == self.view.a_trailing - 20
-    $0.a_height == 40
+    $0.aTop == self.view.aTop + 20
+    $0.aLeading == self.view.aLeading + 20
+    $0.aTrailing == self.view.aTrailing - 20
+    $0.aHeight == 40
 }
 ```
 
@@ -3787,24 +3788,24 @@ label1.layout {
 
 ```swift
 label1.layout {
-    $0.a_leading == self.view.a_leading + 20
-    $0.a_trailing == label2.a_leading - 20
-    $0.a_top == self.view.a_top + 20
-    $0.a_height == 100
-    $0.a_width == label2.a_width
+    $0.aLeading == self.view.aLeading + 20
+    $0.aTrailing == label2.aLeading - 20
+    $0.aTop == self.view.aTop + 20
+    $0.aHeight == 100
+    $0.aWidth == label2.aWidth
 }
 
 label2.layout {
-    $0.a_top == self.view.a_top + 20
-    $0.a_height == 100
-    $0.a_trailing == label3.a_leading - 20
-    $0.a_width == label3.a_width
+    $0.aTop == self.view.aTop + 20
+    $0.aHeight == 100
+    $0.aTrailing == label3.aLeading - 20
+    $0.aWidth == label3.aWidth
 }
 
 label3.layout {
-    $0.a_top == self.view.a_top + 20
-    $0.a_height == 100
-    $0.a_trailing == self.view.a_trailing - 20
+    $0.aTop == self.view.aTop + 20
+    $0.aHeight == 100
+    $0.aTrailing == self.view.aTrailing - 20
 }
 ```
 
@@ -3812,3 +3813,57 @@ label3.layout {
 
 
 [:arrow_up: 返回目录](#table-of-contents) 
+
+
+<h2 id="42">42.简化复用Cell的代码</h2>  
+
+我们在利用`UITableView`和`UICollectionView`的重用机制绘制`Cell`的时候经常需要先注册，然后再去复用池中取，系统给的API虽然可以达到目的，但还是有简化的空间。
+
+* 每次注册`Cell`都需要自定义一个`Identifier`，我们一般都是把这个`Identifier`定义为`Cell`的类名。
+* 如果需要注册好几种类型的`Cell`，注册`Cell`部分需要写多次。
+
+
+`Identifier`定义为`Cell`的类名，其实就没必要每次手动配置了，我们可以直接将类名转化为`Identifier`。
+当需要同时注册多种类型`Cell`的时候，我们可以用`forEach`遍历操作。
+
+之前的代码：
+
+```swift
+// 用Xib加载tableView的cell
+tableView.register(UINib(nibName: "NibTableViewCell", bundle: nil), forCellReuseIdentifier: "NibTableViewCell")
+
+// 纯代码加载tableView的cell
+tableView.register(MyTableViewCell.self, forCellReuseIdentifier: "MyTableViewCell")
+
+// 从复用池中取cell
+let cell = tableView.dequeueReusableCell(withIdentifier: "NibTableViewCell") as! NibTableViewCell
+
+// 同时注册多个不同的cell
+tableView.register(UINib(nibName: "NibTableViewCell", bundle: nil), forCellReuseIdentifier: "NibTableViewCell")
+tableView.register(MyTableViewCell.self, forCellReuseIdentifier: "MyTableViewCell")
+
+```
+
+简化之后的代码：
+
+```swift
+// 用Xib加载tableView的cell
+tableView.register(cell: .nib(NibTableViewCell.self))
+
+// 纯代码加载tableView的cell
+tableView.register(cell: .class(MyTableViewCell.self))
+
+// 从复用池中取cell
+let cell: NibTableViewCell = tableView.dequeueCell(at: indexPath)
+
+// 同时注册多个不同的cell
+tableView.register(cells: [
+    .class(MyTableViewCell.self)
+    .nib(NibTableViewCell.self)
+])
+```
+
+除了例子中的这些，还有`UICollectionView`的一些扩展，参考具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/Registerable.swift)
+
+[:arrow_up: 返回目录](#table-of-contents) 
+
