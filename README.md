@@ -3811,9 +3811,7 @@ label3.layout {
 
 具体代码 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/LayoutProxy.swift)
 
-
 [:arrow_up: 返回目录](#table-of-contents) 
-
 
 <h2 id="42">42.简化复用Cell的代码</h2>  
 
@@ -3863,7 +3861,7 @@ tableView.register(cells: [
 ])
 ```
 
-除了例子中的这些，还有`UICollectionView`的一些扩展，参考具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/Registerable.swift)
+除了例子中的这些，还有一些`UICollectionView`的扩展，参考具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/Registerable.swift)
 
 [:arrow_up: 返回目录](#table-of-contents) 
 
