@@ -3873,6 +3873,7 @@ tableView.register(cells: [
 
 正则表达式具有通用性，但`NSRegularExpression`使用起来并不方便，我们可以试着对它进行封装，增加一些常用的正则处理方法。
 
+具体使用如下：
 
 ```swift
 let pattern = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$"
