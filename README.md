@@ -48,8 +48,8 @@
 [39.给TabBar上的按钮添加动画](#39)  
 [40.给UICollectionView的Cell添加左滑删除](#40)  
 [41.基于NSLayoutAnchor的轻量级AutoLayout扩展](#41)  
-[42.简化复用Cell的代码](#42) 
-[43.正则表达式的封装](#43) 
+[42.简化复用Cell的代码](#42)    
+[43.正则表达式的封装](#43)  
 
 
 
@@ -3868,6 +3868,7 @@ tableView.register(cells: [
 [:arrow_up: 返回目录](#table-of-contents) 
 
 
+
 <h2 id="43">43.正则表达式的封装</h2>  
 
 正则表达式具有通用性，但`NSRegularExpression`使用起来并不方便，我们可以试着对它进行封装，增加一些常用的正则处理方法。
@@ -3904,6 +3905,6 @@ do {
 
 ```
 
-具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Regex.swift)
+具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/Regex.swift)
  
 [:arrow_up: 返回目录](#table-of-contents) 
