@@ -48,7 +48,9 @@
 [39.给TabBar上的按钮添加动画](#39)  
 [40.给UICollectionView的Cell添加左滑删除](#40)  
 [41.基于NSLayoutAnchor的轻量级AutoLayout扩展](#41)  
-[42.简化复用Cell的代码](#42)  
+[42.简化复用Cell的代码](#42) 
+[43.正则表达式的封装](#43) 
+
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
@@ -3865,3 +3867,43 @@ tableView.register(cells: [
 
 [:arrow_up: 返回目录](#table-of-contents) 
 
+
+<h2 id="43">43.正则表达式的封装</h2>  
+
+正则表达式具有通用性，但`NSRegularExpression`使用起来并不方便，我们可以试着对它进行封装，增加一些常用的正则处理方法。
+
+
+```swift
+let pattern = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$"
+do {
+    // 验证邮箱地址
+    let mailAddress = "darielchen@126.com"
+    let regex = try Regex(pattern)
+    if regex.matches(mailAddress) {
+        print("邮箱地址格式正确")
+    } else {
+        print("邮箱地址格式有误")
+    }
+ } catch {
+    print(error)
+}
+
+let phonePattern = "^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$"
+do {
+    // 验证手机号码
+    let phone = "17682323553"
+    let regex = try Regex(phonePattern)
+    if regex.matches(phone) {
+        print("手机号格式正确")
+    } else {
+        print("手机号格式错误")
+    }
+} catch {
+    print(error)
+}
+
+```
+
+具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Regex.swift)
+ 
+[:arrow_up: 返回目录](#table-of-contents) 
