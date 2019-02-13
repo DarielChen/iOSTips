@@ -1,4 +1,7 @@
-# SwiftTips (๑•̀ㅂ•́)و✧
+# iOSTips(๑•̀ㅂ•́)و✧
+
+
+## 1.SwiftTips 
 记录iOS开发中的一些知识点  
 
 [![Language: Swift 4.2](https://img.shields.io/badge/language-swift4.2-f48041.svg?style=flat)](https://developer.apple.com/swift)
@@ -51,6 +54,16 @@
 [42.简化复用Cell的代码](#42)    
 [43.正则表达式的封装](#43)  
 
+
+## 2.XcodeTips 
+[1.生成对外暴露的属性和方法]()  
+[2.显示Storyboard中控件之间的距离]()  
+[3.重命名当前文件中的方法名或变量名]()  
+[4.Storyboard中视图覆盖，只叠加不添加到对应的子视图]()  
+[5.锁定Storyboard中控件的约束]()  
+[6.多重光标操作]()  
+[7.断点对象预览]()  
+[8.Storyboard拆分]()  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
