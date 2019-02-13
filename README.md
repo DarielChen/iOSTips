@@ -1,14 +1,10 @@
 # iOSTips(๑•̀ㅂ•́)و✧
 
-
-## 1.SwiftTips 
-记录iOS开发中的一些知识点  
-
 [![Language: Swift 4.2](https://img.shields.io/badge/language-swift4.2-f48041.svg?style=flat)](https://developer.apple.com/swift)
 ![Platform: iOS 12](https://img.shields.io/badge/platform-iOS-blue.svg?style=flat)
 
-
-<h2 id="table-of-contents">目录</h2>  
+## 1.SwiftTips 
+记录iOS开发中的一些知识点  
 
 [1.常用的几个高阶函数](#1)  
 [2.高阶函数扩展](#2)  
@@ -56,14 +52,17 @@
 
 
 ## 2.XcodeTips 
-[1.生成对外暴露的属性和方法]()  
-[2.显示Storyboard中控件之间的距离]()  
-[3.重命名当前文件中的方法名或变量名]()  
-[4.Storyboard中视图覆盖，只叠加不添加到对应的子视图]()  
-[5.锁定Storyboard中控件的约束]()  
-[6.多重光标操作]()  
-[7.断点对象预览]()  
-[8.Storyboard拆分]()  
+
+记录使用Xcode工具的一些小技巧。
+
+[1.生成对外暴露的属性和方法](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#1)  
+[2.显示Storyboard中控件之间的距离](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#2)  
+[3.重命名当前文件中的方法名或变量名](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#3)  
+[4.Storyboard中视图覆盖，只叠加不添加到对应的子视图](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#4)  
+[5.锁定Storyboard中控件的约束](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#5)  
+[6.多重光标操作](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#6)  
+[7.断点对象预览](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#7)  
+[8.Storyboard拆分](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#8)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
