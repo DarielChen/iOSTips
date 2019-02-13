@@ -42,7 +42,7 @@ internal class ViewController : UIViewController {
 }
 ```
 
-<h2 id="2">2.显示`Storyboard`中控件之间的距离</h2>
+<h2 id="2">2.显示Storyboard中控件之间的距离</h2>
 
 按住`⌥`，选择目标控制器，将光标移动到相关控件后会自动显示相对位置。
 
@@ -56,13 +56,13 @@ internal class ViewController : UIViewController {
 
 一键修改所有的方法名或变量名。
 
-<h2 id="4">4.`Storyboard`中视图覆盖，只叠加不添加到对应的子视图</h2>
+<h2 id="4">4.Storyboard中视图只覆盖不被添加</h2>
 
 在`Storyboard`中拖动控件的时候，按住`⌘`,可以避免控件在叠加的时候，被添加为子控件。
 
 <img src="source/more_layer.png" width=400>
 
-<h2 id="5">5.锁定`Storyboard`中控件的约束</h2>
+<h2 id="5">5.锁定Storyboard中控件的约束</h2>
 
 我们在用`Storyboard`做控件布局的时候，经常会不小心动了已有的约束，我们可以在`Document`的`Lock`中选择`All Properties`锁定所有的属性。
 
@@ -81,10 +81,7 @@ internal class ViewController : UIViewController {
 
 <img src="source/breakpoint_view.png" width=400>
 
-## 
-
-<h2 id="8">8.`Storyboard`拆分</h2>
-
+<h2 id="8">8.Storyboard拆分</h2>
 
 对于比较臃肿的`Storyboard`，我们可以先选中需要拆分的控制器，`Editor` -> `Refactor to Storyboard...`，弹出如下界面
 
