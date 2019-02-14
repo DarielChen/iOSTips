@@ -1443,6 +1443,27 @@ extension UIView {
 }
 ```
 
+给分类添加常见的数据类型属性按照上面这种方式可以实现，但如果需要给分类添加自定义对象呢？按照上面的方式会报错，错误提示我们要在自定义对象中实现`copyWithZone`方法，如下代码所示
+
+```swift
+class CustomClass: NSObject, NSCopying {
+
+    func copy(with zone: NSZone? = nil) -> Any {
+        return self
+    }
+}
+
+private var customClassKey: Void?
+extension UIView {
+    
+    var customObject: CustomClass? {
+        get { return objc_getAssociatedObject(self, &customClassKey) as? CustomClass }
+        set { objc_setAssociatedObject(self, &customClassKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC) }
+    }
+}
+```
+
+
 [:arrow_up: 返回目录](#table-of-contents)  
 
 
