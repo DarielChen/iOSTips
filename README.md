@@ -2045,6 +2045,29 @@ func myMethod() {
 }
 ```
 
+##### 5. 判断是真机还是模拟器
+
+判断是真机还是模拟器我们常用的方式是通过`arch`
+
+```swift
+#if (arch(i386) || arch(x86_64))
+    // this is the simulator
+#else
+    // this is a real device
+#endif
+```
+
+推荐使用`targetEnvironment`来判断
+
+```swift
+#if targetEnvironment(simulator)
+    // this is the simulator
+#else
+    // this is a real device
+#endif
+```
+
+
 [:arrow_up: 返回目录](#table-of-contents)  
 
 
