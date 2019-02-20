@@ -51,6 +51,8 @@
 [41.基于NSLayoutAnchor的轻量级AutoLayout扩展](#41)  
 [42.简化复用Cell的代码](#42)    
 [43.正则表达式的封装](#43)  
+[44.自定义带动画效果的模态框](#44)  
+
 
 
 ## 2.XcodeTips 
@@ -3967,3 +3969,98 @@ do {
 具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/Regex.swift)
  
 [:arrow_up: 返回目录](#table-of-contents) 
+
+
+<h2 id="44">44.自定义带动画效果的模态框</h2>  
+
+#### 1. 自定义弹框
+
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/toast_view.gif" width=250>
+
+如上图，常见的实现方式是把模态框作为一个`View`，需要的时候通过动画从底部弹出来。这样做起来很方便，但可扩展性往往不够，弹框的内容可能会是任何控件或者组合。如果弹框是个控制器，扩展性就不会是个问题了。
+
+如何根据文本内容的高度设置控制器的`frame`?  
+在弹框控制器的构造方法中设置好`label`的约束，然后在`UIPresentationController`中重写`frameOfPresentedViewInContainerView`属性，在其中通过`UIView.systemLayoutSizeFitting`计算出内容的高度。
+
+这边弹框的半径在`presentationTransitionWillBegin`中设置。
+
+具体实现 [猛击]()
+
+#### 2. 自定义`UIAlertController`
+
+按照这个思路，我们可以自定义任何形式的弹框，包括系统的`UIAlertController`的`alert`和`actionSheet`，下图就是自定义了系统的`actionSheet`。
+
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/custom_actionsheet.gif" width=250>
+
+
+与上面自定义弹框不同的，自定义`UIAlertController`需要把背景颜色设置为透明灰色，这个我们也是在`UIPresentationController`中设置。
+
+```swift
+override func presentationTransitionWillBegin() {
+    super.presentationTransitionWillBegin()
+    
+    presentedView?.layer.cornerRadius = 24
+    containerView?.backgroundColor = .clear
+    
+    // 弹框出现的时候设置透明灰度
+    if let coordinator = presentingViewController.transitionCoordinator {
+        coordinator.animate(alongsideTransition: { [weak self] _ in
+            self?.containerView?.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+            }, completion: nil)
+    }
+}
+    
+override func dismissalTransitionWillBegin() {
+	super.dismissalTransitionWillBegin()
+	
+	// 弹框消失的时候把背景颜色置为clear
+	if let coordinator = presentingViewController.transitionCoordinator {
+        coordinator.animate(alongsideTransition: { [weak self] _ in
+            self?.containerView?.backgroundColor = .clear
+            }, completion: nil)
+    }
+}
+```
+
+这边在自定义`UIAlertController`的过程中，有个bug。
+
+当点击`UIAlertController`上的确认按钮跳转到一个新的控制器，然后再返回到当前页面的时候，自定义`UIAlertController`会出现一闪的情况,可以把`PresentationController`中所有的代码注释掉就能重复这个bug，造成这种现象的原因是因为，在自定义尺寸的控制器上`present`一个全屏控制器的时候，系统会自动把当前层级下的自定义尺寸的控制器的`View`移除掉，当我们对全屏控制器做`dismiss`操作后又会添加回去。
+
+这个bug的最优解决办法是给`UIPresentationController`设置一个子类，在子类中添加一个属性保存`UIAlertController`的`frame`。
+
+```swift
+class PresentationController: UIPresentationController {
+    
+    private var calculatedFrameOfPresentedViewInContainerView = CGRect.zero
+    private var shouldSetFrameWhenAccessingPresentedView = false
+    
+    // 如果弹框存在，设置弹框的frame
+    override var presentedView: UIView? {
+        if shouldSetFrameWhenAccessingPresentedView {
+            super.presentedView?.frame = calculatedFrameOfPresentedViewInContainerView
+        }
+        return super.presentedView
+    }
+    
+    // 弹框存在
+    override func presentationTransitionDidEnd(_ completed: Bool) {
+        super.presentationTransitionDidEnd(completed)
+        shouldSetFrameWhenAccessingPresentedView = completed
+    }
+    
+    // 弹框消失
+    override func dismissalTransitionWillBegin() {
+        super.dismissalTransitionWillBegin()
+        shouldSetFrameWhenAccessingPresentedView = false
+    }
+    
+    // 获取弹框的frame
+    override func containerViewDidLayoutSubviews() {
+        super.containerViewDidLayoutSubviews()
+        calculatedFrameOfPresentedViewInContainerView = frameOfPresentedViewInContainerView
+    }
+}
+```
+具体实现 [猛击]()
+
+[:arrow_up: 返回目录](#table-of-contents)
