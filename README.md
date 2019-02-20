@@ -4026,7 +4026,7 @@ override func dismissalTransitionWillBegin() {
 
 当点击`UIAlertController`上的确认按钮跳转到一个新的控制器，然后再返回到当前页面的时候，自定义`UIAlertController`会出现一闪的情况,可以把`PresentationController`中所有的代码注释掉就能重复这个bug，造成这种现象的原因是因为，在自定义尺寸的控制器上`present`一个全屏控制器的时候，系统会自动把当前层级下的自定义尺寸的控制器的`View`移除掉，当我们对全屏控制器做`dismiss`操作后又会添加回去。
 
-这个bug的最优解决办法是给`UIPresentationController`设置一个子类，在子类中添加一个属性保存`UIAlertController`的`frame`。
+这个bug的最优解决办法是给`UIPresentationController`设置一个子类，在子类中添加一个属性保存自定义尺寸的控制器的`frame`。
 
 ```swift
 class PresentationController: UIPresentationController {
