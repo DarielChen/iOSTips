@@ -4072,7 +4072,7 @@ class PresentationController: UIPresentationController {
 
 取色盘处理除了使用设计给的图片，我们还可以利用`CIFilter`的`CIHueSaturationValueGradient`属性来生成取色盘图片。
 
-<img src="https://github.com/DarielChen/SwiftTips/blob/master/source/color_wheel.png" width=500>
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/color_wheel.png" width=500>
 
 上图左1的实现：
 
