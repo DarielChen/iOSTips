@@ -52,7 +52,7 @@
 [42.简化复用Cell的代码](#42)    
 [43.正则表达式的封装](#43)  
 [44.自定义带动画效果的模态框](#44)  
-
+[45.利用取色盘获取颜色](#45)  
 
 
 ## 2.XcodeTips 
@@ -4063,4 +4063,69 @@ class PresentationController: UIPresentationController {
 ```
 具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/44.%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B8%A6%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E7%9A%84%E6%A8%A1%E6%80%81%E6%A1%86/CustomPresentation/CustomActionsheetController.swift)
 
+[:arrow_up: 返回目录](#table-of-contents)
+
+
+<h2 id="45">45.利用取色盘获取颜色</h2>  
+
+#### 1.生成取色盘
+
+取色盘处理除了使用设计给的图片，我们还可以利用`CIFilter`的`CIHueSaturationValueGradient`属性来生成取色盘图片。
+
+<img src="./source/color_wheel.png" width=500>
+
+上图左1的实现：
+
+```swift
+let filter = CIFilter(name: "CIHueSaturationValueGradient", parameters: [
+            "inputColorSpace": CGColorSpaceCreateDeviceRGB(),
+            "inputDither": 0,
+            "inputRadius": 160,
+            "inputSoftness": 0,
+            "inputValue": 1
+            ])!
+let image = UIImage(ciImage: filter.outputImage!)
+
+```
+
+- `inputColorSpace`获取当前设备的色域。  
+- `inputDither`类似像素点的一个属性，值设置为300，可以得到上图左2。  
+- `inputRadius`取色盘上点的半径，上图在`@2x`设备上像素点为320X320，`@3x`设备上像素点为480X480。  
+- `inputSoftness`柔和度，值为0表示很平滑，上图左3`inputSoftness`的值为4。
+- `inputValue`表示亮度，1为最亮，0表示最暗，上图左4`inputValue`的值为0.5。
+
+
+#### 2.获取颜色
+
+获取`UIImageView`对应位置的颜色
+
+```swift
+extension UIImageView {
+    func getPixelColorAt(point: CGPoint) -> UIColor {
+        let pixel = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: 4)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        let context = CGContext(
+            data: pixel,
+            width: 1,
+            height: 1,
+            bitsPerComponent: 8,
+            bytesPerRow: 4,
+            space: colorSpace,
+            bitmapInfo: bitmapInfo.rawValue
+        )
+        
+        context!.translateBy(x: -point.x, y: -point.y)
+        layer.render(in: context!)
+        let color = UIColor(
+            red: CGFloat(pixel[0]) / 255.0,
+            green: CGFloat(pixel[1]) / 255.0,
+            blue: CGFloat(pixel[2]) / 255.0,
+            alpha: CGFloat(pixel[3]) / 255.0
+        )       
+        pixel.deallocate()
+        return color
+    }
+}
+```
 [:arrow_up: 返回目录](#table-of-contents)
