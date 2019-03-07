@@ -53,6 +53,7 @@
 [43.正则表达式的封装](#43)  
 [44.自定义带动画效果的模态框](#44)  
 [45.利用取色盘获取颜色](#45)  
+[46.第三方库的依赖隔离](#46)  
 
 
 ## 2.XcodeTips 
@@ -4128,4 +4129,83 @@ extension UIImageView {
     }
 }
 ```
+[:arrow_up: 返回目录](#table-of-contents)
+
+<h2 id="46">46.第三方库的依赖隔离</h2>  
+
+第三方库的使用可以大大减少我们开发的工作量，但也造成了第三库的代码和业务代码的高度耦合性，万一哪天使用的第三方库停止更新了，我们想要替换，成本有点大。我们就需要在业务代码和第三方库中加一个抽象层。
+
+#### Extensions
+
+我们可以用分类对图片下载缓存框架`KingFisher`进行隔离。
+
+```swift
+import Kingfisher
+
+extension UIImageView {
+    func setImage(from url: URL) {
+        kf.setImage(with: url)
+    }
+}
+```
+这样做在替换成别的图片下载缓存框架很轻松，业务中也没有必要老是导入`Kingfisher`库了。
+
+#### Protocols
+
+作为一个安全的存储容器`Keychain`可以为不同的应用保存敏感信息，包括用户名密码啥的，苹果用它来保存Wi-Fi密码，VPN等，是一个独立于所有app之外的数据库。
+
+而`keychain-swift`就是在`Keychain`基础上做了一层封装，使得我们能够更便捷的使用`Keychain`。
+
+```swift
+let keychain = KeychainSwift()
+keychain.set("ACCEDDTOKEN", forKey: "accessToken")
+keychain.get("accessToken") // Returns "ACCEDDTOKEN"
+```
+类似`key`、`value`的使用方式。
+
+在`tips38`中，我们把`set`和`get`操作放到了属性的`set`和`get`，这边我们也可以这样操作。
+
+```swift
+protocol TokenStore {
+    var accessToken: String? { get set }
+    var refreshToken: String? { get set }
+}
+
+extension KeychainSwift: TokenStore {
+    var accessToken: String? {
+        get { return get(#function) }
+        set {
+            if let value = newValue  {
+                set(value, forKey: #function)
+            }
+        }
+    }
+    var refreshToken: String? {
+        get { return get(#function) }
+        set {
+            if let value = newValue  {
+                set(value, forKey: #function)
+            }
+        }
+    }
+}
+```
+通过协议为`KeychainSwift`定义了属性，可以避免直接操作字符串`key`。
+
+```swift
+class AuthenticationService {
+    private let tokenStore: TokenStore
+
+    init(tokenStore: TokenStore) {
+        self.tokenStore = tokenStore
+    }
+
+    func fetchToken(for credentials: Credentials) {
+//        保存token
+//        tokenStore.accessToken =
+//        tokenStore.refreshToken =
+    }
+}
+```
+
 [:arrow_up: 返回目录](#table-of-contents)
