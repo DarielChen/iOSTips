@@ -54,6 +54,8 @@
 [44.自定义带动画效果的模态框](#44)  
 [45.利用取色盘获取颜色](#45)  
 [46.第三方库的依赖隔离](#46)  
+[47.给App的某个功能添加快捷方式](#47)  
+
 
 
 ## 2.XcodeTips 
@@ -4207,5 +4209,122 @@ class AuthenticationService {
     }
 }
 ```
+
+
+
+<h2 id="47">47.给App的某个功能添加快捷方式</h2>  
+
+iOS中给App添加快捷方式的几种方案：  
+
+1. 3DTouch，长按App唤起3DTouch菜单，这个同时也可以当做小组件添加到首屏左边的快捷方式页面中。 
+2. 通过Siri唤醒对应的App。  
+3. 直接在桌面添加对应的快捷方式，点击快捷方式直接跳到某个App的某个功能。
+
+方案1，3DTouch的入口说实话一般人还是不太容易发现的。  
+方案2，跟Siri语音交互个人觉得有点蠢。  
+方案3，我觉得最合适了，我们用支付宝刷地铁或公交就可以通过添加桌面快捷方式，直接跳到支付二维码。
+
+那么问题来了，支付宝是怎么做到的呢？
+
+其实是利用了`Safari`的`PWA`功能，将编码好的网页内容和图标保存到桌面。点击桌面快捷方式打开网页执行JS，跳转到App对应的功能。
+
+> PWA的中文名叫渐进式网页应用。它融合了`Web`和`App`的一些优点，可以在原生App的主屏幕上留下图标。可以像`Native App`那样离线使用。
+
+下面是实现步骤
+
+#### 1. 配置`App`跳转的`URL`
+在`Xcode`的`Target`->`Info`->`URL Types`的`URL Schemes`添加`addshortcuts`，作为跳转`url`的协议头。
+
+我们给`app`中需要添加快捷方式的功能页设置好跳转`url`:`addshortcuts://profile`。并在`AppDelegate`中添加如下代码
+
+```swift
+func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+    let storyboard = UIStoryboard.init(name: "Main", bundle: Bundle.main)
+    let featureVc = storyboard.instantiateViewController(withIdentifier: "FeatureViewController")
+        
+    if let navController = window?.rootViewController as? UINavigationController, let topController = navController.topViewController{
+        if topController.isKind(of: FeatureViewController.self) {
+            return true
+        }
+        if url.absoluteString == "addshortcuts://profile" {
+            navController.pushViewController(featureVc, animated: false)
+        }
+    }
+        return true
+}
+```
+到这里我们可以在浏览器中输入`addshortcuts://profile`，如果可以跳转到`App`对应的功能页面表示一切正常。
+
+#### 2. 设置添加快捷方式到桌面的引导`H5`页面和跳转到`App`的`H5`页面
+
+##### 1. 引导添加桌面快捷方式的`H5`页面
+这个引导页面支付宝做的不错，几经辗转，我拿到了这个页面，稍微修改了下，界面效果如下图
+
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/addshortcuts.png" width=250>
+
+##### 2. 跳转到`App`的`H5`页面
+
+这个页面是个空白页，当我们点击快捷方式的时候，通过这个空白页跳转到`App`。
+
+```html
+<a id="redirect" href="addshortcuts://profile"></a>
+```
+打开空白页，执行下面这段JS，模拟点击上面的a标签
+
+```javascript
+var element = document.getElementById('redirect');
+var event = document.createEvent('MouseEvents');
+event.initEvent('click', true, true, document.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+document.body.style.backgroundColor = '#FFFFFF';
+setTimeout(function() { element.dispatchEvent(event); }, 25);
+```
+
+其实引导页和跳转页可以放到一起，通过`window.navigator.standalone`检测`Safari`打开的Web应用程序是否全屏显示。如果是全屏显示表示是从桌面快捷方式进入的，那么就显示空白页，自动执行上面那段JS。如果不是全屏显示表示是从`app`跳转过去的引导页。
+
+#### 3. 搭建可以打开编码后`H5`页面的本地`server`
+
+##### 1. `h5`编码
+`Safari`可以直接打开一串包含页面内容编码的URL，这个`URL`包含了这个页面需要的所有信息。
+
+`data:text/html;base64,PGEgaHJlZj0iaHR0cHM6Ly9naXRodWIuY29tL0RhcmllbENoZW4vaU9TVGlwcyI+aU9TVGlwczwvYT4=`
+
+在`Safari`中输入上面那串`URL`,会显示一个`<a href="https://github.com/DarielChen/iOSTips">iOSTips</a>`的标签。跟正常的标签一样，这是因为上面的`URL`是我们经过`base64`编码后处理的。同样我们可以把`h5`页面转化成这种`URL`编码格式。
+
+##### 2. 搭建本地server
+
+iOS中不能用`UIApplication.shared.open(url)`的方式打开包含`Base64`编码的`URL`，如果我们用`SFSafariViewController`,它也是不能够识别这个格式的`URL`。这个问题好像是出在苹果那边。
+
+那支付宝是怎么做的呢？它是直接把这个页面部署到了服务端，我们可以参考这种方法，用`Swifter`搭建一个本地的`server`。
+
+```swift
+guard let deeplink = URL(string: "addshortcuts://profile") else {
+    return
+}
+guard let shortcutUrl = URL(string: "http://localhost:8244/s") else {
+    return
+}
+guard let iconData = UIImage(named: "feature_icon")?.jpegData(compressionQuality: 0.5) else {
+    return
+}
+let html = htmlFor(title: "功能快捷方式", urlToRedirect: deeplink.absoluteString, icon: iconData.base64EncodedString())
+guard let base64 = html.data(using: .utf8)?.base64EncodedString() else {
+    return
+}
+server["/s"] = { request in
+    return .movedPermanently("data:text/html;base64,\(base64)")
+}
+try? server.start(8244)
+```
+
+#### 4. 总结
+
+整个操作流程如下图所示。 
+
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/addshortcutsgif.gif" width=250>
+
+这种方式有个问题，多次添加桌面快捷方式会出现多个相同的图标，有解决方法的同学欢迎留言。
+
+具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/47.%E7%BB%99App%E7%9A%84%E6%9F%90%E4%B8%AA%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F)
 
 [:arrow_up: 返回目录](#table-of-contents)

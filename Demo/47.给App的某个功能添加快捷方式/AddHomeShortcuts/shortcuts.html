@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="#ffffff">
+        <meta name="apple-mobile-web-app-title" content="\(title)">
+            
+        <link rel="apple-touch-icon-precomposed" href="data:image/jpeg;base64,\(feature_icon)"/>
+        <title>\(title)</title>
+        
+    </head>
+    <script>document.documentElement.style.fontSize = 100 * document.documentElement.clientWidth / 375 + "px"</script>
+    <style>
+        
+        * { margin: 0; padding: 0 }
+        body, html { height: 100%; width: 100%; overflow: hidden; background: #f3f2f2; text-align: center }
+        .main { color: #333; text-align: center }
+        .subject { margin-top: 1rem; font-size: .2rem }
+        .guide { width: 100%; position: absolute; left: 0; bottom: .3rem }
+        .guide .content { position: relative; z-index: 20; width: 3.5rem; padding-top: .16rem; padding-bottom: .06rem; margin: 0 auto; border-radius: .04rem; box-shadow: 0 6px 15px rgba(0, 0, 0, .13); background: #fff; font-size: .14rem }
+        .guide .tips { position: relative; z-index: 20 }
+        .guide .icon { width: .2rem; height: .24rem; margin: 0 .035rem .02rem; vertical-align: bottom }
+        .guide .toolbar { width: 100%; height: auto; margin-top: -.12rem; position: relative; z-index: 10 }
+        .guide .arrow { width: .27rem; height: auto; position: absolute; left: 50%; bottom: -.26rem; margin-left: -.135rem; z-index: 10 }
+    
+    </style>
+    <body>
+        <a id="redirect" href="\(urlToRedirect.absoluteString)"></a>
+        <div id="container">
+            <div class="main">
+                <div class="subject">添加快捷功能到桌面</div>
+            </div>
+            <div class="guide">
+                <div class="content">
+                    <p class="tips">
+                    点击下方工具栏上的<img class="icon" src="https://dariel-1256714552.cos.ap-shanghai.myqcloud.com/XEbFrgamEdvSxVFOBeuZ.png">
+                    </p>
+                    <p class="tips">
+                        并选择<img class="icon" src="https://dariel-1256714552.cos.ap-shanghai.myqcloud.com/IkKEhyTLQpYtqXMZBYtQ.png">“<strong>添加到主屏幕</strong>”
+                    </p>
+                    <img class="toolbar" src="https://dariel-1256714552.cos.ap-shanghai.myqcloud.com/oFNuXVhPJYvBDJPXJTmt.jpg">
+                    <img class="arrow" src="https://dariel-1256714552.cos.ap-shanghai.myqcloud.com/FlBEnTRnlhMyLyVhlfZT.png">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript">
+    
+    if (window.navigator.standalone) {
+        
+        var element = document.getElementById('container');
+        element.style.display = "none";
+        
+        var element = document.getElementById('redirect');
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true, document.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+        document.body.style.backgroundColor = '#FFFFFF';
+        setTimeout(function() { element.dispatchEvent(event); }, 25);
+        
+    } else {
+        
+        var element = document.getElementById('container');
+        element.style.display = "inline";
+    }
+
+</script>

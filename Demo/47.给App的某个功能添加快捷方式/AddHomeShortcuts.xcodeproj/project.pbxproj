@@ -1,0 +1,416 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		154AA2D222374C560098B595 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154AA2D122374C560098B595 /* AppDelegate.swift */; };
+		154AA2D422374C560098B595 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154AA2D322374C560098B595 /* HomeViewController.swift */; };
+		154AA2D722374C560098B595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 154AA2D522374C560098B595 /* Main.storyboard */; };
+		154AA2D922374C570098B595 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 154AA2D822374C570098B595 /* Assets.xcassets */; };
+		154AA2DC22374C570098B595 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 154AA2DA22374C570098B595 /* LaunchScreen.storyboard */; };
+		154AA2E422374D910098B595 /* FeatureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154AA2E322374D910098B595 /* FeatureViewController.swift */; };
+		154AA2E622374F8E0098B595 /* shortcuts.html in Resources */ = {isa = PBXBuildFile; fileRef = 154AA2E522374F8E0098B595 /* shortcuts.html */; };
+		82F6B60EEAA91A35957C11B0 /* Pods_AddHomeShortcuts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D63DE3938591CD0C7663272A /* Pods_AddHomeShortcuts.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		154AA2CE22374C560098B595 /* AddHomeShortcuts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AddHomeShortcuts.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		154AA2D122374C560098B595 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		154AA2D322374C560098B595 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		154AA2D622374C560098B595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		154AA2D822374C570098B595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		154AA2DB22374C570098B595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		154AA2DD22374C570098B595 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		154AA2E322374D910098B595 /* FeatureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureViewController.swift; sourceTree = "<group>"; };
+		154AA2E522374F8E0098B595 /* shortcuts.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = shortcuts.html; sourceTree = "<group>"; };
+		1ACD8085A4D701E29DD67AAE /* Pods-AddHomeShortcuts.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AddHomeShortcuts.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AddHomeShortcuts/Pods-AddHomeShortcuts.debug.xcconfig"; sourceTree = "<group>"; };
+		5506D3D732FFC3CF4B81798C /* Pods-AddHomeShortcuts.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AddHomeShortcuts.release.xcconfig"; path = "Pods/Target Support Files/Pods-AddHomeShortcuts/Pods-AddHomeShortcuts.release.xcconfig"; sourceTree = "<group>"; };
+		D63DE3938591CD0C7663272A /* Pods_AddHomeShortcuts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AddHomeShortcuts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		154AA2CB22374C560098B595 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				82F6B60EEAA91A35957C11B0 /* Pods_AddHomeShortcuts.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		154AA2C522374C560098B595 = {
+			isa = PBXGroup;
+			children = (
+				154AA2D022374C560098B595 /* AddHomeShortcuts */,
+				154AA2CF22374C560098B595 /* Products */,
+				18497B66CC9554ACA32E8B85 /* Pods */,
+				D8A87EFE2412D28F389F16DD /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		154AA2CF22374C560098B595 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				154AA2CE22374C560098B595 /* AddHomeShortcuts.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		154AA2D022374C560098B595 /* AddHomeShortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				154AA2D122374C560098B595 /* AppDelegate.swift */,
+				154AA2D322374C560098B595 /* HomeViewController.swift */,
+				154AA2E322374D910098B595 /* FeatureViewController.swift */,
+				154AA2E522374F8E0098B595 /* shortcuts.html */,
+				154AA2D522374C560098B595 /* Main.storyboard */,
+				154AA2D822374C570098B595 /* Assets.xcassets */,
+				154AA2DA22374C570098B595 /* LaunchScreen.storyboard */,
+				154AA2DD22374C570098B595 /* Info.plist */,
+			);
+			path = AddHomeShortcuts;
+			sourceTree = "<group>";
+		};
+		18497B66CC9554ACA32E8B85 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1ACD8085A4D701E29DD67AAE /* Pods-AddHomeShortcuts.debug.xcconfig */,
+				5506D3D732FFC3CF4B81798C /* Pods-AddHomeShortcuts.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		D8A87EFE2412D28F389F16DD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D63DE3938591CD0C7663272A /* Pods_AddHomeShortcuts.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		154AA2CD22374C560098B595 /* AddHomeShortcuts */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 154AA2E022374C570098B595 /* Build configuration list for PBXNativeTarget "AddHomeShortcuts" */;
+			buildPhases = (
+				692E2D27BE6A90376CFC6348 /* [CP] Check Pods Manifest.lock */,
+				154AA2CA22374C560098B595 /* Sources */,
+				154AA2CB22374C560098B595 /* Frameworks */,
+				154AA2CC22374C560098B595 /* Resources */,
+				4FE18A1FD21D3B6A3D8D54D0 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AddHomeShortcuts;
+			productName = AddHomeShortcuts;
+			productReference = 154AA2CE22374C560098B595 /* AddHomeShortcuts.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		154AA2C622374C560098B595 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1010;
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = Dariel;
+				TargetAttributes = {
+					154AA2CD22374C560098B595 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = 154AA2C922374C560098B595 /* Build configuration list for PBXProject "AddHomeShortcuts" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 154AA2C522374C560098B595;
+			productRefGroup = 154AA2CF22374C560098B595 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				154AA2CD22374C560098B595 /* AddHomeShortcuts */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		154AA2CC22374C560098B595 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				154AA2E622374F8E0098B595 /* shortcuts.html in Resources */,
+				154AA2DC22374C570098B595 /* LaunchScreen.storyboard in Resources */,
+				154AA2D922374C570098B595 /* Assets.xcassets in Resources */,
+				154AA2D722374C560098B595 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4FE18A1FD21D3B6A3D8D54D0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-AddHomeShortcuts/Pods-AddHomeShortcuts-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Swifter/Swifter.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Swifter.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AddHomeShortcuts/Pods-AddHomeShortcuts-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		692E2D27BE6A90376CFC6348 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AddHomeShortcuts-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		154AA2CA22374C560098B595 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				154AA2D422374C560098B595 /* HomeViewController.swift in Sources */,
+				154AA2D222374C560098B595 /* AppDelegate.swift in Sources */,
+				154AA2E422374D910098B595 /* FeatureViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		154AA2D522374C560098B595 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				154AA2D622374C560098B595 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		154AA2DA22374C570098B595 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				154AA2DB22374C570098B595 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		154AA2DE22374C570098B595 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		154AA2DF22374C570098B595 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		154AA2E122374C570098B595 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1ACD8085A4D701E29DD67AAE /* Pods-AddHomeShortcuts.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GFG94CPZ5N;
+				INFOPLIST_FILE = AddHomeShortcuts/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.darielchen.AddHomeShortcuts;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		154AA2E222374C570098B595 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5506D3D732FFC3CF4B81798C /* Pods-AddHomeShortcuts.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GFG94CPZ5N;
+				INFOPLIST_FILE = AddHomeShortcuts/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.darielchen.AddHomeShortcuts;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		154AA2C922374C560098B595 /* Build configuration list for PBXProject "AddHomeShortcuts" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				154AA2DE22374C570098B595 /* Debug */,
+				154AA2DF22374C570098B595 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		154AA2E022374C570098B595 /* Build configuration list for PBXNativeTarget "AddHomeShortcuts" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				154AA2E122374C570098B595 /* Debug */,
+				154AA2E222374C570098B595 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 154AA2C622374C560098B595 /* Project object */;
+}

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rV7-Gr-t4W">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Home View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="HomeViewController" customModule="AddHomeShortcuts" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="首页" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E8I-TY-Wh9">
+                                <rect key="frame" x="163" y="319" width="49" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BK1-Em-aSv">
+                                <rect key="frame" x="161.5" y="372" width="52" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="功能页"/>
+                                <connections>
+                                    <segue destination="php-n4-xY8" kind="show" id="zOp-Qv-Fgc"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="BK1-Em-aSv" firstAttribute="top" secondItem="E8I-TY-Wh9" secondAttribute="bottom" constant="24" id="Pi6-Ie-NW1"/>
+                            <constraint firstItem="BK1-Em-aSv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="brL-SZ-K0z"/>
+                            <constraint firstItem="E8I-TY-Wh9" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="rnd-8k-ioW"/>
+                            <constraint firstItem="E8I-TY-Wh9" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="vja-gy-F3V"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Tfb-8c-7gr"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="761" y="-564"/>
+        </scene>
+        <!--Feature View Controller-->
+        <scene sceneID="8rL-61-5dB">
+            <objects>
+                <viewController storyboardIdentifier="FeatureViewController" id="php-n4-xY8" customClass="FeatureViewController" customModule="AddHomeShortcuts" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Wsy-qp-QRR">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="功能页" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pvi-Lv-vVt">
+                                <rect key="frame" x="151" y="319" width="73" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XXU-Ig-Cv5">
+                                <rect key="frame" x="74.5" y="372" width="226" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="当前页面添加快捷方式到桌面"/>
+                                <connections>
+                                    <action selector="addShortcutsTouch:" destination="php-n4-xY8" eventType="touchUpInside" id="yGl-TL-Hkn"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="XXU-Ig-Cv5" firstAttribute="top" secondItem="pvi-Lv-vVt" secondAttribute="bottom" constant="24" id="I9z-Tc-c80"/>
+                            <constraint firstItem="pvi-Lv-vVt" firstAttribute="centerY" secondItem="Wsy-qp-QRR" secondAttribute="centerY" id="Me4-Jw-rQx"/>
+                            <constraint firstItem="pvi-Lv-vVt" firstAttribute="centerX" secondItem="Wsy-qp-QRR" secondAttribute="centerX" id="VBd-kZ-aKF"/>
+                            <constraint firstItem="XXU-Ig-Cv5" firstAttribute="centerX" secondItem="Wsy-qp-QRR" secondAttribute="centerX" id="tVz-6k-zH7"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="9wU-rb-ZOO"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Tco-0y-T2c" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1529" y="-565"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="vX2-5i-vKb">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="rV7-Gr-t4W" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="w5z-2g-5Nm">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="olt-EX-F8M"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6Ls-dJ-Q26" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="8.8000000000000007" y="-564.46776611694156"/>
+        </scene>
+    </scenes>
+</document>
