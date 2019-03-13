@@ -4210,7 +4210,7 @@ class AuthenticationService {
 }
 ```
 
-
+[:arrow_up: 返回目录](#table-of-contents)
 
 <h2 id="47">47.给App的某个功能添加快捷方式</h2>  
 
