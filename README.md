@@ -55,7 +55,8 @@
 [45.利用取色盘获取颜色](#45)  
 [46.第三方库的依赖隔离](#46)  
 [47.给App的某个功能添加快捷方式](#47)  
-
+[48.给UITableView添加空白页](#48)  
+ 
 
 
 ## 2.XcodeTips 
@@ -4327,4 +4328,60 @@ try? server.start(8244)
 
 具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/47.%E7%BB%99App%E7%9A%84%E6%9F%90%E4%B8%AA%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F)
 
-[:arrow_up: 返回目录](#table-of-contents)
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="48">48.给UITableView添加空白页</h2> 
+
+介绍一种简单的给`UITableView`设置空白页的方法。
+
+```swift
+extension UITableView {
+
+    /// 添加空白页
+    ///
+    /// - Parameter message: 空白页文字
+    func setNoDataPlaceholder(_ message: String) {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
+        label.text = message
+        label.textAlignment = .center
+        label.sizeToFit()
+        self.isScrollEnabled = false
+        self.backgroundView = label
+        self.separatorStyle = .none
+    }
+    
+    /// 删除空白页
+    func removeNoDataPlaceholder() {
+        self.isScrollEnabled = true
+        self.backgroundView = nil
+        self.separatorStyle = .singleLine
+    }
+}
+```
+上面代码只支持纯文本的空白页提示，如果需要添加空白页图片可以在`setNoDataPlaceholder`方法中自定义。
+
+为了方便在`RxSwift`中使用，我们可以给`Reactive`添加扩展
+
+```swift
+extension Reactive where Base: UITableView {
+    func isEmpty(message: String) -> Binder<Bool> {
+        return Binder(base) { tableView, isEmpty in
+            if isEmpty {
+                tableView.setNoDataPlaceholder(message)
+            } else {
+                tableView.removeNoDataPlaceholder()
+            }
+        }
+    }
+}
+```
+使用
+
+```swift
+let isEmpty = tableView.rx.isEmpty(message:"暂无数据")
+viewModel.responses.map({ $0.count <= 0 }).distinctUntilChanged().bind(to: isEmpty).disposed(by: disposeBag)
+```
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
