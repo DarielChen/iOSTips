@@ -56,7 +56,7 @@
 [46.第三方库的依赖隔离](#46)  
 [47.给App的某个功能添加快捷方式](#47)  
 [48.给UITableView添加空白页](#48)  
- 
+[49.线程保活的封装](#49)  
 
 
 ## 2.XcodeTips 
@@ -4383,5 +4383,84 @@ let isEmpty = tableView.rx.isEmpty(message:"暂无数据")
 viewModel.responses.map({ $0.count <= 0 }).distinctUntilChanged().bind(to: isEmpty).disposed(by: disposeBag)
 ```
 
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="49">49.线程保活的封装</h2>  
+
+
+当我们开启一个线程并执行完相关的操作后，线程就会立即被销毁。下次再执行同样的操作时，还会创建一个新的线程，这就产生了不必要的开销，尤其是这样的操作很频繁的时候。
+
+如何在执行完相关的操作后，线程依然不被销毁，等到下次直接去使用呢？
+
+我们可以在这个线程中创建一个`RunLoop`，由`RunLoop`去管理线程。
+
+在上代码前先解释下`RunLoop`和线程之间的关系   
+
+  1. 每个线程都有一个对应的`RunLoop`，主线程的`RunLoop`在`Main`函数中创建。
+  2. 主线程的`RunLoop`是自动开启的，子线程默认并没有开启`RunLoop`。
+  3. 子线程创建的时候并没有创建好`RunLoop`对象，`RunLoop`对象会在第一次获取它的时候创建。
+  4. 线程中的`RunLoop`会和线程一起被销毁。
+
+
+由`RunLoop`管理线程：
+
+```swift
+    innerThread = DCThread(block: { [weak self] in
+        // RunLoop.current:如果当前RunLoop不存在，就在线程中创建一个RunLoop
+        // 往RunLoop中添加Source,防止空的RunLoop自动退出
+        RunLoop.current.add(Port(), forMode: RunLoop.Mode.default)
+        // 
+        while self?.isStopped == false {
+            // 单次运行RunLoop，不会超时
+            RunLoop.current.run(mode: RunLoop.Mode.default, before: NSDate.distantFuture)
+        }
+    })
+    innerThread?.start()
+```
+
+在子线程中执行任务：
+
+```swift
+    self.perform(#selector(innerExecuteTask(task:)), on: innerThread, with: task, waitUntilDone: false)
+
+    @objc private func innerExecuteTask(task: @escaping @convention(block)() -> Void) {
+        // 需要在子线程中执行的操作
+    }
+```
+
+停止子线程的`RunLoop`，销毁子线程：
+
+```swift
+    self.perform(#selector(innerStop), on: innerThread, with: nil, waitUntilDone: true)
+
+    @objc private func innerStop() {
+        // 终止RunLoop的while循环
+        isStopped = true
+        // 停止当前线程中的当次RunLoop
+        CFRunLoopStop(CFRunLoopGetCurrent());
+        self.innerThread = nil
+    }
+
+```
+
+封装完之后使用
+
+```swift
+    // 创建
+    let thread = PermenantThread()
+
+    // 使用
+    thread.executeTask  dfkjdfjkkjdf
+        // 需要在子线程中执行的操作
+        print(Thread.current)
+    }
+
+    // 销毁
+    thread.stop()
+```
+
+具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/49.%E7%BA%BF%E7%A8%8B%E4%BF%9D%E6%B4%BB%E7%9A%84%E5%B0%81%E8%A3%85)
 
 [:arrow_up: 返回目录](#table-of-contents)  
