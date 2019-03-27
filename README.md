@@ -4411,7 +4411,6 @@ viewModel.responses.map({ $0.count <= 0 }).distinctUntilChanged().bind(to: isEmp
         // RunLoop.current:如果当前RunLoop不存在，就在线程中创建一个RunLoop
         // 往RunLoop中添加Source,防止空的RunLoop自动退出
         RunLoop.current.add(Port(), forMode: RunLoop.Mode.default)
-        // 
         while self?.isStopped == false {
             // 单次运行RunLoop，不会超时
             RunLoop.current.run(mode: RunLoop.Mode.default, before: NSDate.distantFuture)
