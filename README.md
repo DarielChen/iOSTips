@@ -4451,7 +4451,7 @@ viewModel.responses.map({ $0.count <= 0 }).distinctUntilChanged().bind(to: isEmp
     let thread = PermenantThread()
 
     // 使用
-    thread.executeTask  dfkjdfjkkjdf
+    thread.executeTask {
         // 需要在子线程中执行的操作
         print(Thread.current)
     }
