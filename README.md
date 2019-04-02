@@ -57,6 +57,8 @@
 [47.给App的某个功能添加快捷方式](#47)  
 [48.给UITableView添加空白页](#48)  
 [49.线程保活的封装](#49)  
+[50.GCD定时器](#50)  
+
 
 
 ## 2.XcodeTips 
@@ -4463,3 +4465,89 @@ viewModel.responses.map({ $0.count <= 0 }).distinctUntilChanged().bind(to: isEmp
 具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/49.%E7%BA%BF%E7%A8%8B%E4%BF%9D%E6%B4%BB%E7%9A%84%E5%B0%81%E8%A3%85)
 
 [:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="50">50.GCD定时器</h2>  
+
+`CADisplayLink`和`NSTimer`的底层都是基于`RunLoop`实现的，而主线程的`RunLoop`承担了大量的工作，比如UI界面的刷新，点击事件的处理，动画的响应等，如果`RunLoop`的任务过于繁重，就可能导致`CADisplayLink`和`NSTimer`执行的时候不准时。
+
+在设置好`CADisplayLink`和`NSTimer`定时器后，`RunLoop`会每跑一圈去确认下时间，`RunLoop`每次循环的任务可能不一样，如果当次循环还没执行到定时器执行的时间间隔，就会执行下一次`RunLoop`循环， 而下一次循环执行到定时器任务时可能已经超过了定时器执行的时间间隔，这就导致了基于`RunLoop`的定时器的不准确。
+
+而基于系统内核的GCD定时器不依赖RunLoop，相对来说会更准确一些。
+
+为了方便使用，下面给出了GCD定时器定时器的封装
+
+```swift
+class GCDTimer {
+    
+    public let dispatchSourceTimer : DispatchSourceTimer
+    
+    init(in : GCDQueue, delay : Float = 0, interval : Float) {
+        dispatchSourceTimer = DispatchSource.makeTimerSource(flags: [], queue: `in`.dispatchQueue)
+        dispatchSourceTimer.schedule(deadline: .now() + .milliseconds(Int(delay * 1000)), repeating: .milliseconds(Int(interval * 1000)))
+    }
+    
+    /// 设定定时器任务的回调函数
+    ///
+    /// - Parameter eventHandler: 回调函数
+    func setTimerEventHandler(eventHandler: @escaping (GCDTimer) -> Void) {
+        dispatchSourceTimer.setEventHandler {
+            eventHandler(self)
+        }
+    }
+    
+    /// 设定定时器销毁时候的回调函数
+    ///
+    /// - Parameter eventHandler: 回调函数
+    func setDestroyEventHandler(eventHandler: @escaping () -> Void) {
+        dispatchSourceTimer.setCancelHandler {
+            eventHandler()
+        }
+    }
+    
+    /// 挂起
+    func suspend() {
+         dispatchSourceTimer.suspend()
+    }
+    
+    /// 开始定时
+    func start() {
+         dispatchSourceTimer.resume()
+    }
+
+    /// 定时器销毁(执行了此方法后,start就会变得无效)
+    func destroy() {
+         dispatchSourceTimer.cancel()
+    }
+}
+```
+使用
+
+```swift
+// 设置定时器，延迟2秒执行，间隔1秒
+let gcdTimer = GCDTimer(in: GCDQueue.global(), delay: 2, interval: 1)
+    
+var count : Int = 0
+// 执行事件
+gcdTimer.setTimerEventHandler { _ in
+    count += 1
+    print("\(count)")
+    
+    if count == 8 {
+        // 定时器销毁
+        gcdTimer.destroy()
+    }
+}
+// 定时器开始
+gcdTimer.start()
+    
+gcdTimer.setDestroyEventHandler {
+    print("销毁事件的回调")
+}
+```
+
+具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/50.GCD%e5%ae%9a%e6%97%b6%e5%99%a8)
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
