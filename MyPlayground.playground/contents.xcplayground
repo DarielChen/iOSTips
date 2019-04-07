@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<playground version='6.0' target-platform='ios'>
+    <pages>
+        <page name='1.常用的几个高阶函数'/>
+        <page name='2.高阶函数扩展'/>
+        <page name='3.优雅的判断多个值中是否包含某一个值'/>
+        <page name='4. Hashable、Equatable和Comparable协议'/>
+        <page name='5.可变参数函数'/>
+        <page name='6.where关键字'/>
+        <page name='13.实现多重代理'/>
+    </pages>
+</playground>

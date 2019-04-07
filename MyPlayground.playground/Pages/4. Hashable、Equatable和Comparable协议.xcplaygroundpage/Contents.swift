@@ -1,9 +1,6 @@
-import UIKit
+//: [Previous](@previous)
 
-// 结构体和枚举都是值类型
-// 对于基本的数据类型,Int,Float,Bool,String,Array,Dictionary都是值类型,都是以结构体的方式呈现的, 也就意味着在传递的时候都会被复制
-// 类的话是引用类型
-
+import Foundation
 
 struct Pet: Equatable {
     let name: String
@@ -17,8 +14,6 @@ let p2 = Pet(name: "Dog", age: 3)
 p1 == p2
 
 
-
-
 enum Season: Equatable {
     case spring(mouth: String)
     case summer
@@ -30,13 +25,9 @@ let season1 = Season.spring(mouth: "4")
 let season2 = Season.autumn(mouth: "4")
 
 season1 == season2
-// false
-
-
 
 
 class Animal: Equatable, Hashable, Comparable {
-    
     
     static func < (lhs: Animal, rhs: Animal) -> Bool {
         if lhs.age < rhs.age{
@@ -45,7 +36,6 @@ class Animal: Equatable, Hashable, Comparable {
             return false
         }
     }
-    
     
     static func == (lhs: Animal, rhs: Animal) -> Bool {
         if lhs.type == rhs.type && lhs.age == rhs.age{
@@ -57,7 +47,7 @@ class Animal: Equatable, Hashable, Comparable {
     
     var hashValue: Int {
         return self.type.hashValue ^ self.age.hashValue
-
+        
     }
     
     let type: String

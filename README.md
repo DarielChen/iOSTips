@@ -1,6 +1,6 @@
 # iOSTips(๑•̀ㅂ•́)و✧
 
-[![Language: Swift 4.2](https://img.shields.io/badge/language-swift4.2-f48041.svg?style=flat)](https://developer.apple.com/swift)
+[![Language: Swift 5.0](https://img.shields.io/badge/language-swift5.0-f48041.svg?style=flat)](https://developer.apple.com/swift)
 ![Platform: iOS 12](https://img.shields.io/badge/platform-iOS-blue.svg?style=flat)
 
 ## 1.SwiftTips 

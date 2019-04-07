@@ -1,9 +1,12 @@
-import UIKit
+//: [Previous](@previous)
+
+import Foundation
 
 // for循环的时候添加限定条件
 let arr = [11, 12, 13, 14, 15, 16, 17, 18]
 for num in arr where num % 2 == 0 {
     // 12 14 16 18
+    num
 }
 
 
@@ -45,7 +48,6 @@ func genericFunctionB<S:ExpressibleByStringLiteral>(str:S){
 }
 
 
-
 // 为指定的类添加对应的协议扩展
 extension Sequence where Element: Numeric {
     var sum: Element {
@@ -57,7 +59,7 @@ extension Sequence where Element: Numeric {
     }
 }
 
-print([1,2,3,4].sum) // 10
+print([1,2,3,4].sum)
 
 
 // 做某些高阶函数的限定条件
@@ -65,9 +67,10 @@ let names = ["Joan", "John", "Jack"]
 let firstJname = names.first(where: { (name) -> Bool in
     return name.first == "J"
 })
+firstJname
+
 let fruits = ["Banana", "Apple", "Kiwi"]
 let containsBanana = fruits.contains(where: { (fruit) in
     return fruit == "Banana"
 })
-
-
+containsBanana

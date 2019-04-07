@@ -1,5 +1,6 @@
-import UIKit
+//: [Previous](@previous)
 
+import Foundation
 
 protocol MasterOrderDelegate: class {
     func toEat(_ food: String)
@@ -8,7 +9,7 @@ protocol MasterOrderDelegate: class {
 // 用来管理遵守协议的类
 class masterOrderDelegateManager : MasterOrderDelegate {
     private let multiDelegate: NSHashTable<AnyObject> = NSHashTable.weakObjects()
-
+    
     init(_ delegates: [MasterOrderDelegate]) {
         delegates.forEach(multiDelegate.add)
     }
@@ -36,7 +37,7 @@ class masterOrderDelegateManager : MasterOrderDelegate {
     func removeAll() {
         multiDelegate.removeAllObjects()
     }
-
+    
     // 遍历所有遵守协议的类
     private func invoke(_ invocation: (MasterOrderDelegate) -> Void) {
         for delegate in multiDelegate.allObjects.reversed() {
