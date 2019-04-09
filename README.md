@@ -4550,7 +4550,6 @@ gcdTimer.setDestroyEventHandler {
 
 [:arrow_up: 返回目录](#table-of-contents)  
 
-
 <h2 id="51">51.命名空间及应用</h2>  
 
 在OC中因为没有命名空间，开发者在给类库命名的时候一般都会加上两三个字母的前缀来防止命名冲突。这样做虽然可以大大降低引用第三方类库时的冲突，但还是会碰到命名相同的情况。
@@ -4595,12 +4594,12 @@ let kitView = UIKit.UIView()
 
 #### 2. 如何避免模块之间的命名冲突
 
-<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/namespace_module.png” width=500>
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/namespace_module.png" width=250>
 
 在模块A和模块B中分别定义了两个相同名字的结构体Int,如果我们要在项目中同时使用这两个结构体只需要加前缀。
 
-
 ```swift
+
 import ModuleA
 import ModuleB
 
@@ -4617,7 +4616,6 @@ print(ModuleB.Int().description) // ModuleB
 
 ```swift
 class ItemListViewController { ... }
-
 extension ItemListViewController {
 
     enum Constants {
@@ -4638,7 +4636,6 @@ ItemListViewController.Constants.headerHeight
 struct Item {
     ...
 }
-
 extension Item {
     enum Factory {
         static func make(from anotherItem: AnotherItem) -> Item {
