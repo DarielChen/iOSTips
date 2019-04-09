@@ -58,7 +58,7 @@
 [48.给UITableView添加空白页](#48)  
 [49.线程保活的封装](#49)  
 [50.GCD定时器](#50)  
-
+[51.命名空间及应用](#51)  
 
 
 ## 2.XcodeTips 
@@ -4551,3 +4551,110 @@ gcdTimer.setDestroyEventHandler {
 [:arrow_up: 返回目录](#table-of-contents)  
 
 
+<h2 id="51">51.命名空间及应用</h2>  
+
+在OC中因为没有命名空间，开发者在给类库命名的时候一般都会加上两三个字母的前缀来防止命名冲突。这样做虽然可以大大降低引用第三方类库时的冲突，但还是会碰到命名相同的情况。
+
+而在`swift`中由于可以使用命名空间，即使相同的类型名称只要来自不同的模块，就可以共存。每个模块都有一个自己的命名空间。
+
+#### 1. 如何避免与系统API命名冲突
+
+避免命名冲突最好的方式是跟系统的命名不一样，这也是代码规范的一部分，但如果真的冲突了，怎么解决？
+
+```swift
+// 获取当前项目的命名空间
+let nameSpace = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String // Optional("Namespace")
+
+// 正常使用Int类型
+let zeroOrOne = Int.random(in: 0...1)
+print(zeroOrOne)
+
+```
+
+自定义了一个`Int`结构体
+
+```swift
+struct Int {}
+
+let zeroOrOne = Int.random(in: 0...1) // 报错： Type 'Int' has no member 'random'
+```
+上面代码中的`Int.random`其实省略了命名空间，完整的写法应该是这样
+
+```swift
+// Namespace是当前项目的命名空间
+let zeroOrOne = Namespace.Int.random(in: 0...1) // 报错： Type 'Int' has no member 'random'
+```
+如果我们想用`Foundation`中的`Int`类型应该在前面加`Swift`前缀。使用`UIKit`中的API，前面默认是加的`UIKit`。
+
+```swift
+let zeroOrOne = Swift.Int.random(in: 0...1)
+print(zeroOrOne) // 0 或 1
+
+let kitView = UIKit.UIView()
+```
+
+#### 2. 如何避免模块之间的命名冲突
+
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/namespace_module.png” width=500>
+
+在模块A和模块B中分别定义了两个相同名字的结构体Int,如果我们要在项目中同时使用这两个结构体只需要加前缀。
+
+
+```swift
+import ModuleA
+import ModuleB
+
+print(ModuleA.Int().description) // ModuleA
+print(ModuleB.Int().description) // ModuleB
+```
+
+#### 3. 伪命名空间
+有时为了更清晰的代码结构往往需要多层嵌套，我们可以使用伪命名空间来使代码结构更清晰。
+
+用枚举来做伪命名空间嵌套更合适一些。因为相比类和结构体，枚举没有构造方法，也没有类的继承操作。
+
+##### 1. 利用伪命名空间定义全局常量
+
+```swift
+class ItemListViewController { ... }
+
+extension ItemListViewController {
+
+    enum Constants {
+        static let itemsPerPage = 7
+        static let headerHeight: CGFloat = 60
+    }
+}
+
+// 全局常量
+ItemListViewController.Constants.itemsPerPage
+ItemListViewController.Constants.headerHeight
+
+```
+这样嵌套定义的全局常量一方面是直观清晰，另一方面可以有效避免命名污染。
+##### 2. 利用伪命名空间来设置工厂方法
+
+```swift
+struct Item {
+    ...
+}
+
+extension Item {
+    enum Factory {
+        static func make(from anotherItem: AnotherItem) -> Item {
+            // 相关操作
+            return Item(...)
+        }
+    }
+}
+
+let anotherItem = AnotherItem()
+let item = Item.Factory.make(from: anotherItem)
+
+```
+
+
+总结 ：命名空间可以有效避免不同模块之间的命名冲突，但同一模块中的命名冲突并不支持，我们可以利用伪命名空间的嵌套来避免。
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
