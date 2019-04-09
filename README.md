@@ -4594,7 +4594,7 @@ let kitView = UIKit.UIView()
 
 #### 2. 如何避免模块之间的命名冲突
 
-<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/namespace_module.png" width=250>
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/namespace_module.png" width=500>
 
 在模块A和模块B中分别定义了两个相同名字的结构体Int,如果我们要在项目中同时使用这两个结构体只需要加前缀。
 
