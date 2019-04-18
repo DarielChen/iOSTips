@@ -59,6 +59,8 @@
 [49.线程保活的封装](#49)  
 [50.GCD定时器](#50)  
 [51.命名空间及应用](#51)  
+[52.数据绑定的封装](#52)  
+
 
 
 ## 2.XcodeTips 
@@ -4655,3 +4657,115 @@ let item = Item.Factory.make(from: anotherItem)
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="52">52.数据绑定的封装</h2>  
+
+函数响应式编程（例如`RxSwift`）有一个很大的优势，可以将模型与视图绑定。当模型中数据发生改变后，视图会直接产生变化，不用再去刷新视图。
+
+下面给出了一个简单的数据绑定封装，不再依赖`RxSwift`。
+
+使用：
+
+```swift
+// 模型
+struct User {
+    var name: String
+    var followersCount: Int
+}
+
+class TestViewController: UIViewController {
+    
+    private lazy var countLabel = UILabel()
+    var user: Bindable<User>? = nil
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // 创建模型
+        user = Bindable(User(name: "Dariel", followersCount: 5))
+        
+        countLabel.text = "0"
+        view.addSubview(countLabel)
+        
+        // 添加观察者，只要模型数据发生改变就会进回调
+        user?.addObservation(for: self) { [weak self] (vc, user) in
+            
+            self?.countLabel.text = String(user.followersCount)
+            self?.countLabel.sizeToFit()
+            self?.countLabel.center = (self?.view.center)!
+        }
+        // 模型与视图绑定，本质上是添加观察者方法的又一层封装
+        user?.bind(\.name, to: navigationItem, \.title)
+        
+        view.backgroundColor = UIColor.groupTableViewBackground
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        // 改变模型
+        user?.lastValue.followersCount += 1
+        user?.lastValue.name = "大雷"
+    }
+    
+    deinit {
+        print("销毁.....")
+    }
+}
+```
+实现：
+
+```swift
+
+class Bindable<Value> {
+    private var observations = [(Value) -> Bool]()
+    // 模型
+    var lastValue: Value {
+        didSet { update() }
+    }
+    
+    init(_ value: Value) {
+        lastValue = value
+    }
+    
+    /// 添加观察者
+    ///
+    /// - Parameters:
+    ///   - object: 观察对象
+    ///   - handler: 回调
+    func addObservation<O: AnyObject>(for object: O, handler: @escaping (O, Value) -> Void) {
+        handler(object, lastValue)
+        observations.append { [weak object] value in
+            guard let object = object else {
+                return false
+            }
+            handler(object, value)
+            return true
+        }
+    }
+    
+    /// 更新数据
+    ///
+    /// - Parameter value: 模型
+    func update(with value: Value? = nil) {
+        observations = observations.filter {
+            $0(value ?? lastValue) }
+    }
+    
+    /// 绑定视图
+    ///
+    /// - Parameters:
+    ///   - sourceKeyPath: 模型属性
+    ///   - object: 视图
+    ///   - objectKeyPath: 视图属性
+    func bind<O: AnyObject, T>(_ sourceKeyPath: KeyPath<Value, T>, to object: O, _ objectKeyPath: ReferenceWritableKeyPath<O, T?>) {
+        
+        addObservation(for: object) { object, observed in
+            let value = observed[keyPath: sourceKeyPath]
+            object[keyPath: objectKeyPath] = value
+        }
+    }
+}
+```
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
