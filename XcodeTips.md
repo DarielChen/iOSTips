@@ -81,8 +81,9 @@ internal class ViewController : UIViewController {
 
 <img src="source/breakpoint_view.png" width=400>
 
-<h2 id="8">8.Storyboard拆分</h2>
+<h2 id="8">8.Storyboard解耦</h2>
 
+#### 1. Storyboard拆分
 对于比较臃肿的`Storyboard`，我们可以先选中需要拆分的控制器，`Editor` -> `Refactor to Storyboard...`，弹出如下界面
 
 <img src="source/refactor_storyboard.png" width=400>
@@ -92,3 +93,14 @@ internal class ViewController : UIViewController {
 <img src="source/after_refactor_storyboard.png" width=200>
 
 点击`Other`会跳到对应的`Storyboard`。
+
+#### 2.不同Storyboard中控制器的跳转
+
+`Storyboard`提供了对外部`Storyboard`中控制器的应用，如下图所示。
+
+<img src="source/storyboard_reference.png" width=300>
+
+拖取`Storyboard Reference`控件后，指定对应的`Storyboard`和`控制器`。
+<img src="source/set_storyboard_reference.png" width=300>
+
+将`Storyboard Reference`引用向某一个按钮，点击按钮就可以发生控制器跳转了。
