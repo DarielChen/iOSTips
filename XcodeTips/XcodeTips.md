@@ -101,6 +101,7 @@ internal class ViewController : UIViewController {
 <img src="source/storyboard_reference.png" width=300>
 
 拖取`Storyboard Reference`控件后，指定对应的`Storyboard`和`控制器`。
+
 <img src="source/set_storyboard_reference.png" width=300>
 
 将`Storyboard Reference`引用向某一个按钮，点击按钮就可以发生控制器跳转了。
