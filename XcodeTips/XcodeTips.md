@@ -104,3 +104,5 @@ internal class ViewController : UIViewController {
 <img src="source/set_storyboard_reference.png" width=300>
 
 将`Storyboard Reference`引用向某一个按钮，点击按钮就可以发生控制器跳转了。
+
+

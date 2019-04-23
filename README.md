@@ -74,7 +74,7 @@
 [5.锁定Storyboard中控件的约束](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#5)  
 [6.多重光标操作](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#6)  
 [7.断点对象预览](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#7)  
-[8.Storyboard拆分](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#8)  
+[8.Storyboard解耦](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#8)  
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
