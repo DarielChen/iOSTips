@@ -60,6 +60,7 @@
 [50.GCD定时器](#50)  
 [51.命名空间及应用](#51)  
 [52.数据绑定的封装](#52)  
+[53.基于CSS样式的富文本](#53)  
 
 
 
@@ -4769,3 +4770,86 @@ class Bindable<Value> {
 [:arrow_up: 返回目录](#table-of-contents)  
 
 
+<h2 id="53">53.基于CSS样式的富文本</h2>  
+
+iOS对于富文本的操作一直不是那么方便，一般涉及到富文本的页面我们会优先考虑使用`WebView`，`CSS`一方面样式丰富，另一方面是写起来简单。
+
+其实`NSAttributedString`也是支持带有CSS样式的文本的，其`DocumentType`有一个类型为`html`。
+
+下面给出了一个富文本的封装，可以便捷操作`NSAttributedString`。
+
+```swift
+extension NSAttributedString {
+    
+    convenience init(text: String, styles: [String: String]) {
+        
+        // 字典转CSS样式字符串
+        let style = styles.compactMap({ (property, value) -> String in
+            return "\(property): \(value)"
+        }).joined(separator: ";")
+        
+        // 生成span标签对应的富文本
+        try! self.init(
+            data: Data("<span style=\"\(style)\">\(text)</span>".utf8),
+            options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue],
+            documentAttributes: nil
+        )
+    }
+    
+    /// 可以通过"+"拼接NSAttributedString对象
+    static func +(lhs: NSAttributedString, rhs: NSAttributedString) -> NSAttributedString {
+        
+        let concatenatedString = NSMutableAttributedString(attributedString: lhs)
+        concatenatedString.append(rhs)
+        return concatenatedString
+    }
+}
+
+```
+使用：  
+
+绘制一个如下图的`Label`
+
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/attributed_url.png" width=300>
+
+```swift
+// 统一的样式
+enum Styles {
+
+    static let `protocol` = [
+        "color" : "#7B68EE",
+        "font-size": "32px",
+        "font-style": "italic",
+    ]
+    
+    static let separator = [
+        "color" : "#B22222",
+        "font-size": "28px",
+    ]
+    
+    static let hostname = [
+        "color" : "#20B2AA",
+        "font-size": "34px",
+        "text-decoration": "underline",
+    ]
+    
+    static let path = [
+        "color" : "#FFDEAD",
+        "font-size": "32px",
+        "text-decoration": "underline",
+        "font-style": "oblique",
+    ]
+}
+
+
+let `protocol` = NSAttributedString(text: "https", styles: Styles.protocol)
+let separator = NSAttributedString(text: "://", styles: Styles.separator)
+let hostname = NSAttributedString(text: "github.com", styles: Styles.hostname)
+let path = NSAttributedString(text: "/DarielChen/iOSTips", styles: Styles.path)
+        
+label.attributedText = `protocol` + separator + hostname + path
+
+```
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
