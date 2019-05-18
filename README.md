@@ -61,6 +61,7 @@
 [51.命名空间及应用](#51)  
 [52.数据绑定的封装](#52)  
 [53.基于CSS样式的富文本](#53)  
+[54.阴影视差效果的封装](#54)  
 
 
 
@@ -4851,5 +4852,32 @@ label.attributedText = `protocol` + separator + hostname + path
 
 ```
 
-
 [:arrow_up: 返回目录](#table-of-contents)  
+
+<h2 id="54">54.阴影视差效果的封装</h2>  
+
+在`iPhone`锁屏页面上下左右翻转`iPhone`，锁屏壁纸会沿着各个方向发生位移，有一个独特的视差效果。这是利用了陀螺仪，好在苹果有相关的API支持，使用起来不是那么复杂。
+
+我们可以把这个API用在自己的项目中，比如改变阴影的位移。
+
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/shadow_move.gif" width=500>
+
+```swift
+    blueView.cornerRadius = 6
+    blueView.borderWidth = 2
+    blueView.borderColor = .lightGray
+       
+    blueView.shadowColor = UIColor.darkGray
+    blueView.shadowRadius = 6
+    blueView.shadowOpacity = 0.5
+    blueView.shadowOffset = CGSize(width: 8, height: 8)
+    
+    // 基于位置的偏移    
+    // blueView.shadowMotionOffset = CGSize(width: 12, height: 12)
+    // 阴影的偏移
+    blueView.motionOffset = CGSize(width: 12, height: 12)
+```
+
+具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift) 
+
+
