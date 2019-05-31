@@ -62,6 +62,8 @@
 [52.数据绑定的封装](#52)  
 [53.基于CSS样式的富文本](#53)  
 [54.阴影视差效果的封装](#54)  
+[55.使用协调器模式管理控制器](#55)  
+
 
 
 
@@ -4880,5 +4882,67 @@ label.attributedText = `protocol` + separator + hostname + path
 ```
 
 具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/UIView%2BExtension.swift)  
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="55">55.使用协调器模式管理控制器</h2>  
+
+
+对于控制器之间的跳转，最方便的操作是在需要跳转的地方创建目标控制器，但这种方式总觉得不是太合适。
+
+* 当前控制器和目标控制器本质上是同一类型对象，不应该在当前控制器的某个方法中创建目标控制器。
+* 控制器的创建分散在控制器中，不便于统一管理和模块化开发。
+
+使用协调器模式就可以解决上面两个问题。
+
+使用协调器模式的优点：  
+ 1. 将控制器的创建，配置和切换从控制器层级中剥离开，放到协调器层级中
+ 2. 控制器不再通过导航控制器`push`或`present`目标控制器
+ 3. 控制器之间的结构更清晰，易于调试
+ 4. 协调器中可以嵌套子协调器，使减小模块与模块之间的耦合度
+
+ 当然了协调器模式也会有缺点：
+  1. 协调器不可避免会带来更多的代码，很多操作都要使用代理
+  2. 有时还会需要多级代理来传递数据
+
+  虽然有缺点但协调器模式还是值得一用。
+
+
+#### 协调器模式的使用流程
+
+```swift
+// 所有的协调器遵守的协议
+protocol Coordinator {
+    // 设置协调器初始模块
+    func start()
+}
+```
+##### 1. 主协调器
+主协调器`AppCoordinator`负责管理所有的子协调器，并设置所有子协调器的代理为自身，实现代理方法，作为子协调器之间的切换操作。
+
+##### 2. 统一管理用Storyboard创建的控制器
+```swift
+extension UIStoryboard {
+    
+    // MARK: - 获取对应的Storyboard
+    private static var main: UIStoryboard {
+        return UIStoryboard(name: "Main", bundle: nil)
+    }
+    // MARK: - Storyboard中控制器管理
+    static func instantiateMainViewController(delegate: MainViewControllerDelegate) -> MainViewController {
+        let mainVc = main.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
+        mainVc.delegate = delegate
+        return mainVc
+    }
+}
+```
+利用`extension`加了一层封装，用起来方便一些。
+
+##### 3. 子协调器
+子协调器的实现类似主协调器，每个子协调器负责管理一个模块，模块内部的控制器跳转交给子协调器管理，主协调器管理所有的子协调器。实例代码中有两个子模块`Auth`和`Main`。
+
+具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/55.%e4%bd%bf%e7%94%a8%e5%8d%8f%e8%b0%83%e5%99%a8%e6%a8%a1%e5%bc%8f%e7%ae%a1%e7%90%86%e6%8e%a7%e5%88%b6%e5%99%a8)
+
 
 [:arrow_up: 返回目录](#table-of-contents)  
