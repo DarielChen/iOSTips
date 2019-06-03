@@ -63,6 +63,7 @@
 [53.基于CSS样式的富文本](#53)  
 [54.阴影视差效果的封装](#54)  
 [55.使用协调器模式管理控制器](#55)  
+[56.判断字符串是否为空](#56)  
 
 
 
@@ -4943,6 +4944,70 @@ extension UIStoryboard {
 子协调器的实现类似主协调器，每个子协调器负责管理一个模块，模块内部的控制器跳转交给子协调器管理，主协调器管理所有的子协调器。实例代码中有两个子模块`Auth`和`Main`。
 
 具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/55.%e4%bd%bf%e7%94%a8%e5%8d%8f%e8%b0%83%e5%99%a8%e6%a8%a1%e5%bc%8f%e7%ae%a1%e7%90%86%e6%8e%a7%e5%88%b6%e5%99%a8)
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="56">56.判断字符串是否为空</h2>  
+
+这个空可能是`nil` `单个空格` `多个空格` `tab` `return` `全角空格`。
+
+#### 1. 使用`isEmpty`
+
+`isEmpty`无法判断多个空字符串组合的情况。
+
+```swift
+ print("str".isEmpty)  // false
+ print("".isEmpty)     // true
+ print("  ".isEmpty)   // false
+```
+因为`isEmpty`的实现逻辑是基于`startIndex`和`endIndex`。下面是`Collection.swift`中关于`isEmpty`的实现过程。
+
+```swift
+public var isEmpty: Bool {
+  return startIndex == endIndex
+}
+```
+`isEmpty`不能满足需要。
+
+#### 2. 判断字符串中是否包含空格
+
+`isWhitespace`可以实现，但每一次都需要遍历这个字符串。这个遍历我们可以用`allSatisfy`这个高阶函数实现，`allSatisfy`只有当所有的元素满足条件才会返回`true`，否则返回`false`。
+
+```swift
+extension String {
+    var isBlank: Bool {
+        return allSatisfy({ $0.isWhitespace })
+    }
+}
+
+"str".isBlank          // false
+"   str   ".isBlank    // false
+"".isBlank             // true
+" ".isBlank            // true
+"\t\r\n".isBlank       // true
+"\u{00a0}".isBlank     // true
+
+```
+需要判断字符串是否为空，我们为可选类型添加扩展
+
+```swift
+extension Optional where Wrapped == String {
+    var isBlank: Bool {
+        return self?.isBlank ?? true
+    }
+}
+
+var str: String? = nil
+str.isBlank            // true
+str = ""               
+str.isBlank            // true
+str = "  \t  "               
+str.isBlank            // true
+str = "Dariel"
+str.isBlank            // false
+```
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
