@@ -64,6 +64,7 @@
 [54.阴影视差效果的封装](#54)  
 [55.使用协调器模式管理控制器](#55)  
 [56.判断字符串是否为空](#56)  
+[57.避免将字符串硬编码在代码中](#57)  
 
 
 
@@ -5008,6 +5009,28 @@ str.isBlank            // true
 str = "Dariel"
 str.isBlank            // false
 ```
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="57">57.避免将字符串硬编码在代码中</h2>  
+
+之前都是直接把字符串写在代码中的，思考了一下觉得代码在整洁性和灵活性上有欠缺，其实可以做下统一管理。项目后期要是需要添加国际化也方便一些。
+
+但如果整个项目的字符串都做统一管理，在开发效率上就会有折扣，所以决定在每个包含字符串的文件中添加`String` `Extension`
+
+```swift
+fileprivate extension String {
+    
+    static let recordCell = "recordCell"
+    static let showPlayer = "showPlayer"
+    static let uuidPathKey = "uuidPath"
+    
+    static let submit = NSLocalizedString("提交", comment: "提交按钮的标题")
+    static let pause = NSLocalizedString("暂停", comment: "")
+    static let save = NSLocalizedString("保存", comment: "")
+}
+```
+对于显示在UI上的文字使用`NSLocalizedString`。
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
