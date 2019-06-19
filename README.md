@@ -65,6 +65,7 @@
 [55.使用协调器模式管理控制器](#55)  
 [56.判断字符串是否为空](#56)  
 [57.避免将字符串硬编码在代码中](#57)  
+[58.恢复非正常终止的应用状态](#58)  
 
 
 
@@ -5031,6 +5032,95 @@ fileprivate extension String {
 }
 ```
 对于显示在UI上的文字使用`NSLocalizedString`。
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="58">58.恢复非正常终止的应用状态</h2>
+
+App 进入后台后，长时间不使用，或者系统觉得内存不够了，会被自动清理掉。下次再启动的时候，原先的页面和在页面上的操作没有了，用户体验不友好。其实苹果提供了该问题的解决方案。
+
+冷启动恢复状态分为两步：
+1. 恢复之前栈中存在的控制器
+2. 恢复页面上的内容
+
+#### 1. 控制器栈的恢复
+
+##### 1. 在`AppDelegate`中实现两个方法
+
+```swift
+
+func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+
+    return true
+}
+func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+
+    return true
+}
+```
+
+##### 2. 设置`Restoration ID`
+
+###### 1. 对于使用`xib`或者`Storyboard`创建的控制器，需要在如下图添加`Restoration ID`
+
+
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/restoration_id.png" width=250>  
+
+###### 2.对于纯代码创建的控制器
+
+需要遵守`UIViewControllerRestoration`协议，并实现`withRestorationIdentifierPath`方法，在这个方法中初始化目标控制器。
+
+```swift
+extension LastViewController: UIViewControllerRestoration {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
+        let vc = LastViewController()
+        return vc
+    }
+}
+```
+
+#### 2. 控制器状态的恢复
+
+例子，恢复控制器中的一个`UITextField`输入文本。
+
+```swift
+extension SecondViewController {
+
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
+
+        guard let input = inputField.text, isViewLoaded else {
+            return
+        }
+        coder.encode(input, forKey: .encodingKeyFieldValue)
+    }
+
+    override func decodeRestorableState(with coder: NSCoder) {
+        super.decodeRestorableState(with: coder)
+        assert(isViewLoaded, "We assume the controller is never restored without loading its view first.")
+        inputField.text = coder.decodeObject(forKey: .encodingKeyFieldValue) as? String
+    }
+
+    override func applicationFinishedRestoringState() {
+        print("Finished restoring everything.")
+    }
+}
+
+fileprivate extension String {
+    static let encodingKeyFieldValue = "encodingKeyFieldValue"
+}
+```
+
+#### 3.调试
+
+1. 使用`Xcode`将项目在真机或模拟器上跑起来
+2. 按`Home`键将项目退到后台
+3. 点击`Xcode`的停止项目按钮
+4. 打开非正常终止的项目
+
+具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/58.%e6%81%a2%e5%a4%8d%e9%9d%9e%e6%ad%a3%e5%b8%b8%e7%bb%88%e6%ad%a2%e7%9a%84%e5%ba%94%e7%94%a8%e7%8a%b6%e6%80%81)
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
