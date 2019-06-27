@@ -66,7 +66,7 @@
 [56.判断字符串是否为空](#56)  
 [57.避免将字符串硬编码在代码中](#57)  
 [58.恢复非正常终止的应用状态](#58)  
-
+[59.清晰的错误处理类型Result](#59)  
 
 
 
@@ -5122,5 +5122,111 @@ fileprivate extension String {
 
 具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/58.%e6%81%a2%e5%a4%8d%e9%9d%9e%e6%ad%a3%e5%b8%b8%e7%bb%88%e6%ad%a2%e7%9a%84%e5%ba%94%e7%94%a8%e7%8a%b6%e6%80%81)
 
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="59">59.清晰的错误处理类型Result</h2>
+
+Swift5.0的标准库中加入了一个新的类型`Result`，使用`Result`可以更清晰的处理代码中的错误。`Result`是一个枚举，分为两种类型`success`和`failure`，都是泛型实现，其中`failure`必须遵守`Error`协议。
+
+## 1. 简化网络请求
+
+网络请求必然要返回成功和失败信息，通常的做法请求成功和失败分别搞一个闭包。
+
+```swift
+
+enum NetError: Error {
+    case urlError
+    case otherError(Error)
+}
+
+// 调用
+requestURL("url", success: { data in
+ // success
+}) { error in
+ // failure
+}
+
+// 实现
+func requestURL(_ url: String, success: @escaping (Data?) -> Void, error: ((NetError) -> Void)? = nil) {
+    guard let requestURL = URL(string: url) else {
+        error?(.urlError)
+        return
+    }
+    URLSession.shared.dataTask(
+        with: URLRequest(url: requestURL),
+        completionHandler: { data, _, err in
+            if let e = err {
+                error?(.otherError(e))
+            } else {
+                success(data)
+            }
+    }).resume()
+}
+```
+
+使用`Result`之后
+
+```swift
+// 调用
+requestURL("url") { result in
+    switch result {
+    case .success(let data):
+        // success
+    case .failure(let error):
+        // failure
+    }
+}
+
+// 实现
+func requestURL(_ url: String, completionHandler: @escaping (Result<Data?, NetError>) -> Void) {
+        guard let requestURL = URL(string: url) else {
+            completionHandler(.failure(.urlError))
+            return
+        }
+        URLSession.shared.dataTask(
+            with: URLRequest(url: requestURL),
+            completionHandler: { data, _, err in
+                if let e = err {
+                    completionHandler(.failure(.otherError(e)))
+                } else {
+                    completionHandler(.success(data))
+                }
+        }).resume()
+}
+```
+
+使用`Result`之后可以在一个`switch`语句中统一处理成功和失败的情况。
+
+## 2. `try-catch`与`Result`的转换
+
+如果一个方法中有`try-catch`，而我们又想在方法调用的地方处理错误，那就需要`throws`，但使用`throws`我一直觉得可读性不好。这时我们就可以使用`Result`替换`try-catch`。
+
+```swift
+let result = Result { try ... }
+```
+
+下面将带有`try-catch`的`decode`转化为返回`Result`的`decode`。
+
+```swift
+
+// try-catch
+func decode<T: Codable>(data: Data) throws -> T {
+    do {
+        return try JSONDecoder().decode(T.self, from: data)
+    }catch {
+        throw error
+    }
+}
+
+// Result
+func decode<T: Codable>(data: Data) -> Result<T, Error> {
+
+    return Result {
+        try JSONDecoder().decode(T.self, from: data)
+    }
+}
+```
 
 [:arrow_up: 返回目录](#table-of-contents)  
