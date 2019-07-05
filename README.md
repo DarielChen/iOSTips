@@ -67,6 +67,7 @@
 [57.避免将字符串硬编码在代码中](#57)  
 [58.恢复非正常终止的应用状态](#58)  
 [59.清晰的错误处理类型Result](#59)  
+[60.插件化子控制器](#60)  
 
 
 
@@ -5130,7 +5131,7 @@ fileprivate extension String {
 
 Swift5.0的标准库中加入了一个新的类型`Result`，使用`Result`可以更清晰的处理代码中的错误。`Result`是一个枚举，分为两种类型`success`和`failure`，都是泛型实现，其中`failure`必须遵守`Error`协议。
 
-## 1. 简化网络请求
+### 1. 简化网络请求
 
 网络请求必然要返回成功和失败信息，通常的做法请求成功和失败分别搞一个闭包。
 
@@ -5199,7 +5200,7 @@ func requestURL(_ url: String, completionHandler: @escaping (Result<Data?, NetEr
 
 使用`Result`之后可以在一个`switch`语句中统一处理成功和失败的情况。
 
-## 2. `try-catch`与`Result`的转换
+### 2. `try-catch`与`Result`的转换
 
 如果一个方法中有`try-catch`，而我们又想在方法调用的地方处理错误，那就需要`throws`，但使用`throws`我一直觉得可读性不好。这时我们就可以使用`Result`替换`try-catch`。
 
@@ -5225,6 +5226,128 @@ func decode<T: Codable>(data: Data) -> Result<T, Error> {
 
     return Result {
         try JSONDecoder().decode(T.self, from: data)
+    }
+}
+```
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="60">60.插件化子控制器</h2>
+
+在实际开发中经常会碰到比较复杂的页面结构，为了让代码清晰就需要其拆分。可以拆分成多个`UIView`或多个`UIViewController`，像我个人还是更喜欢`UIViewController`一点，一方面是它拥有生命周期方法，另一方面是控制器之间会更独立一点，代码之间的耦合性会小一点。
+
+### 1.添加子控制器的方法
+
+1. 代码添加删除
+
+```swift
+extension UIViewController {
+    func add(_ child: UIViewController) {
+        addChild(child)
+        view.addSubview(child.view)
+        child.didMove(toParent: self)
+    }
+
+    func remove() {
+        // 避免重复删除
+        guard parent != nil else {
+            return
+        }
+
+        willMove(toParent: nil)
+        view.removeFromSuperview()
+        removeFromParent()
+    }
+}
+```
+
+2.`Stroyboard`中添加
+
+[37.给UIViewController添加静态Cell](#37)  
+
+### 2.可上下滚动的`StackViewController`
+
+页面结构一复杂，内容高度很容易超过屏幕高度，就需要视图支持上下拖动，`UIScrollView`和`UIStackView`无疑是一对好的组合。下面给出了一个自定义的`StackViewController`。
+
+```swift
+class StackViewController: UIViewController {
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(scrollView)
+        scrollView.addSubview(stackView)
+        setupConstraints()
+        stackView.axis = .vertical
+    }
+
+    private func setupConstraints() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            stackView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor)
+        ])
+    }
+}
+
+extension StackViewController {
+    func add(_ child: UIViewController, size: CGSize) {
+        addChild(child)
+        stackView.addArrangedSubview(child.view)
+        child.didMove(toParent: self)
+
+        child.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            child.view.heightAnchor.constraint(equalToConstant: size.height),
+            child.view.widthAnchor.constraint(equalToConstant:size.width)
+        ])
+    }
+
+    func remove(_ child: UIViewController) {
+        guard child.parent != nil else {
+            return
+        }
+
+        child.willMove(toParent: nil)
+        stackView.removeArrangedSubview(child.view)
+        child.view.removeFromSuperview()
+        child.removeFromParent()
+    }
+}
+```
+
+使用：添加三个屏幕宽度，高度为500的控制器`View`到`ViewController`上。
+
+```swift
+class ViewController: StackViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let vc1 = UIViewController()
+        vc1.view.backgroundColor = UIColor.orange
+
+        let vc2 = UIViewController()
+        vc2.view.backgroundColor = UIColor.purple
+
+        let vc3 = UIViewController()
+        vc3.view.backgroundColor = UIColor.blue
+
+        add(vc1, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
+        add(vc2, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
+        add(vc3, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
     }
 }
 ```
