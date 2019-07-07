@@ -264,7 +264,6 @@ public extension UIView {
         static var shadowMotionOffset: UInt8 = 0
         static var motionOffset: UInt8 = 0
     }
-    
     @IBInspectable
     var shadowMotionOffset: CGSize {
         get {
@@ -282,12 +281,14 @@ public extension UIView {
             if currentSize.equalTo(newSize) {
                 return
             }
-            objc_setAssociatedObject(self, &AssociatedKeys.shadowMotionOffset, NSValue(cgSize: newSize), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            addInterpolatingMotionEffect(keyPath: "layer.shadowOffset.width", effectType: .tiltAlongHorizontalAxis, range: newSize.width)
-            addInterpolatingMotionEffect(keyPath: "layer.shadowOffset.height", effectType: .tiltAlongVerticalAxis, range: newSize.height)
+            objc_setAssociatedObject(self, &AssociatedKeys.shadowMotionOffset,
+                                     NSValue(cgSize: newSize), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            addInterpolatingMotionEffect(keyPath: "layer.shadowOffset.width",
+                                         effectType: .tiltAlongHorizontalAxis, range: newSize.width)
+            addInterpolatingMotionEffect(keyPath: "layer.shadowOffset.height",
+                                         effectType: .tiltAlongVerticalAxis, range: newSize.height)
         }
     }
-    
     @IBInspectable
     var motionOffset: CGSize {
         get {
@@ -305,13 +306,17 @@ public extension UIView {
             if currentSize.equalTo(newSize) {
                 return
             }
-            objc_setAssociatedObject(self, &AssociatedKeys.motionOffset, NSValue(cgSize: newSize), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            addInterpolatingMotionEffect(keyPath: "center.x", effectType: .tiltAlongHorizontalAxis, range: newSize.width)
-            addInterpolatingMotionEffect(keyPath: "center.y", effectType: .tiltAlongVerticalAxis, range: newSize.height)
+            objc_setAssociatedObject(self, &AssociatedKeys.motionOffset,
+                                     NSValue(cgSize: newSize), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            addInterpolatingMotionEffect(keyPath: "center.x",
+                                         effectType: .tiltAlongHorizontalAxis, range: newSize.width)
+            addInterpolatingMotionEffect(keyPath: "center.y",
+                                         effectType: .tiltAlongVerticalAxis, range: newSize.height)
         }
     }
-    
-    private func addInterpolatingMotionEffect(keyPath: String, effectType: UIInterpolatingMotionEffect.EffectType, range value: CGFloat) {
+    private func addInterpolatingMotionEffect(keyPath: String,
+                                              effectType: UIInterpolatingMotionEffect.EffectType,
+                                              range value: CGFloat) {
         for effect in motionEffects {
             if let interpolatingEffect = effect as? UIInterpolatingMotionEffect {
                 if interpolatingEffect.keyPath == keyPath {

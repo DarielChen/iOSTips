@@ -5270,6 +5270,8 @@ extension UIViewController {
 
 页面结构一复杂，内容高度很容易超过屏幕高度，就需要视图支持上下拖动，`UIScrollView`和`UIStackView`无疑是一对好的组合。下面给出了一个自定义的`StackViewController`。
 
+#### 1. 继承实现
+
 ```swift
 class StackViewController: UIViewController {
     private let scrollView = UIScrollView()
@@ -5348,6 +5350,38 @@ class ViewController: StackViewController {
         add(vc1, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
         add(vc2, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
         add(vc3, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
+    }
+}
+```
+#### 2. 协议实现
+
+如果觉得用继承会增加代码的耦合性，还可以使用`protocol`。[猛击StackViewControllerProtocol](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/StackViewControllerProtocol.swift)
+
+使用：添加三个屏幕宽度，高度为500的控制器`View`到`ViewController`上。
+
+```swift
+class ViewController: UIViewController, StackViewControllerProtocol {
+    var scrollView: UIScrollView = UIScrollView()
+    var stackView: UIStackView  = UIStackView()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setUpStackAndScrollView()
+        
+        let vc1 = UIViewController()
+        vc1.view.backgroundColor = UIColor.orange
+
+        let vc2 = UIViewController()
+        vc2.view.backgroundColor = UIColor.purple
+
+        let vc3 = UIViewController()
+        vc3.view.backgroundColor = UIColor.blue
+
+        add(vc1, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
+        add(vc2, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
+        add(vc3, size: CGSize(width: UIScreen.main.bounds.width, height: 500))
+        
     }
 }
 ```

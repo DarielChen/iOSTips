@@ -28,6 +28,7 @@
 		15979E3A21BFA45F00CA35F4 /* EdgeInsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15979E3921BFA45F00CA35F4 /* EdgeInsetLabel.swift */; };
 		15A1A9AB21A3E0F200E695ED /* Optional+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15A1A9AA21A3E0F200E695ED /* Optional+Extension.swift */; };
 		15B9519B217816180059D579 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B9519A217816180059D579 /* UIButton+Extension.swift */; };
+		15CBCB0B22D1DBB1005C3F6D /* StackViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15CBCB0A22D1DBB1005C3F6D /* StackViewControllerProtocol.swift */; };
 		15D9555321F5E7CA00BE73EE /* Registerable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D9555221F5E7CA00BE73EE /* Registerable.swift */; };
 		15D955D021FF3AC400BE73EE /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D955CF21FF3AC400BE73EE /* Regex.swift */; };
 		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
@@ -58,6 +59,7 @@
 		15979E3921BFA45F00CA35F4 /* EdgeInsetLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetLabel.swift; sourceTree = "<group>"; };
 		15A1A9AA21A3E0F200E695ED /* Optional+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Extension.swift"; sourceTree = "<group>"; };
 		15B9519A217816180059D579 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
+		15CBCB0A22D1DBB1005C3F6D /* StackViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackViewControllerProtocol.swift; sourceTree = "<group>"; };
 		15D9555221F5E7CA00BE73EE /* Registerable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registerable.swift; sourceTree = "<group>"; };
 		15D955CF21FF3AC400BE73EE /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
 		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				15979E3921BFA45F00CA35F4 /* EdgeInsetLabel.swift */,
 				15D9555221F5E7CA00BE73EE /* Registerable.swift */,
 				15D955CF21FF3AC400BE73EE /* Regex.swift */,
+				15CBCB0A22D1DBB1005C3F6D /* StackViewControllerProtocol.swift */,
 			);
 			path = DCTool;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				15B9519B217816180059D579 /* UIButton+Extension.swift in Sources */,
 				1534823C21AD99C000BDBCB0 /* Dictionary+Extension.swift in Sources */,
 				156981A5217885A7004FDA01 /* DetailViewController.swift in Sources */,
+				15CBCB0B22D1DBB1005C3F6D /* StackViewControllerProtocol.swift in Sources */,
 				156936762176CAC4004F8A24 /* ViewControllerInjector.swift in Sources */,
 				15979E3A21BFA45F00CA35F4 /* EdgeInsetLabel.swift in Sources */,
 				156B4FC9216CEC140096E543 /* UIColor+Extension.swift in Sources */,
