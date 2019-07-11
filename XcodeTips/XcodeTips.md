@@ -107,3 +107,69 @@ internal class ViewController : UIViewController {
 将`Storyboard Reference`引用向某一个按钮，点击按钮就可以发生控制器跳转了。
 
 
+<h2 id="9">9.获取app的启动日志</h2>
+
+给Xcode添加环境变量：`Edit scheme... -> Run -> Arguments -> Environment Variables`
+
+### 1.获取粗略的启动时间分析
+
+添加Name为`DYLD_PRINT_STATISTICS`，Value为`1`
+
+```swift
+Total pre-main time: 510.95 milliseconds (100.0%)
+    dylib loading time: 121.92 milliseconds (23.8%)
+    rebase/binding time: 323.82 milliseconds (63.3%)
+    ObjC setup time:  42.40 milliseconds (8.2%)
+    initializer time:  22.59 milliseconds (4.4%)
+    slowest intializers :
+    libSystem.B.dylib :   7.11 milliseconds (1.3%)
+```
+
+### 2.获取详细的启动时间分析
+
+添加Name为`DYLD_PRINT_STATISTICS_DETAILS`，Value为`1`
+
+```swift
+  total time: 761.18 milliseconds (100.0%)
+  total images loaded:  269 (0 from dyld shared cache)
+  total segments mapped: 800, into 105090 pages with 7464 pages pre-fetched
+  total images loading time: 348.37 milliseconds (45.7%)
+  total load time in ObjC:  42.40 milliseconds (5.5%)
+  total debugger pause time: 226.45 milliseconds (29.7%)
+  total dtrace DOF registration time:   0.19 milliseconds (0.0%)
+  total rebase fixups:  2,735,470
+  total rebase fixups time: 329.76 milliseconds (43.3%)
+  total binding fixups: 287,954
+  total binding fixups time:  17.40 milliseconds (2.2%)
+  total weak binding fixups time:   0.43 milliseconds (0.0%)
+  total redo shared cached bindings time:  23.77 milliseconds (3.1%)
+  total bindings lazily fixed up: 0 of 0
+  total time in initializers and ObjC +load:  22.59 milliseconds (2.9%)
+                         libSystem.B.dylib :   7.11 milliseconds (0.9%)
+               libBacktraceRecording.dylib :   1.57 milliseconds (0.2%)
+                            CoreFoundation :   0.99 milliseconds (0.1%)
+                                Foundation :   1.26 milliseconds (0.1%)
+                libMainThreadChecker.dylib :  10.07 milliseconds (1.3%)
+total symbol trie searches:    138142
+total symbol table binary searches:    0
+total images defining weak symbols:  22
+total images using weak symbols:  63
+```
+
+添加环境变量除了可以打印启动时间日志，还可以打印符号绑定日志，加载的动态库等。具体可以查看
+[苹果官方文档](https://developer.apple.com/library/archive/technotes/tn2239/_index.html#//apple_ref/doc/uid/DTS40010638-CH1-SUBSECTION21)
+
+
+<h2 id="10">10.模拟器录屏</h2>
+
+1. 终端切换到存放视频文件夹
+2. 开始录制：`xcrun simctl io booted recordVideo appvideo.mov`
+3. 停止录制并保存：`control + c`
+
+这样做可以看不到模拟器的边框。
+
+<h2 id="11">11.AutoLayout约束错误声音提示</h2>
+
+将`-_UIConstraintBasedLayoutPlaySoundOnUnsatisfiable YES`添加到：`Edit scheme... -> Run -> Arguments -> Arguments Passed On Launch`
+
+如果在使用AutoLayout的时候有约束错误会有iPhone低电量提示音。

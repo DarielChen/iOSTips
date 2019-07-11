@@ -83,6 +83,9 @@
 [6.多重光标操作](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#6)  
 [7.断点对象预览](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#7)  
 [8.Storyboard解耦](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#8)  
+[9.获取app的启动日志](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#9) 
+[10.模拟器录屏](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#10) 
+[11.AutoLayout约束错误声音提示](https://github.com/DarielChen/iOSTips/blob/master/XcodeTips/XcodeTips.md#11) 
 
 
 <h2 id="1">1.常用的几个高阶函数</h2>  
