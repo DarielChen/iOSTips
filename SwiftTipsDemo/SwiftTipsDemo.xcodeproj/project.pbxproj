@@ -32,6 +32,7 @@
 		15D9555321F5E7CA00BE73EE /* Registerable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D9555221F5E7CA00BE73EE /* Registerable.swift */; };
 		15D955D021FF3AC400BE73EE /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D955CF21FF3AC400BE73EE /* Regex.swift */; };
 		15DE142C21639C6E008BD316 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE142B21639C6E008BD316 /* UIView+Extension.swift */; };
+		15F88E1C22EB28A900B4325B /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F88E1B22EB28A900B4325B /* Date+Extension.swift */; };
 		4FECA9FC4F459B74ADBEE5CA /* Pods_SwiftTipsDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3A354119B6DE1E2B772349 /* Pods_SwiftTipsDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,7 @@
 		15D9555221F5E7CA00BE73EE /* Registerable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registerable.swift; sourceTree = "<group>"; };
 		15D955CF21FF3AC400BE73EE /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
 		15DE142B21639C6E008BD316 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		15F88E1B22EB28A900B4325B /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		1651656BA8381E35829DD90E /* Pods-SwiftTipsDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftTipsDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SwiftTipsDemo/Pods-SwiftTipsDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		5859E189745EF772CC73CF55 /* Pods-SwiftTipsDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftTipsDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-SwiftTipsDemo/Pods-SwiftTipsDemo.release.xcconfig"; sourceTree = "<group>"; };
 		7C3A354119B6DE1E2B772349 /* Pods_SwiftTipsDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftTipsDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -142,6 +144,7 @@
 				15A1A9AA21A3E0F200E695ED /* Optional+Extension.swift */,
 				1534823B21AD99C000BDBCB0 /* Dictionary+Extension.swift */,
 				157D75F122412321001ED9E0 /* UITableView+Extension.swift */,
+				15F88E1B22EB28A900B4325B /* Date+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 				158FCD85217093530067A406 /* DCTool.swift in Sources */,
 				15B9519B217816180059D579 /* UIButton+Extension.swift in Sources */,
 				1534823C21AD99C000BDBCB0 /* Dictionary+Extension.swift in Sources */,
+				15F88E1C22EB28A900B4325B /* Date+Extension.swift in Sources */,
 				156981A5217885A7004FDA01 /* DetailViewController.swift in Sources */,
 				15CBCB0B22D1DBB1005C3F6D /* StackViewControllerProtocol.swift in Sources */,
 				156936762176CAC4004F8A24 /* ViewControllerInjector.swift in Sources */,

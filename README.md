@@ -68,6 +68,7 @@
 [58.恢复非正常终止的应用状态](#58)  
 [59.清晰的错误处理类型Result](#59)  
 [60.插件化子控制器](#60)  
+[61.ExpressibleBy协议集:通过字面量实例化对象](#61)  
 
 
 
@@ -5388,5 +5389,136 @@ class ViewController: UIViewController, StackViewControllerProtocol {
     }
 }
 ```
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+
+<h2 id="61">61.ExpressibleBy协议集:通过字面量实例化对象</h2>
+
+实现了`ExpressibleBy`协议集的对象，可以通过像字符串、整型、浮点型、数组、字典等直接实例化对象。
+
+这个协议集有什么用呢？
+
+### 1.实例化URL
+
+```swift
+// 字符串构造URL
+let url1: URL = URL(string: "https://github.com/DarielChen/iOSTips")!
+```
+
+实现了`ExpressibleBy`协议后，可以通过字符串直接构造URL
+
+```swift
+let url2: URL = "https://github.com/DarielChen/iOSTips"
+
+// ExpressibleByStringLiteral:通过字符串构造对象
+extension URL: ExpressibleByStringLiteral {
+    public init(stringLiteral value: String) {
+        guard let url = URL(string: value) else {
+            fatalError("Bad string, failed to create url from: \(value)")
+        }
+        self = url
+    }
+}
+```
+
+`String`类默认实现了`ExpressibleByStringLiteral`，当我们往`String`对象赋值字符串的时候，会通过构造方法初始化一个`String`对象。
+
+### 2.用时间戳和字符串实例化`Date`
+
+```swift
+// 字符串转Date
+let date1: Date = "2019-07-23"
+let date2: Date = "2019-07-23 16:12"
+let date3: Date = "2019-07-23 16:12:05"
+
+// 时间戳转Date
+let date4: Date = "1563873794"
+let date5: Date = 1563873794
+```
+
+具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/Extension/Date%2BExtension.swift) 
+
+### 3.字典转模型
+
+```swift
+ // 字典转模型
+let Joan: Person = ["name": "Joan", "age": 10, "isMan": false]
+
+let persons: [Person] = [
+                        ["name": "Joan", "age": 10, "isMan": false],
+                        ["name": "Joan", "age": 10, "isMan": false]
+                    ]
+
+// json转模型
+let John: Person = #"{"name":"John", "age": 10, "isMan": false}"#
+```
+
+将字典转模型的实现放到构造方法中，在`extension`中实现这个构造方法，具体实现如下代码：
+
+```swift
+struct Person: ExpressibleByModelLiteral {
+    let name: String
+    let age: Int
+    let isMan: Bool
+}
+
+protocol ExpressibleByModelLiteral: Codable, ExpressibleByDictionaryLiteral, ExpressibleByStringLiteral {}
+extension ExpressibleByModelLiteral {
+
+    public init(dictionaryLiteral elements: (String, Any)...) {
+
+        let dict: [String: Any] = elements.reduce(into: [String: Any](), { $0[$1.0] = $1.1})
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: dict, options: [])
+            self = try JSONDecoder().decode(Self.self, from: jsonData)
+        }catch {
+            fatalError("Dictionary to model failed, error:\(error)")
+        }
+    }
+
+    public init(stringLiteral value: String) {
+        guard let data = value.data(using: .utf8) else {
+            fatalError("String to data failed")
+        }
+        do {
+            self = try JSONDecoder().decode(Self.self, from: data)
+        }catch {
+            fatalError("String to model failed, error:\(error)")
+        }
+    }
+}
+```
+
+### 4.`ExpressibleBy`协议集
+
+#### 集合
+
+```swift
+ExpressibleByArrayLiteral // 通过数组实例化对象
+ExpressibleByDictionaryLiteral // 通过字典实例化对象
+```
+
+#### 值
+
+```swift
+ExpressibleByIntegerLiteral // 通过整型实例化对象
+ExpressibleByFloatLiteral // 通过浮点数实例化对象
+ExpressibleByBooleanLiteral // 通过bool值实例化对象
+ExpressibleByNilLiteral // 用nil实例化对象，可选类型的底层实现
+
+```
+
+#### 字符串
+
+```swift
+ExpressibleByStringLiteral // 通过字符串实例化对象
+ExpressibleByExtendedGraphemeClusterLiteral // 将字符、字符集实例化对象
+ExpressibleByUnicodeScalarLiteral // 通过Unicode实例化对象
+ExpressibleByStringInterpolation // 通过字符串插值（"\(value)"）实例化对象
+```
+
+实现`ExpressibleBy`对应的协议后，可以将对应实例的构造方法实现交给编译器去做，直接通过赋值的方式完成对象实例化，代码可以更简洁，但代码的可阅读性会降低，是否使用还是看实际场景。
 
 [:arrow_up: 返回目录](#table-of-contents)  
