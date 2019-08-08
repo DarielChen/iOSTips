@@ -69,6 +69,7 @@
 [59.清晰的错误处理类型Result](#59)  
 [60.插件化子控制器](#60)  
 [61.ExpressibleBy协议集:通过字面量实例化对象](#61)  
+[62.插件化TableView](#62)  
 
 
 
@@ -5393,7 +5394,6 @@ class ViewController: UIViewController, StackViewControllerProtocol {
 [:arrow_up: 返回目录](#table-of-contents)  
 
 
-
 <h2 id="61">61.ExpressibleBy协议集:通过字面量实例化对象</h2>
 
 实现了`ExpressibleBy`协议集的对象，可以通过像字符串、整型、浮点型、数组、字典等直接实例化对象。
@@ -5520,5 +5520,145 @@ ExpressibleByStringInterpolation // 通过字符串插值（"\(value)"）实例�
 ```
 
 实现`ExpressibleBy`对应的协议后，可以将对应实例的构造方法实现交给编译器去做，直接通过赋值的方式完成对象实例化，代码可以更简洁，但代码的可阅读性会降低，是否使用还是看实际场景。
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="62">62.插件化TableView</h2>
+
+
+每次实现`TableView`都要写一堆重复的代码，包括注册`cell`,实现数据源方法，设置各种代理。
+
+这个过程可以简化，下面出了一种方案供参考。
+
+先说怎么使用：
+
+### 1. 设置数据源
+
+```swift
+let section = Section(items: [
+            ENCellModel(name: "chili", imageStr: "chili"),
+            ENCellModel(name: "mushroom", imageStr: "mushroom"),
+            ENCellModel(name: "radish", imageStr: "radish")
+            ])
+let dataSource = DataSource(sections: [section])
+```
+
+`DataSource`是一个数组，负责管理所有的`section`。
+
+### 2. 配置cell
+
+```swift
+
+let configuartor = Configurator{ (cell, model: ENCellModel, tableView, indexPath) -> NibTableViewCell in
+    cell.iconLabel.text = model.name
+    cell.iconView.image = UIImage(named: model.imageStr)
+    return cell
+}
+
+```
+
+通过闭包回调设置`Cell`。
+
+### 3. 初始化`TableView`，传入数据源和配置
+
+```swift
+
+let pluginTableView = PluginTableView(frame: view.bounds, style: .plain, dataSource: dataSource, configurator: configuartor)
+pluginTableView.tableView.rowHeight = 80
+view.addSubview(pluginTableView)
+
+```
+
+像`View`一样添加到页面上。
+
+### 4. 通过闭包回调`TableView`代理
+
+```swift
+// didSelectRow回调
+pluginTableView.didSelectRow = { [weak self] (tableView, indexPath) in
+
+}
+```
+
+### 5. 支持不同类型的`Cell`
+
+```swift
+// 在设置section的时候一下包装，包装section中不同的model
+private enum CellModel {
+    case CNCell(CNCellModel)
+    case ENCell(ENCellModel)
+}
+// 重新实现ConfiguratorType协议，在里面区分cell
+private struct AggregateConfigurator: ConfiguratorType {
+    let cellConfigurator1: Configurator<CNCellModel, CodeTableViewCell>
+    let cellConfigurator2: Configurator<ENCellModel, NibTableViewCell>
+
+    func reuseIdentifier(for item: CellModel, indexPath: IndexPath) -> String {
+        switch item {
+        case .CNCell:
+            return cellConfigurator1.reuseIdentifier
+        case .ENCell:
+            return cellConfigurator2.reuseIdentifier
+        }
+    }
+
+    func configure(cell: UITableViewCell, item: CellModel, tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
+
+        switch item {
+        case .CNCell(let model):
+            return cellConfigurator1.configuredCell(for: model, tableView: tableView, indexPath: indexPath)
+        case .ENCell(let model):
+            return cellConfigurator2.configuredCell(for: model, tableView: tableView, indexPath: indexPath)
+        }
+    }
+
+    func registerCells(in tableView: UITableView) {
+        cellConfigurator1.registerCells(in: tableView)
+        cellConfigurator2.registerCells(in: tableView)
+    }
+}
+```
+
+```swift
+
+// 分开配置section
+let section1 = Section<CellModel>(items: [
+            .CNCell(CNCellModel(name: "柠檬", imageStr: "lemon")),
+            .CNCell(CNCellModel(name: "橙子", imageStr: "orange")),
+            .CNCell(CNCellModel(name: "西瓜", imageStr: "watermelon"))
+            ])
+let section2 = Section<CellModel>(items: [
+            .ENCell(ENCellModel(name: "chili", imageStr: "chili")),
+            .ENCell(ENCellModel(name: "mushroom", imageStr: "mushroom")),
+            .ENCell(ENCellModel(name: "radish", imageStr: "radish"))
+            ])
+
+let dataSource = DataSource(sections: [section1, section2])
+
+let configuartor1 = Configurator { (cell, model: CNCellModel, tableView, indexPath) -> CodeTableViewCell in
+    cell.iconLabel.text = model.name
+    cell.iconView.image = UIImage(named: model.imageStr)
+    return cell
+}
+
+let configuartor2 = Configurator { (cell, model: ENCellModel, tableView, indexPath) -> NibTableViewCell in
+    cell.iconLabel.text = model.name
+    cell.iconView.image = UIImage(named: model.imageStr)
+    return cell
+}
+
+// 分开cell属性设置，通过刚刚实现的AggregateConfigurator做统一管理
+let aggregate = AggregateConfigurator(cellConfigurator1: configuartor1, cellConfigurator2: configuartor2)
+
+let pluginTableView = PluginTableView(frame: view.bounds, style: .grouped, dataSource: dataSource, configurator: aggregate)
+
+pluginTableView.tableView.rowHeight = 80
+view.addSubview(pluginTableView)
+
+```
+
+具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/62.%e6%8f%92%e4%bb%b6%e5%8c%96TableView//PluginTableView/PluginTableView)
+
 
 [:arrow_up: 返回目录](#table-of-contents)  
