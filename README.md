@@ -702,7 +702,7 @@ extension UIWindow {
 }
 ```
 
-<img src="http://pcb5zz9k5.bkt.clouddn.com/changeStatusBarStyle2.gif" width=250>
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/changeStatusBarStyle2.gif" width=250>
 
 #### 4. 怎么根据导航栏颜色自动修改StatusBar样式
 
@@ -848,7 +848,7 @@ extension UIWindow {
 ```
 
 [示例Demo](https://github.com/DarielChen/SwiftTips/tree/master/Demo/9.%E4%BD%BF%E7%94%A8%E9%9D%A2%E5%90%91%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0app%E7%9A%84%E4%B8%BB%E9%A2%98%E5%8A%9F%E8%83%BD)  
-[实现效果](http://pcb5zz9k5.bkt.clouddn.com/themeDemo.gif)
+[实现效果](https://github.com/DarielChen/SwiftTips/blob/master/Source/themeDemo.gif)
 
 [:arrow_up: 返回目录](#table-of-contents)  
 
@@ -937,7 +937,7 @@ extension UIView: Scalable, Blinkable, CornersRoundable {}
  cyanView.roundCorners()
 ```
 
-<img src="http://pcb5zz9k5.bkt.clouddn.com/blink_scale_corner.gif" width=250>
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/blink_scale_corner.gif" width=250>
 
 
 #### 3. 多继承钻石问题(Diamond Problem),及解决办法
