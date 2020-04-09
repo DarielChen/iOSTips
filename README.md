@@ -70,6 +70,7 @@
 [60.插件化子控制器](#60)  
 [61.ExpressibleBy协议集:通过字面量实例化对象](#61)  
 [62.插件化TableView](#62)  
+[63.自定义底部弹层控制器](#63)  
 
 
 
@@ -540,7 +541,7 @@ do{
 }catch {
     print("other error")
 }
-```  
+```
 
 #### 3. switch语句做限定条件
 
@@ -552,7 +553,7 @@ case let (_,score) where score < 60:
 default:
     print("及格")
 }
-```  
+```
 
 #### 4. 限定泛型需要遵守的协议
 
@@ -633,7 +634,7 @@ func handle(_ state: State) {
 
 
  <h2 id="8">8.iOS9之后全局动态修改StatusBar样式</h2>  
- 
+
 #### 1. 局部修改StatusBar样式
 最常用的方法是通过控制器来修改`StatusBar`样式
 
@@ -670,6 +671,7 @@ UIApplication.shared.setStatusBarStyle(.default, animated: true)
 
 	这个有点绕,总之就是`StatusBar`的样式和导航栏的样式反着来.
 	
+
 具体实现:
 
 ```swift
@@ -858,7 +860,7 @@ extension UIWindow {
 
 #### 1. 实现过程
 swift本身并不支持多继承,但我们可以根据已有的API去实现. 
- 
+
 swift中的类可以遵守多个协议,但是只可以继承一个类,而值类型(结构体和枚举)只能遵守单个或多个协议,不能做继承操作.  
 
 多继承的实现:**协议的方法可以在该协议的`extension`中实现**
@@ -1070,7 +1072,7 @@ animator.animate(cell: cell, at: indexPath, in: tableView)
 
 
 <h2 id="12">12.实现一个不基于Runtime的KVO</h2> 
- 
+
 Swift并没有在语言层级上支持KVO,如果要使用必须导入`Foundation`框架, 被观察对象必须继承自`NSObject`,这种实现方式显然不够优雅.  
 
 KVO本质上还是通过拿到属性的set方法去搞事情,基于这样的原理我们可以自己去实现.
@@ -1333,7 +1335,7 @@ master.orderToEat()
 
 
 `UIViewController`有提供两个不知名的属性: 
- 
+
  1. `isBeingDismissed`: 当modal出来的控制器被`dismiss`后的值为`true`.  
  2.  `isMovingFromParent`: 在控制器的堆栈中,如果当前控制器从父控制器中移除,值会变成`true`.
 
@@ -2521,7 +2523,7 @@ ClassName.takeOnceTimeFunc()
 <h2 id="26">26.被废弃的+load()和+initialize()</h2>  
 
 我们都知道OC中两个方法`+load()`和`+initialize()`. 
- 
+
 `+load()`:  app启动的时候会加载所有的类,此时就会调用每个类的load方法.  
 `+initialize()`: 第一次初始化这个类的时候会被调用.  
 
@@ -2760,9 +2762,9 @@ iOS开发中较常见的两类锁:
 
 四种锁分别是:  
 `NSLock`、`NSConditionLock`、`NSRecursiveLock`、`NSCondition`
- 
+
 `NSLocking`协议
- 
+
 ```swift
 public protocol NSLocking {    
     public func lock()
@@ -3442,7 +3444,7 @@ extension UIView {
 ```
 
 ios11出了一个属性`maskedCorners`，共有四种类型：   
-  
+
 - layerMinXMinYCorner  左上角
 - layerMaxXMinYCorner  右上角
 - layerMinXMaxYCorner  左下角
@@ -3988,7 +3990,7 @@ do {
 ```
 
 具体实现 [猛击](https://github.com/DarielChen/SwiftTips/blob/master/SwiftTipsDemo/DCTool/DCTool/Regex.swift)
- 
+
 [:arrow_up: 返回目录](#table-of-contents) 
 
 
@@ -5659,6 +5661,110 @@ view.addSubview(pluginTableView)
 ```
 
 具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/62.%e6%8f%92%e4%bb%b6%e5%8c%96TableView//PluginTableView/PluginTableView)
+
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="63">63.自定义底部弹层控制器</h2>
+
+<img src="https://github.com/DarielChen/iOSTips/blob/master/Source/present_part_controller.gif" width=250>  
+
+开发中经常会碰到需要自定义底部弹层，常用的方式是自定义一个View，但有时底部弹层中的业务逻辑会很多，尤其是还需要调用网络层，使用自定义View就不太合适了。其实我们可以通过自定义modal转场动画的方式实现一个自定义底部弹层控制器。
+
+具体实现代码如下：
+
+```swift
+
+class PresentPartController: UIViewController {
+    lazy var backdropView: UIView = {
+        let bdView = UIView(frame: self.view.bounds)
+        bdView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        return bdView
+    }()
+
+    let menuView = UIView()
+    let menuHeight = UIScreen.main.bounds.height / 2
+    var isPresenting = false
+
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        modalPresentationStyle = .custom
+        transitioningDelegate = self
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view.backgroundColor = .clear
+        view.addSubview(backdropView)
+        view.addSubview(menuView)
+
+        menuView.backgroundColor = .white
+        menuView.translatesAutoresizingMaskIntoConstraints = false
+        menuView.heightAnchor.constraint(equalToConstant: menuHeight).isActive = true
+        menuView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        menuView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        menuView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(PresentPartController.handleTap(_:)))
+        backdropView.addGestureRecognizer(tapGesture)
+    }
+
+    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+extension PresentPartController: UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return self
+    }
+
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return self
+    }
+
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0.24
+    }
+
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let containerView = transitionContext.containerView
+        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)
+        guard let toVC = toViewController else { return }
+        isPresenting = !isPresenting
+
+        if isPresenting == true {
+            containerView.addSubview(toVC.view)
+
+            menuView.frame.origin.y += menuHeight
+            backdropView.alpha = 0
+
+            UIView.animate(withDuration: 0.24, delay: 0, options: [.curveEaseOut], animations: {
+                self.menuView.frame.origin.y -= self.menuHeight
+                self.backdropView.alpha = 1
+            }, completion: { _ in
+                transitionContext.completeTransition(true)
+            })
+        } else {
+            UIView.animate(withDuration: 0.24, delay: 0, options: [.curveEaseOut], animations: {
+                self.menuView.frame.origin.y += self.menuHeight
+                self.backdropView.alpha = 0
+            }, completion: { _ in
+                transitionContext.completeTransition(true)
+            })
+        }
+    }
+}
+
+```
+
+具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/63.%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ba%95%e9%83%a8%e5%bc%b9%e5%b1%82%e6%8e%a7%e5%88%b6%e5%99%a8)
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
