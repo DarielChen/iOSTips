@@ -5764,7 +5764,7 @@ extension PresentPartController: UIViewControllerTransitioningDelegate, UIViewCo
 
 ```
 
-具体实现 [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/63.%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ba%95%e9%83%a8%e5%bc%b9%e5%b1%82%e6%8e%a7%e5%88%b6%e5%99%a8)
+实例Demo [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/63.%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ba%95%e9%83%a8%e5%bc%b9%e5%b1%82%e6%8e%a7%e5%88%b6%e5%99%a8)
 
 
 [:arrow_up: 返回目录](#table-of-contents)  
