@@ -71,7 +71,7 @@
 [61.ExpressibleBy协议集:通过字面量实例化对象](#61)  
 [62.插件化TableView](#62)  
 [63.自定义底部弹层控制器](#63)  
-
+[64.UIAlertController的封装](#64)
 
 
 ## 2.XcodeTips 
@@ -5766,5 +5766,108 @@ extension PresentPartController: UIViewControllerTransitioningDelegate, UIViewCo
 
 示例Demo [猛击](https://github.com/DarielChen/iOSTips/blob/master/Demo/63.%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ba%95%e9%83%a8%e5%bc%b9%e5%b1%82%e6%8e%a7%e5%88%b6%e5%99%a8)
 
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="64">64.UIAlertController的封装</h2>
+
+如果单纯使用系统的API创建一个`UIAlertController`总觉得有点麻烦，首先要初始化`UIAlertController`，然后再创建多个`UIAlertAction`添加到`UIAlertController`中
+
+```swift
+let alertController = UIAlertController(title: "标题文字", message: "内容文字", preferredStyle: .alert)
+        
+let confirmAction = UIAlertAction(title: "确认", style: .default) { _ in  }
+let cancelAction = UIAlertAction(title: "取消", style: .cancel)
+        
+alertController.addAction(cancelAction)
+alertController.addAction(confirmAction)
+
+present(alertController, animated: true)
+```
+
+其实我们可以用`swift5.1`新特性`Function Builders`对`UIAlertController`做一层简化封装，达到如下效果
+
+```swift
+UIAlertController.show(title: "标题文字", message: "内容文字", style: .alert) { () -> [Action] in 		Action.default("确认") { print("String") }
+		Action.cancel("取消")
+}
+```
+
+## Function Builders
+
+这个特性是用在`swiftUI`中用来构建`@ViewBuilder`的，但由于它是`swift`语言层面的特性，所以非`swiftUI`我们也可以使用。
+
+这个新特性在`swift5.1`中还未完全实现，所以我们用的不是注解`@functionBuilder`而是`@_functionBuilder`
+
+下面是几个需要实现的方法
+
+```swift
+// 是否允许使用闭包
+buildBlock(_ components: Component...) -> Component // required
+
+// 闭包内是否允许使用 if-else语句
+buildIf(_ component: Component?) -> Component // optional
+buildEither(first: Component) -> Component // optional
+buildEither(second: Component) -> Component // optional
+```
+
+完整的实现
+
+```swift
+extension UIAlertController {
+    
+    static func show(title: String? = nil, message: String? = nil, style: UIAlertController.Style, @ActionBuilder _ makeActions: () -> [Action]) {
+        let controller = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: style
+        )
+        for action in makeActions() {
+            let uiAction = UIAlertAction(title: action.title, style: action.style) { _ in
+                action.action()
+            }
+            controller.addAction(uiAction)
+        }
+        UIApplication.shared.keyWindow?.rootViewController?.present(controller, animated: true, completion: nil)
+    }
+}
+
+struct Action {
+    let title: String
+    let style: UIAlertAction.Style
+    let action: () -> Void
+}
+extension Action {
+    static func `default`(_ title: String, action: @escaping () -> Void) -> [Action] {
+        return [Action(title: title, style: .default, action: action)]
+    }
+    static func destructive(_ title: String, action: @escaping () -> Void) -> [Action] {
+        return [Action(title: title, style: .destructive, action: action)]
+    }
+    static func cancel(_ title: String, action: @escaping () -> Void = {}) -> [Action] {
+        return [Action(title: title, style: .cancel, action: action)]
+    }
+}
+
+@_functionBuilder
+struct ActionBuilder {
+    typealias Expression = Action
+    typealias Component = [Action]
+
+    static func buildBlock(_ children: Component...) -> Component {
+        return children.flatMap { $0 }
+    }
+    static func buildIf(_ component: Component?) -> Component {
+        return component ?? []
+    }
+    static func buildEither(first component: Component) -> Component {
+        return component
+    }
+    static func buildEither(second component: Component) -> Component {
+        return component
+    }
+}
+```
 
 [:arrow_up: 返回目录](#table-of-contents)  
