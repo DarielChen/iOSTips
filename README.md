@@ -5789,8 +5789,9 @@ present(alertController, animated: true)
 其实我们可以用`swift5.1`新特性`Function Builders`对`UIAlertController`做一层简化封装，达到如下效果
 
 ```swift
-UIAlertController.show(title: "标题文字", message: "内容文字", style: .alert) { () -> [Action] in 		Action.default("确认") { print("String") }
-		Action.cancel("取消")
+UIAlertController.show(title: "标题文字", message: "内容文字", style: .alert) { () -> [Action] in 		
+    Action.default("确认") { print("String") }
+    Action.cancel("取消")
 }
 ```
 
