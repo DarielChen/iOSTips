@@ -72,6 +72,7 @@
 [62.插件化TableView](#62)  
 [63.自定义底部弹层控制器](#63)  
 [64.UIAlertController的封装](#64)
+[65.自定义控制器构造方法](#65)
 
 
 ## 2.XcodeTips 
@@ -5870,5 +5871,75 @@ struct ActionBuilder {
     }
 }
 ```
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="65">65.自定义控制器构造方法</h2>
+
+有时我们初始化控制器时，也需要传入一些值，因为这些值是伴随着初始化的，所以通过控制器的构造方法传入会合适一点。
+
+因为`userID`一定要在构造方法中传入，`userID`属性就可以是非可选类型，所以在使用的时候可以减少一层解包操作。
+
+```swift
+    // 初始化TestViewController
+    TestViewController(userID: "7812381312")
+
+class TestViewController: UIViewController {
+    private let userID: String
+    
+    init(userID: String) {
+        self.userID = userID
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    // 如果不想使用storyboard初始化构造方法，我们可以使用Xcode给的默认提示
+    @available(*, unavailable) // 防止调用
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // ...
+}
+```
+在`iOS13`中如果我们想通过`storyboard`来初始化控制器可以自定义构造方法
+
+```swift 
+    // 1.通过代码初始化控制器
+    showTestVc(for: "7812381312")
+    @available(iOS 13.0, *)
+    private func showTestVc(for userID: String) {
+        guard let viewController = storyboard?.instantiateViewController(
+            identifier: "TestViewController",
+            creator: { coder in
+                TestViewController(userID: userID, coder: coder)
+            }
+        ) else {
+            fatalError("Failed to create Product Details VC")
+        }
+        show(viewController, sender: self)
+    }
+
+
+    // 2.通过storyboard segues初始化控制器,记得关联segue actions
+    @IBSegueAction func showTestVc2(_ coder: NSCoder) -> TestViewController? {
+        TestViewController(userID: "7812381312", coder: coder)
+    }
+
+class TestViewController: UIViewController {
+    // ....
+    init?(userID: String, coder: NSCoder) {
+        self.userID = userID
+        super.init(coder: coder)
+    }
+    
+    @available(*, unavailable, renamed: "init(userID:coder:)")
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    // ...
+}
+```
+
 
 [:arrow_up: 返回目录](#table-of-contents)  
