@@ -71,8 +71,8 @@
 [61.ExpressibleBy协议集:通过字面量实例化对象](#61)  
 [62.插件化TableView](#62)  
 [63.自定义底部弹层控制器](#63)  
-[64.UIAlertController的封装](#64)
-[65.自定义控制器构造方法](#65)
+[64.UIAlertController的封装](#64)  
+[65.自定义控制器构造方法](#65)   
 
 
 ## 2.XcodeTips 
