@@ -73,6 +73,7 @@
 [63.自定义底部弹层控制器](#63)  
 [64.UIAlertController的封装](#64)  
 [65.自定义控制器构造方法](#65)   
+[66.性能调优之像素对齐](#66)   
 
 
 ## 2.XcodeTips 
@@ -5941,5 +5942,95 @@ class TestViewController: UIViewController {
 }
 ```
 
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="66">66.性能调优之像素对齐</h2>
+
+我们日常开发中使用本地图片都需要以`@2x`、`@3x`命名结尾，2x、3x的意思是一个点`Point`对应多少个像素`pixel`。
+
+点`Point`：逻辑坐标的基本单位，也是日常布局中常用的，比如某个视图的宽度为8，宽度单位就是点。点是虚拟单位，并非实际存在，还需`GPU`计算点对应的像素。
+
+像素`pixel`：屏幕上最小的色块单元，例如`iPhone 11 Pro Max`的屏幕像素是`1242x2688 px`，对应的点是`414x896 pt` ，点跟像素对应的关系是1：3，所以在`iPhone 11 Pro Max`上需要使用`@3x`的图片。
+
+
+[苹果所有设备的屏幕尺寸及对应的像素](https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/)
+
+
+我们还可以通过`UIScreen.main.scale`来获取像素与点的对应关系。
+
+像素不对齐: 因为点跟像素之间需要`GPU`计算转换，那么肯定会出现点不能转化为整个像素的情况，比如，0.5个点转化为1.5个像素，这时就需要`GPU`做反锯齿计算，产生性能损耗。
+
+查看是否有像素不对齐：在模拟器调试时，打开模拟器的 `Debug` -> 勾选`Color Misaligned Images`，看看视图是不是标黄了
+
+<img src="https://github.com/DarielChen/SwiftTips/blob/master/Source/yellow_pixel.png" width=350>
+
+```swift
+let label = UILabel()
+
+// 0.5个点在3x设备上不能转化为整个像素
+label.frame = CGRect(x: 20.5, y: 160, width: 320, height: 40)
+label.textColor = .gray
+label.text = "x: 20.5, y: 160, width: 320, height: 40"
+```
+
+解决像素不对齐的方法我们可以根据屏幕倍数对点进行向上取整。下面是一些可用的`extension`。
+
+```swift
+// from
+label.frame = CGRect(x: 20.5, y: 160, width: 320, height: 40)
+
+//to
+label.frame = CGRect(x: 20.5, y: 160, width: 320, height: 40).flat()
+// or
+label.frame = CGRect(20.5, 160, 320, 40)
+```
+
+```swift
+public extension CGSize {
+    /// 创建 一个像素对齐的`CGSize`
+    init(_ width: CGFloat, _ height: CGFloat) {
+        self.init(width: width.flat(), height: height.flat())
+    }
+
+    /// 转化成像素对齐的`CGSize`
+    /// - Returns: 像素对齐的`CGSize`
+    func flat() -> CGSize {
+        return CGSize(width: width.flat(), height: height.flat())
+    }
+}
+
+public extension CGRect {
+    /// 创建 一个像素对齐的`CGRect`
+    init(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) {
+        self.init(x: x.flat(), y: y.flat(), width: width.flat(), height: height.flat())
+    }
+
+    /// 转化成像素对齐的`CGRect`
+    /// - Returns: 像素对齐的`CGRect`
+    func flat() -> CGRect {
+        return CGRect(x: origin.x.flat(), y: origin.y.flat(), width: width.flat(), height: height.flat())
+    }
+}
+
+public extension CGFloat {
+    /// 基于屏幕倍数，进行像素取整
+    /// - Parameter scale: 屏幕倍数（不传为当前屏幕倍数）
+    /// - Returns: 取整后的像素
+    /// 例如传进来 “2.1”，在 `2x` 倍数下会返回 2.5（0.5pt 对应 1px），在 `3x`倍数下会返回 2.333（0.333pt 对应 1px）。
+    func flat(scale: CGFloat? = nil) -> CGFloat {
+        let floatValue = removeFloatMin()
+        let newScale = scale ?? UIScreen.main.scale
+        return ceil(floatValue * newScale) / newScale
+    }
+
+    /// 将最小正数转为0，避免将最小正数当做数值参与计算（这样可能会导致某些精度问题）
+    /// - Returns:非最小正数
+    func removeFloatMin() -> CGFloat {
+        return self == .leastNormalMagnitude ? 0 : self
+    }
+}
+```
 
 [:arrow_up: 返回目录](#table-of-contents)  
