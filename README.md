@@ -3458,6 +3458,39 @@ if #available(iOS 11, *) {
     darkView.layer.cornerRadius = 8
 }
 ```
+
+我们将前面两种方法做下整合：
+
+```swift
+public extension CALayer {
+
+    func roundCorners(_ corners: CACornerMask, radius: CGFloat) {
+        if #available(iOS 11, *) {
+            self.cornerRadius = radius
+            self.maskedCorners = corners
+        } else {
+            var cornerMask = UIRectCorner()
+            if corners.contains(.layerMinXMinYCorner) {
+                cornerMask.insert(.topLeft)
+            }
+            if corners.contains(.layerMaxXMinYCorner) {
+                cornerMask.insert(.topRight)
+            }
+            if corners.contains(.layerMinXMaxYCorner) {
+                cornerMask.insert(.bottomLeft)
+            }
+            if corners.contains(.layerMaxXMaxYCorner) {
+                cornerMask.insert(.bottomRight)
+            }
+            let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: cornerMask, cornerRadii: CGSize(width: radius, height: radius))
+            let mask = CAShapeLayer()
+            mask.path = path.cgPath
+            self.mask = mask
+        }
+    }
+}
+```  
+
 [:arrow_up: 返回目录](#table-of-contents)  
 
 
