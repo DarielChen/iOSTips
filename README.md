@@ -74,6 +74,7 @@
 [64.UIAlertController的封装](#64)  
 [65.自定义控制器构造方法](#65)   
 [66.性能调优之像素对齐](#66)   
+[67.可以做与运算的结构体](#67)   
 
 
 ## 2.XcodeTips 
@@ -6062,6 +6063,77 @@ public extension CGFloat {
     /// - Returns:非最小正数
     func removeFloatMin() -> CGFloat {
         return self == .leastNormalMagnitude ? 0 : self
+    }
+}
+```
+
+[:arrow_up: 返回目录](#table-of-contents)  
+
+
+<h2 id="67">67.可以做与运算的结构体</h2>
+
+我们都知道枚举的`case`具有互斥性 ，每次赋值只能选择一种类型，但如果需要同时选择多种类型呢？
+
+比如给`view`添加圆角，可设置的圆角有四个，通常我们都会一次同时添加几个圆角。
+
+```swift
+// 给view添加两个顶部的圆角
+darkView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+```
+
+有没有注意到`maskedCorners`属性的类型，它其实不是枚举。
+
+```swift
+// CACornerMask
+public struct CACornerMask : OptionSet {
+    public init(rawValue: UInt)
+
+    public static var layerMinXMinYCorner: CACornerMask { get }
+    public static var layerMaxXMinYCorner: CACornerMask { get }
+    public static var layerMinXMaxYCorner: CACornerMask { get }
+    public static var layerMaxXMaxYCorner: CACornerMask { get }
+}
+```
+`CACornerMask`是个结构体，赋值的时候可以同时支持多种类型的静态内部变量。
+
+下面我们自定义一个这种类型。  
+具体实现：
+
+```swift
+struct DCCornerMask: OptionSet {
+    let rawValue: Int
+    static let layerMinXMinYCorner = DCCornerMask(rawValue: 1 << 0)
+    static let layerMaxXMinYCorner = DCCornerMask(rawValue: 1 << 1)
+    static let layerMinXMaxYCorner = DCCornerMask(rawValue: 1 << 2)
+    static let layerMaxXMaxYCorner = DCCornerMask(rawValue: 1 << 3)
+}
+```
+
+使用：
+```swift
+    mask = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+```
+
+赋值转化，如何去解析给结构体设置的值：
+```swift
+var mask: DCCornerMask? {
+    didSet {
+        guard let mask = mask else { return }
+        if mask.contains(.layerMinXMinYCorner) {
+            // 打印 1
+            print(DCCornerMask.layerMinXMinYCorner.rawValue)
+        }
+        if mask.contains(.layerMaxXMinYCorner) {
+            print(DCCornerMask.layerMaxXMinYCorner.rawValue)
+        }
+        if mask.contains(.layerMinXMaxYCorner) {
+            // 打印 4
+            print(DCCornerMask.layerMinXMaxYCorner.rawValue)
+        }
+        if mask.contains(.layerMaxXMaxYCorner) {
+            // 打印 8
+            print(DCCornerMask.layerMaxXMaxYCorner.rawValue)
+        }
     }
 }
 ```
